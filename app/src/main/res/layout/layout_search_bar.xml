@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    android:minHeight="40dp"
+
+    android:backgroundTint="?attr/colorSurfaceVariant"
+
+    app:shapeAppearanceOverlay="?attr/shapeAppearanceCornerSmall"
+    app:strokeColor="@android:color/transparent">
+
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+
+        android:src="@drawable/ic_search_20_300"
+        app:tint="?attr/colorOnSurface"
+        android:alpha="0.54"
+
+        android:layout_marginStart="12dp"
+
+        android:layout_gravity="center|start"
+        />
+
+    <moe.emi.finite.dump.TextField
+        android:id="@+id/field"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:hint="Search"
+
+        android:background="@android:color/transparent"
+
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:textColor="?attr/colorOnSurface"
+        android:textColorHint="?attr/colorOnSurface"
+        app:hintAlpha="0.54"
+
+        android:paddingStart="40dp"
+        android:paddingEnd="12dp"
+
+        android:maxLines="1"
+        android:inputType="text"
+
+        tools:text="asf k.jas fkjhakljhakfa kkf ak fjsdkj fhsdkd fjhsdkl as as da sd"
+
+        />
+
+</com.google.android.material.card.MaterialCardView>

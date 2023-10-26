@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools">
+
+	<style name="Widget.Finite.AppBarLayout.Background" parent="Widget.Material3.AppBarLayout">
+		<item name="materialThemeOverlay">@style/ThemeOverlay.Finite.AppBarLayout.OnBackground</item>
+	</style>
+
+	<style name="ThemeOverlay.Finite.AppBarLayout.OnBackground" parent="">
+		<item name="colorSurface">?attr/background</item>
+		<item name="colorOnSurface">?attr/colorOnBackground</item>
+	</style>
+
+	<style name="Widget.Finite.AppBarLayout.Transparent" parent="Widget.Material3.AppBarLayout">
+		<item name="materialThemeOverlay">@style/ThemeOverlay.Finite.AppBarLayout.Transparent</item>
+	</style>
+
+	<style name="ThemeOverlay.Finite.AppBarLayout.Transparent" parent="">
+		<item name="colorSurface">@android:color/transparent</item>
+	</style>
+
+
+	<style name="ThemeOverlay.Finite.BottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
+
+		<item name="android:windowAnimationStyle">@style/Animation.penis.BottomSheetDialog</item>
+		<!--<item name="android:navigationBarColor">@android:color/transparent</item>-->
+		<item name="bottomSheetStyle">@style/ModalBottomSheet</item>>
+
+	</style>
+
+	<style name="Animation.penis.BottomSheetDialog" parent="Animation.AppCompat.Dialog">
+		<item name="android:windowEnterAnimation">@anim/sheet_slide_up</item>
+		<item name="android:windowExitAnimation">@anim/sheet_slide_down</item>
+	</style>
+
+	<style name="ModalBottomSheet" parent="Widget.Material3.BottomSheet.Modal">
+		<item name="paddingBottomSystemWindowInsets">false</item>
+
+		<!--<item name="paddingTopSystemWindowInsets">false</item>-->
+		<!--<item name="forceApplySystemWindowInsetTop">false</item>
+		<item name="marginTopSystemWindowInsets">false</item>-->
+
+		<item name="shapeAppearance">?attr/shapeAppearanceCornerMedium</item>
+	</style>
+
+</resources>

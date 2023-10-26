@@ -1,0 +1,24 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+	<!-- Base application theme. -->
+	<style name="Base.Theme.Finite" parent="Theme.Material3.DayNight.NoActionBar">
+		<!-- Customize your light theme here. -->
+		<!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+		<item name="colorThemeInverse">@color/black</item>
+	</style>
+
+	<style name="Theme.Finite" parent="Base.Theme.Finite">
+		<item name="android:navigationBarColor">@android:color/transparent</item>
+		<item name="android:statusBarColor">@android:color/transparent</item>
+		<item name="android:windowLightStatusBar">?attr/isLightTheme</item>
+		<item name="enableEdgeToEdge">true</item>
+
+		<item name="bottomSheetDialogTheme">@style/ThemeOverlay.Finite.BottomSheetDialog</item>
+	</style>
+
+	<style name="ThemeOverlay.Finite.OutlineFix" parent="ThemeOverlay.Material3.DynamicColors.Light">
+		<item name="background">@color/material_dynamic_neutral95</item>
+		<item name="colorOutline">@color/material_dynamic_neutral_variant90</item>
+	</style>
+
+
+</resources>

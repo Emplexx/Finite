@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+
+	android:orientation="vertical"
+	>
+
+
+
+	<codes.side.andcolorpicker.view.swatch.SwatchView
+		android:id="@+id/swatchView"
+		android:layout_width="wrap_content"
+		android:layout_height="64dp"
+		android:layout_marginBottom="4dp"
+		/>
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+
+		android:textAppearance="?attr/textAppearanceLabelLarge"
+
+		android:text="Hue"
+		android:layout_marginStart="24dp"
+		android:layout_marginTop="12dp"
+		android:layout_marginBottom="8dp"
+		/>
+
+	<codes.side.andcolorpicker.hsl.HSLColorPickerSeekBar
+		android:id="@+id/hueSeekBar"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		app:hslColoringMode="pure"
+		app:hslMode="hue"
+		app:trackHeight="4dp"
+		android:layout_marginHorizontal="3dp"
+		android:layout_marginBottom="4dp"
+		/>
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+
+		android:textAppearance="?attr/textAppearanceLabelLarge"
+
+		android:text="Saturation"
+		android:layout_marginStart="24dp"
+		android:layout_marginTop="12dp"
+		android:layout_marginBottom="8dp"
+		/>
+
+	<codes.side.andcolorpicker.hsl.HSLColorPickerSeekBar
+		android:id="@+id/saturationSeekBar"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		app:hslColoringMode="pure"
+		app:hslMode="saturation"
+
+		android:layout_marginHorizontal="3dp"
+		android:layout_marginBottom="4dp"
+		/>
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+
+		android:textAppearance="?attr/textAppearanceLabelLarge"
+
+		android:text="Lightness"
+		android:layout_marginStart="24dp"
+		android:layout_marginTop="12dp"
+		android:layout_marginBottom="8dp"
+		/>
+
+
+
+	<codes.side.andcolorpicker.hsl.HSLColorPickerSeekBar
+		android:id="@+id/lightnessSeekBar"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		app:hslColoringMode="pure"
+		app:hslMode="lightness"
+		android:layout_marginHorizontal="3dp"
+		android:layout_marginBottom="4dp"
+
+		/>
+
+	<com.google.android.material.divider.MaterialDivider
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="12dp"
+		/>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+
+		android:orientation="horizontal"
+		>
+
+		<TextView
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+
+			android:textAppearance="?attr/textAppearanceLabelLarge"
+
+			android:text="Hex Code"
+			android:layout_marginStart="24dp"
+			android:layout_gravity="center"
+			/>
+
+		<com.google.android.material.card.MaterialCardView
+			android:layout_width="80dp"
+			android:layout_height="40dp"
+			android:layout_marginVertical="16dp"
+			android:layout_marginHorizontal="24dp"
+			app:cardCornerRadius="8dp"
+			app:cardBackgroundColor="?attr/colorSurfaceVariant"
+			app:strokeColor="@android:color/transparent"
+			>
+
+			<EditText
+				android:id="@+id/fieldHex"
+				android:layout_width="80dp"
+				android:layout_height="wrap_content"
+
+				android:background="@android:color/transparent"
+				android:layout_gravity="center"
+				android:textAlignment="center"
+				android:typeface="monospace"
+
+				android:textAppearance="?attr/textAppearanceBodyLarge"
+
+				android:text="000000"
+				/>
+
+		</com.google.android.material.card.MaterialCardView>
+	</LinearLayout>
+
+
+
+	<!--<com.google.android.material.button.MaterialButton
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+
+		android:text="OK"
+		/>-->
+
+
+</LinearLayout>

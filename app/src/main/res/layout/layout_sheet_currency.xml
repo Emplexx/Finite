@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+
+	android:orientation="vertical"
+
+	xmlns:tools="http://schemas.android.com/tools"
+	>
+
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		>
+
+		<TextView
+			android:layout_width="match_parent"
+			android:layout_height="56dp"
+			android:paddingHorizontal="16dp"
+
+			android:gravity="center|start"
+
+			android:text="Select currency"
+			android:textAppearance="?attr/textAppearanceTitleMedium"
+
+			/>
+
+		<include
+			layout="@layout/layout_search_bar"
+			android:id="@+id/searchBar"
+			android:layout_width="match_parent"
+			android:layout_height="40dp"
+
+			android:layout_marginHorizontal="16dp"
+			android:layout_marginBottom="16dp"
+			/>
+
+		<com.google.android.material.divider.MaterialDivider
+			android:id="@+id/diviver"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:alpha="0"
+			/>
+	</LinearLayout>
+
+	<androidx.recyclerview.widget.RecyclerView
+		android:id="@+id/recyclerView"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+
+		app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+		android:clipChildren="false"
+		android:clipToPadding="false"
+		android:nestedScrollingEnabled="true"
+		/>
+
+</LinearLayout>

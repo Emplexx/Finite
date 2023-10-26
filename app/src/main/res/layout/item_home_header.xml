@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="88dp"
+	xmlns:tools="http://schemas.android.com/tools"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+
+	<TextView
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+
+		android:layout_weight="1"
+
+		android:layout_gravity="center"
+
+		android:textAppearance="?attr/textAppearanceTitleLarge"
+		android:layout_marginHorizontal="16dp"
+
+		android:text="finite"
+		/>
+
+	<LinearLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+
+		android:layout_gravity="center|end"
+		android:orientation="vertical"
+
+		android:layout_marginEnd="16dp"
+		>
+
+		<LinearLayout
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+
+			android:layout_gravity="end"
+			android:orientation="horizontal"
+			>
+			<TextView
+				android:id="@+id/textCurrencySign"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+
+				android:textAppearance="?attr/textAppearanceHeadlineLarge"
+
+				android:layout_gravity="end"
+
+				android:layout_marginEnd="8dp"
+				tools:text="$"
+				/>
+
+			<com.robinhood.ticker.TickerView
+				android:id="@+id/textTotal"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+
+				android:textAppearance="?attr/textAppearanceHeadlineLarge"
+
+				android:layout_gravity="end"
+
+				app:ticker_animationDuration="500"
+				app:ticker_defaultPreferredScrollingDirection="any"
+				app:ticker_animateMeasurementChange="true"
+
+				tools:text="7.37"
+				/>
+
+		</LinearLayout>
+
+		<TextView
+			android:id="@+id/textView"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+
+			android:layout_gravity="end"
+
+			android:layout_marginTop="-6dp"
+			android:textAppearance="?attr/textAppearanceTitleMedium"
+			android:textAlignment="textEnd"
+
+			tools:text="Monthly"
+			/>
+
+	</LinearLayout>
+
+
+
+</LinearLayout>

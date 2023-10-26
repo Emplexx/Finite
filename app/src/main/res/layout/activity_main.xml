@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+
+	android:background="?attr/background"
+	>
+
+	<!--<com.google.android.material.appbar.AppBarLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:fitsSystemWindows="true">
+
+		<com.google.android.material.appbar.MaterialToolbar
+			android:id="@+id/toolbar"
+			android:layout_width="match_parent"
+			android:layout_height="?attr/actionBarSize" />
+
+	</com.google.android.material.appbar.AppBarLayout>-->
+
+	<include layout="@layout/content_main" />
+
+
+
+	<com.google.android.material.floatingactionbutton.FloatingActionButton
+		android:id="@+id/fab"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+
+		android:backgroundTint="?attr/colorTertiaryFixedDim"
+		app:tint="?attr/colorOnTertiaryFixedVariant"
+
+		app:srcCompat="@drawable/ic_add_24"
+		android:contentDescription="Add a subscription"
+
+		app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Full"
+
+		app:layout_anchor="@id/bottomAppBar"
+		/>
+
+	<com.google.android.material.bottomappbar.BottomAppBar
+		android:id="@+id/bottomAppBar"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+
+		style="@style/Widget.Material3.BottomAppBar"
+
+		app:elevation="3dp"
+		app:addElevationShadow="true"
+
+		app:menu="@menu/menu_main"
+
+		android:layout_gravity="bottom"
+		android:minHeight="56dp"
+		app:maxButtonHeight="56dp"
+
+		app:fabAlignmentMode="end"
+		app:fabAnimationMode="slide"
+		app:fabAnchorMode="cradle"
+		app:fabCradleMargin="8dp"
+		app:fabCradleVerticalOffset="0dp"
+
+		android:backgroundTint="?attr/colorSurfaceContainerHigh"
+
+		/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

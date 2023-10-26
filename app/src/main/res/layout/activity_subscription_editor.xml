@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+
+	android:background="?attr/background"
+	tools:background="?attr/colorSurfaceDim"
+
+	android:fitsSystemWindows="true"
+	>
+
+	<com.google.android.material.appbar.AppBarLayout
+		android:id="@+id/appBarLayout"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+
+		android:fitsSystemWindows="true"
+
+		app:liftOnScroll="true"
+		app:liftOnScrollTargetViewId="@id/scrollView"
+
+		style="@style/Widget.Finite.AppBarLayout.Background"
+
+		tools:visibility="gone"
+		>
+
+		<com.google.android.material.appbar.MaterialToolbar
+			android:id="@+id/toolbar"
+			android:layout_width="match_parent"
+			android:layout_height="?attr/actionBarSize"
+			android:elevation="0dp"
+
+			app:navigationIcon="@drawable/ic_close_24"
+			/>
+
+	</com.google.android.material.appbar.AppBarLayout>
+
+	<androidx.core.widget.NestedScrollView
+		android:id="@+id/scrollView"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+		>
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+
+			android:orientation="vertical"
+			>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginHorizontal="16dp"
+				>
+
+				<TextView
+					android:id="@+id/textCurrencySign"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+
+					android:background="@android:color/transparent"
+
+					android:textAppearance="?attr/textAppearanceDisplayMedium"
+					android:firstBaselineToTopHeight="48sp"
+					android:lastBaselineToBottomHeight="12sp"
+
+					tools:text="$"
+					android:layout_marginEnd="12sp"
+					/>
+
+				<EditText
+					android:id="@+id/fieldAmount"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+
+					android:background="@android:color/transparent"
+
+					android:textAppearance="?attr/textAppearanceDisplayMedium"
+					android:inputType="numberDecimal"
+					android:firstBaselineToTopHeight="48sp"
+					android:lastBaselineToBottomHeight="12sp"
+
+					android:hint="0.00"
+					/>
+
+				<com.google.android.material.card.MaterialCardView
+					android:id="@+id/cardColor"
+					android:layout_width="40dp"
+					android:layout_height="40dp"
+					android:layout_marginStart="16dp"
+
+					app:cardPreventCornerOverlap="false"
+					android:layout_gravity="center"
+					app:strokeColor="@android:color/transparent"
+
+					app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Full"
+					/>
+
+			</LinearLayout>
+
+
+
+			<com.google.android.material.button.MaterialButton
+				android:id="@+id/buttonCurrency"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="EUR"
+
+				android:minWidth="40dp"
+				android:height="40dp"
+				android:minHeight="40dp"
+
+				android:paddingVertical="0dp"
+				android:paddingHorizontal="8dp"
+				android:insetTop="4dp"
+				android:insetBottom="4dp"
+
+				app:icon="@drawable/ic_expand_more_24"
+				app:iconSize="16dp"
+				app:iconPadding="8dp"
+				app:iconTint="?attr/colorOnSurfaceVariant"
+				app:iconGravity="end"
+
+				android:textAppearance="?attr/textAppearanceBodyLarge"
+				android:textColor="?attr/colorOnSurface"
+
+				style="@style/Widget.Material3.Button.TextButton.Icon"
+
+				app:shapeAppearanceOverlay="?attr/shapeAppearanceCornerSmall"
+
+				android:layout_marginStart="8dp"
+				/>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+
+				android:orientation="vertical"
+				android:padding="16dp"
+				>
+
+				<com.google.android.material.card.MaterialCardView
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					app:cardPreventCornerOverlap="false"
+					app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Small"
+					app:strokeColor="@android:color/transparent"
+				>
+					<LinearLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:orientation="vertical"
+						>
+
+						<EditText
+							android:id="@+id/fieldName"
+							android:layout_width="match_parent"
+							android:layout_height="56dp"
+
+							android:paddingHorizontal="16dp"
+							android:background="@android:color/transparent"
+							android:textAppearance="?attr/textAppearanceBodyLarge"
+
+							android:inputType="text"
+							android:imeOptions="actionNext"
+							android:maxLength="20"
+
+							android:hint="Name"
+							/>
+
+						<com.google.android.material.divider.MaterialDivider
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							app:dividerInsetStart="16dp"
+							/>
+
+						<EditText
+							android:id="@+id/fieldDescription"
+							android:layout_width="match_parent"
+							android:layout_height="56dp"
+
+							android:paddingHorizontal="16dp"
+
+							android:background="@android:color/transparent"
+							android:textAppearance="?attr/textAppearanceBodyLarge"
+
+							android:inputType="text"
+							android:imeOptions="actionNext"
+							android:maxLength="50"
+
+
+							android:hint="Short description"
+
+							tools:text="abc"
+							/>
+
+					</LinearLayout>
+				</com.google.android.material.card.MaterialCardView>
+
+				<Space
+					android:layout_width="match_parent"
+					android:layout_height="16dp"
+					/>
+
+				<com.google.android.material.card.MaterialCardView
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					app:cardPreventCornerOverlap="false"
+					app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Small"
+					app:strokeColor="@android:color/transparent"
+					>
+					<LinearLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:orientation="vertical"
+						>
+
+						<LinearLayout
+							android:id="@+id/rowStartedOn"
+							android:layout_width="match_parent"
+							android:layout_height="56dp"
+							android:orientation="horizontal"
+
+							android:gravity="center|start"
+
+							android:background="?attr/selectableItemBackground"
+							>
+
+							<FrameLayout
+								android:layout_width="40dp"
+								android:layout_height="40dp"
+								android:layout_marginHorizontal="8dp"
+								>
+								<com.google.android.material.card.MaterialCardView
+									android:layout_width="28dp"
+									android:layout_height="28dp"
+									app:cardPreventCornerOverlap="false"
+									app:cardCornerRadius="4dp"
+									android:layout_gravity="center"
+									app:cardBackgroundColor="@color/red"
+									app:strokeColor="@android:color/transparent"
+									>
+									<ImageView
+										android:layout_width="20dp"
+										android:layout_height="20dp"
+										android:src="@drawable/ic_calendar_24"
+										app:tint="@color/white"
+										android:layout_gravity="center"
+										/>
+								</com.google.android.material.card.MaterialCardView>
+							</FrameLayout>
+
+							<TextView
+								android:layout_width="0dp"
+								android:layout_height="wrap_content"
+								android:layout_weight="1"
+								android:text="Started on"
+								android:textAppearance="?attr/textAppearanceTitleMedium"
+								android:textColor="?attr/colorOnSurface"
+								/>
+
+							<TextView
+								android:id="@+id/textStartedOn"
+								android:layout_width="wrap_content"
+								android:layout_height="wrap_content"
+								android:layout_marginHorizontal="16dp"
+								android:textAppearance="?attr/textAppearanceTitleMedium"
+								android:textColor="?attr/colorPrimary"
+								tools:text="13 Jul 2024"
+								/>
+
+						</LinearLayout>
+
+						<com.google.android.material.divider.MaterialDivider
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							app:dividerInsetStart="56dp"
+							/>
+
+						<LinearLayout
+							android:id="@+id/rowFrequency"
+							android:layout_width="match_parent"
+							android:layout_height="56dp"
+							android:orientation="horizontal"
+
+							android:gravity="center|start"
+							android:background="?attr/selectableItemBackground"
+							>
+
+							<FrameLayout
+								android:layout_width="40dp"
+								android:layout_height="40dp"
+								android:layout_marginHorizontal="8dp"
+								>
+								<com.google.android.material.card.MaterialCardView
+									android:layout_width="28dp"
+									android:layout_height="28dp"
+									app:cardPreventCornerOverlap="false"
+									app:cardCornerRadius="4dp"
+									android:layout_gravity="center"
+									app:cardBackgroundColor="@color/mint"
+									app:strokeColor="@android:color/transparent"
+									>
+									<ImageView
+										android:layout_width="20dp"
+										android:layout_height="20dp"
+										android:src="@drawable/ic_refresh_24"
+										app:tint="@color/white"
+										android:layout_gravity="center"
+										/>
+								</com.google.android.material.card.MaterialCardView>
+							</FrameLayout>
+
+							<TextView
+								android:layout_width="0dp"
+								android:layout_height="wrap_content"
+								android:layout_weight="1"
+								android:text="Frequency"
+								android:textAppearance="?attr/textAppearanceTitleMedium"
+								android:textColor="?attr/colorOnSurface"
+								/>
+
+							<TextView
+								android:id="@+id/textFrequency"
+								android:layout_width="wrap_content"
+								android:layout_height="wrap_content"
+								android:layout_marginHorizontal="16dp"
+								android:textAppearance="?attr/textAppearanceTitleMedium"
+								android:textColor="?attr/colorPrimary"
+								tools:text="Monthly"
+								/>
+
+						</LinearLayout>
+
+					</LinearLayout>
+				</com.google.android.material.card.MaterialCardView>
+
+				<Space
+					android:layout_width="match_parent"
+					android:layout_height="16dp"
+					/>
+
+				<com.google.android.material.card.MaterialCardView
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					app:cardPreventCornerOverlap="false"
+					app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Small"
+					app:strokeColor="@android:color/transparent"
+					>
+
+					<EditText
+						android:id="@+id/fieldPaymentMethod"
+						android:layout_width="match_parent"
+						android:layout_height="56dp"
+
+						android:paddingHorizontal="16dp"
+						android:background="@android:color/transparent"
+						android:textAppearance="?attr/textAppearanceBodyLarge"
+
+						android:inputType="text"
+						android:imeOptions="actionNext"
+						android:maxLength="50"
+
+						android:hint="Payment method"
+						/>
+
+				</com.google.android.material.card.MaterialCardView>
+
+				<Space
+					android:layout_width="match_parent"
+					android:layout_height="16dp"
+					/>
+
+				<com.google.android.material.card.MaterialCardView
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					app:cardPreventCornerOverlap="false"
+					app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Small"
+					app:strokeColor="@android:color/transparent"
+					>
+					<EditText
+						android:id="@+id/fieldNotes"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:minHeight="112dp"
+
+						android:paddingHorizontal="16dp"
+						android:paddingVertical="16dp"
+						android:elegantTextHeight="false"
+
+						android:gravity="top"
+
+						android:background="@android:color/transparent"
+						android:textAppearance="?attr/textAppearanceBodyLarge"
+
+						android:maxLength="50"
+
+
+						android:hint="Notes"
+
+						/>
+
+				</com.google.android.material.card.MaterialCardView>
+
+			</LinearLayout>
+
+
+
+
+		</LinearLayout>
+	</androidx.core.widget.NestedScrollView>
+
+
+	<com.google.android.material.floatingactionbutton.FloatingActionButton
+		android:id="@+id/fab"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="bottom|end"
+		android:layout_marginEnd="@dimen/fab_margin"
+		android:layout_marginBottom="16dp"
+		app:srcCompat="@drawable/ic_check_24"
+		/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

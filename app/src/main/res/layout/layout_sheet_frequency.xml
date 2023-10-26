@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+
+	android:orientation="vertical"
+
+	xmlns:tools="http://schemas.android.com/tools"
+	tools:background="?attr/colorSurfaceDim"
+	>
+
+	<FrameLayout
+		android:layout_width="match_parent"
+		android:layout_height="72dp"
+		>
+		<com.google.android.material.bottomsheet.BottomSheetDragHandleView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+
+			android:paddingBottom="28dp"
+			app:tint="?attr/colorOutlineVariant"
+			/>
+
+		<TextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginHorizontal="16dp"
+
+			android:layout_gravity="bottom"
+
+			android:text="Select frequency"
+			android:textAppearance="?attr/textAppearanceTitleMedium"
+			android:lastBaselineToBottomHeight="24dp"
+			/>
+	</FrameLayout>
+
+	<com.google.android.material.card.MaterialCardView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		app:cardPreventCornerOverlap="false"
+		app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Small"
+		app:strokeColor="@android:color/transparent"
+
+		android:layout_marginHorizontal="16dp"
+		android:layout_marginBottom="16dp"
+
+		app:cardBackgroundColor="?attr/colorSurfaceContainer"
+		>
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			>
+
+			<TextView
+				android:id="@+id/rowWeekly"
+				android:layout_width="match_parent"
+				android:layout_height="56dp"
+
+				android:paddingHorizontal="16dp"
+				android:gravity="center|start"
+
+				android:text="@string/period_weekly"
+				android:textAppearance="?attr/textAppearanceBodyLarge"
+
+				app:drawableTint="?attr/colorPrimary"
+				/>
+
+			<TextView
+				android:id="@+id/row2Weeks"
+				android:layout_width="match_parent"
+				android:layout_height="56dp"
+
+				android:paddingHorizontal="16dp"
+				android:gravity="center|start"
+
+				android:text="@string/period_2weeks"
+				android:textAppearance="?attr/textAppearanceBodyLarge"
+
+				app:drawableTint="?attr/colorPrimary"
+				/>
+
+			<TextView
+				android:id="@+id/rowMonthly"
+				android:layout_width="match_parent"
+				android:layout_height="56dp"
+
+				android:paddingHorizontal="16dp"
+				android:gravity="center|start"
+
+				android:text="@string/period_monthly"
+				android:textAppearance="?attr/textAppearanceBodyLarge"
+
+				app:drawableTint="?attr/colorPrimary"
+				/>
+
+			<TextView
+				android:id="@+id/rowQuarterly"
+				android:layout_width="match_parent"
+				android:layout_height="56dp"
+
+				android:paddingHorizontal="16dp"
+				android:gravity="center|start"
+
+				android:text="@string/period_quarterly"
+				android:textAppearance="?attr/textAppearanceBodyLarge"
+
+				app:drawableTint="?attr/colorPrimary"
+				/>
+
+			<TextView
+				android:id="@+id/row6Months"
+				android:layout_width="match_parent"
+				android:layout_height="56dp"
+
+				android:paddingHorizontal="16dp"
+				android:gravity="center|start"
+
+				android:text="@string/period_6months"
+				android:textAppearance="?attr/textAppearanceBodyLarge"
+
+				app:drawableTint="?attr/colorPrimary"
+				/>
+
+			<TextView
+				android:id="@+id/rowYearly"
+				android:layout_width="match_parent"
+				android:layout_height="56dp"
+
+				android:paddingHorizontal="16dp"
+				android:gravity="center|start"
+
+				android:text="@string/period_yearly"
+				android:textAppearance="?attr/textAppearanceBodyLarge"
+
+				app:drawableTint="?attr/colorPrimary"
+				/>
+
+
+		</LinearLayout>
+	</com.google.android.material.card.MaterialCardView>
+
+
+</LinearLayout>

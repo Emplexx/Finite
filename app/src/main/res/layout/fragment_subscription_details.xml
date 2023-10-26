@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+
+	android:background="?attr/background"
+	tools:background="?attr/colorSurfaceDim"
+
+	android:fitsSystemWindows="true"
+
+	android:transitionName="card_detail"
+	>
+
+
+	<com.google.android.material.appbar.AppBarLayout
+		android:id="@+id/appBarLayout"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+
+		android:fitsSystemWindows="true"
+
+		app:liftOnScroll="true"
+		app:liftOnScrollTargetViewId="@id/scrollView"
+
+		tools:visibility="gone"
+		>
+
+		<com.google.android.material.appbar.CollapsingToolbarLayout
+			android:id="@+id/ctl"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+
+
+			app:layout_scrollFlags="scroll|exitUntilCollapsed"
+			android:fitsSystemWindows="true"
+			app:contentScrim="?attr/colorSurfaceContainerHighest"
+			>
+
+			<LinearLayout
+				android:id="@+id/layoutReceipt"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+
+				android:orientation="vertical"
+				android:paddingTop="64dp"
+				android:paddingBottom="12dp"
+
+				android:background="@color/mint"
+				>
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_marginHorizontal="16dp"
+					>
+
+					<TextView
+						android:id="@+id/textName"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:layout_weight="1"
+
+						android:textAppearance="?attr/textAppearanceHeadlineLarge"
+						android:firstBaselineToTopHeight="48sp"
+						android:lastBaselineToBottomHeight="16sp"
+
+						android:maxLines="1"
+						android:autoSizeMaxTextSize="32sp"
+						android:autoSizeMinTextSize="20sp"
+						android:autoSizeStepGranularity="2sp"
+						android:autoSizeTextType="uniform"
+
+						android:ellipsize="end"
+
+						android:layout_marginEnd="12dp"
+
+						tools:text="Porkbun"
+						/>
+
+					<TextView
+						android:id="@+id/textCurrencySign"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+
+						android:textAppearance="?attr/textAppearanceDisplayMedium"
+						android:firstBaselineToTopHeight="48sp"
+						android:lastBaselineToBottomHeight="16sp"
+						android:layout_marginEnd="8sp"
+
+						tools:text="$"
+						/>
+
+					<TextView
+						android:id="@+id/textAmount"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+
+						android:textAppearance="?attr/textAppearanceDisplayMedium"
+						android:firstBaselineToTopHeight="48sp"
+						android:lastBaselineToBottomHeight="16sp"
+
+						tools:text="0.00"
+						/>
+
+				</LinearLayout>
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_marginHorizontal="16dp"
+					android:layout_marginTop="-12dp"
+					>
+
+					<TextView
+						android:id="@+id/textDescription"
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:layout_weight="1"
+
+						android:textAppearance="?attr/textAppearanceBodySmall"
+						android:firstBaselineToTopHeight="16sp"
+						android:lastBaselineToBottomHeight="16sp"
+
+						tools:text="Domain"
+						/>
+
+					<TextView
+						android:id="@+id/textConvertedAmount"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+
+						android:textAppearance="?attr/textAppearanceLabelMedium"
+						android:firstBaselineToTopHeight="16sp"
+						android:lastBaselineToBottomHeight="16sp"
+
+						tools:text="≈ lei 5.23"
+						/>
+
+				</LinearLayout>
+			</LinearLayout>
+
+
+			<com.google.android.material.appbar.MaterialToolbar
+				android:id="@+id/toolbar"
+				android:layout_width="match_parent"
+				android:layout_height="?attr/actionBarSize"
+				android:elevation="0dp"
+
+				app:layout_collapseMode="pin"
+
+				app:navigationIcon="@drawable/ic_close_24"
+
+				app:menu="@menu/menu_subscription"
+				/>
+
+		</com.google.android.material.appbar.CollapsingToolbarLayout>
+
+
+	</com.google.android.material.appbar.AppBarLayout>
+
+	<androidx.core.widget.NestedScrollView
+		android:id="@+id/scrollView"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+		>
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+
+			android:orientation="vertical"
+			>
+
+
+
+			<moe.emi.finite.dump.ReceiptEdgeView
+				android:id="@+id/receiptView"
+				android:layout_width="match_parent"
+				android:layout_height="40dp"
+				app:color="@color/white"
+				android:layout_marginTop="-16dp"
+				/>
+
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+
+				android:orientation="vertical"
+				android:padding="16dp"
+				>
+
+				<com.google.android.material.card.MaterialCardView
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					app:cardPreventCornerOverlap="false"
+					app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Small"
+					app:strokeColor="@android:color/transparent"
+				>
+					<LinearLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:orientation="vertical"
+						>
+
+						<EditText
+							android:id="@+id/fieldName"
+							android:layout_width="match_parent"
+							android:layout_height="56dp"
+
+							android:paddingHorizontal="16dp"
+							android:background="@android:color/transparent"
+							android:textAppearance="?attr/textAppearanceBodyLarge"
+
+							android:inputType="text"
+							android:imeOptions="actionNext"
+							android:maxLength="20"
+
+							android:hint="Name"
+							/>
+
+						<com.google.android.material.divider.MaterialDivider
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							app:dividerInsetStart="16dp"
+							/>
+
+						<EditText
+							android:id="@+id/fieldDescription"
+							android:layout_width="match_parent"
+							android:layout_height="56dp"
+
+							android:paddingHorizontal="16dp"
+
+							android:background="@android:color/transparent"
+							android:textAppearance="?attr/textAppearanceBodyLarge"
+
+							android:inputType="text"
+							android:imeOptions="actionNext"
+							android:maxLength="50"
+
+
+							android:hint="Short description"
+
+							tools:text="abc"
+							/>
+
+					</LinearLayout>
+				</com.google.android.material.card.MaterialCardView>
+
+				<Space
+					android:layout_width="match_parent"
+					android:layout_height="16dp"
+					/>
+
+				<com.google.android.material.card.MaterialCardView
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					app:cardPreventCornerOverlap="false"
+					app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Small"
+					app:strokeColor="@android:color/transparent"
+					>
+					<LinearLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:orientation="vertical"
+						>
+
+						<LinearLayout
+							android:id="@+id/rowStartedOn"
+							android:layout_width="match_parent"
+							android:layout_height="56dp"
+							android:orientation="horizontal"
+
+							android:gravity="center|start"
+
+							android:background="?attr/selectableItemBackground"
+							>
+
+							<FrameLayout
+								android:layout_width="40dp"
+								android:layout_height="40dp"
+								android:layout_marginHorizontal="8dp"
+								>
+								<com.google.android.material.card.MaterialCardView
+									android:layout_width="28dp"
+									android:layout_height="28dp"
+									app:cardPreventCornerOverlap="false"
+									app:cardCornerRadius="4dp"
+									android:layout_gravity="center"
+									app:cardBackgroundColor="@color/red"
+									app:strokeColor="@android:color/transparent"
+									>
+									<ImageView
+										android:layout_width="20dp"
+										android:layout_height="20dp"
+										android:src="@drawable/ic_calendar_24"
+										app:tint="@color/white"
+										android:layout_gravity="center"
+										/>
+								</com.google.android.material.card.MaterialCardView>
+							</FrameLayout>
+
+							<TextView
+								android:layout_width="0dp"
+								android:layout_height="wrap_content"
+								android:layout_weight="1"
+								android:text="Started on"
+								android:textAppearance="?attr/textAppearanceTitleMedium"
+								android:textColor="?attr/colorOnSurface"
+								/>
+
+							<TextView
+								android:id="@+id/textStartedOn"
+								android:layout_width="wrap_content"
+								android:layout_height="wrap_content"
+								android:layout_marginHorizontal="16dp"
+								android:textAppearance="?attr/textAppearanceTitleMedium"
+								android:textColor="?attr/colorPrimary"
+								tools:text="13 Jul 2024"
+								/>
+
+						</LinearLayout>
+
+						<com.google.android.material.divider.MaterialDivider
+							android:layout_width="match_parent"
+							android:layout_height="wrap_content"
+							app:dividerInsetStart="56dp"
+							/>
+
+						<LinearLayout
+							android:id="@+id/rowFrequency"
+							android:layout_width="match_parent"
+							android:layout_height="56dp"
+							android:orientation="horizontal"
+
+							android:gravity="center|start"
+							android:background="?attr/selectableItemBackground"
+							>
+
+							<FrameLayout
+								android:layout_width="40dp"
+								android:layout_height="40dp"
+								android:layout_marginHorizontal="8dp"
+								>
+								<com.google.android.material.card.MaterialCardView
+									android:layout_width="28dp"
+									android:layout_height="28dp"
+									app:cardPreventCornerOverlap="false"
+									app:cardCornerRadius="4dp"
+									android:layout_gravity="center"
+									app:cardBackgroundColor="@color/mint"
+									app:strokeColor="@android:color/transparent"
+									>
+									<ImageView
+										android:layout_width="20dp"
+										android:layout_height="20dp"
+										android:src="@drawable/ic_refresh_24"
+										app:tint="@color/white"
+										android:layout_gravity="center"
+										/>
+								</com.google.android.material.card.MaterialCardView>
+							</FrameLayout>
+
+							<TextView
+								android:layout_width="0dp"
+								android:layout_height="wrap_content"
+								android:layout_weight="1"
+								android:text="Frequency"
+								android:textAppearance="?attr/textAppearanceTitleMedium"
+								android:textColor="?attr/colorOnSurface"
+								/>
+
+							<TextView
+								android:id="@+id/textFrequency"
+								android:layout_width="wrap_content"
+								android:layout_height="wrap_content"
+								android:layout_marginHorizontal="16dp"
+								android:textAppearance="?attr/textAppearanceTitleMedium"
+								android:textColor="?attr/colorPrimary"
+								tools:text="Monthly"
+								/>
+
+						</LinearLayout>
+
+					</LinearLayout>
+				</com.google.android.material.card.MaterialCardView>
+
+				<Space
+					android:layout_width="match_parent"
+					android:layout_height="16dp"
+					/>
+
+				<com.google.android.material.card.MaterialCardView
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					app:cardPreventCornerOverlap="false"
+					app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Small"
+					app:strokeColor="@android:color/transparent"
+					>
+
+					<EditText
+						android:id="@+id/fieldPaymentMethod"
+						android:layout_width="match_parent"
+						android:layout_height="56dp"
+
+						android:paddingHorizontal="16dp"
+						android:background="@android:color/transparent"
+						android:textAppearance="?attr/textAppearanceBodyLarge"
+
+						android:inputType="text"
+						android:imeOptions="actionNext"
+						android:maxLength="50"
+
+						android:hint="Payment method"
+						/>
+
+				</com.google.android.material.card.MaterialCardView>
+
+				<Space
+					android:layout_width="match_parent"
+					android:layout_height="16dp"
+					/>
+
+				<com.google.android.material.card.MaterialCardView
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					app:cardPreventCornerOverlap="false"
+					app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Small"
+					app:strokeColor="@android:color/transparent"
+					>
+					<EditText
+						android:id="@+id/fieldNotes"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:minHeight="512dp"
+
+						android:paddingHorizontal="16dp"
+						android:paddingVertical="16dp"
+						android:elegantTextHeight="false"
+
+						android:gravity="top"
+
+						android:background="@android:color/transparent"
+						android:textAppearance="?attr/textAppearanceBodyLarge"
+
+						android:maxLength="50"
+
+
+						android:hint="Notes"
+
+						/>
+
+				</com.google.android.material.card.MaterialCardView>
+
+			</LinearLayout>
+
+
+
+
+		</LinearLayout>
+	</androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

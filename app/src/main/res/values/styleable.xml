@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<declare-styleable name="TextField">
+		<attr name="suffix" format="string|reference" />
+		<attr name="suffixPadding" format="dimension" />
+		<attr name="suffixTextColor" format="color" />
+		<attr name="suffixSpacer" format="string|reference"/>
+		<attr name="hintAlpha" format="float|reference"/>
+	</declare-styleable>
+
+	<declare-styleable name="ReceiptEdgeView">
+		<attr name="color" format="color"/>
+	</declare-styleable>
+</resources>

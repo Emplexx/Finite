@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:context=".SettingsActivity"
+
+	android:background="?attr/background"
+	tools:background="?attr/colorSurfaceDim"
+	>
+
+	<com.google.android.material.appbar.AppBarLayout
+		android:id="@+id/appBarLayout"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+
+		android:fitsSystemWindows="true"
+
+		app:liftOnScroll="true"
+		app:liftOnScrollTargetViewId="@id/scrollView"
+
+		style="@style/Widget.Finite.AppBarLayout.Background"
+
+		tools:visibility="gone"
+		>
+
+		<com.google.android.material.appbar.MaterialToolbar
+			android:id="@+id/toolbar"
+			android:layout_width="match_parent"
+			android:layout_height="?attr/actionBarSize"
+			android:elevation="0dp"
+
+			app:navigationIcon="@drawable/ic_back_24"
+			app:title="Settings"
+			/>
+
+	</com.google.android.material.appbar.AppBarLayout>
+
+
+	<androidx.core.widget.NestedScrollView
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+		>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+
+			android:paddingHorizontal="16dp"
+			>
+
+			<Space
+				android:layout_width="match_parent"
+				android:layout_height="16dp"
+				/>
+
+			<com.google.android.material.card.MaterialCardView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				app:cardPreventCornerOverlap="false"
+				app:strokeColor="@android:color/transparent"
+				app:shapeAppearance="?attr/shapeAppearanceCornerSmall"
+				>
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="vertical"
+					>
+
+					<include
+						android:id="@+id/rowHarmonize"
+						layout="@layout/preference_switch"
+						/>
+
+				</LinearLayout>
+			</com.google.android.material.card.MaterialCardView>
+
+			<include
+				android:id="@+id/footerHarmonize"
+				layout="@layout/preference_footer"
+				/>
+
+			<Space
+				android:layout_width="match_parent"
+				android:layout_height="16dp"
+				/>
+
+			<com.google.android.material.card.MaterialCardView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				app:cardPreventCornerOverlap="false"
+				app:strokeColor="@android:color/transparent"
+				app:shapeAppearance="?attr/shapeAppearanceCornerSmall"
+				>
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="vertical"
+					>
+
+					<include
+						android:id="@+id/rowNormalize"
+						layout="@layout/preference_switch"
+						/>
+					<com.google.android.material.divider.MaterialDivider
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						app:dividerInsetStart="16dp"
+						/>
+
+					<LinearLayout
+						android:layout_width="match_parent"
+						android:layout_height="56dp"
+						android:paddingHorizontal="16dp"
+						android:gravity="center"
+						>
+
+						<ImageView
+							android:layout_width="24dp"
+							android:layout_height="24dp"
+							android:src="@drawable/ic_brightness_low_24"
+							app:tint="?attr/colorOnSurfaceVariant"
+							/>
+
+						<com.google.android.material.slider.Slider
+							android:id="@+id/sliderBrightness"
+							android:layout_width="0dp"
+							android:layout_height="wrap_content"
+							android:layout_weight="1"
+							android:layout_marginHorizontal="16dp"
+
+							android:valueFrom="0.0"
+							android:valueTo="10.0"
+							android:stepSize="1.0"
+							/>
+
+						<ImageView
+							android:layout_width="24dp"
+							android:layout_height="24dp"
+							android:src="@drawable/ic_brightness_high_24"
+							app:tint="?attr/colorOnSurfaceVariant"
+							/>
+
+					</LinearLayout>
+
+
+				</LinearLayout>
+			</com.google.android.material.card.MaterialCardView>
+
+			<include
+				android:id="@+id/footerNormalize"
+				layout="@layout/preference_footer"
+				/>
+
+
+			<LinearLayout
+				android:id="@+id/rowCurrency"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:padding="16dp"
+				>
+				<TextView
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:text="Preferred currency"
+					/>
+				<TextView
+					android:id="@+id/textCurrency"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					tools:text="USD"
+					/>
+			</LinearLayout>
+
+			<LinearLayout
+				android:id="@+id/rowTheme"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:padding="16dp"
+				>
+				<TextView
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:text="Theme"
+					/>
+				<TextView
+					android:id="@+id/textTheme"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					tools:text="Match system"
+					/>
+			</LinearLayout>
+
+		</LinearLayout>
+
+	</androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
