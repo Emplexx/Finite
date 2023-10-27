@@ -24,4 +24,8 @@ class SubscriptionEditorViewModel @Inject constructor(
 		FiniteApp.db.subscriptionDao().insertAll(SubscriptionEntity(subscription))
 	}
 	
+	val canSave: Boolean
+		get() = subscription.name.isNotBlank()
+				&& subscription.startedOn != null
+	
 }

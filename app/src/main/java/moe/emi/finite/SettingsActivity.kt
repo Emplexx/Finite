@@ -4,16 +4,20 @@ import android.os.Build
 import android.os.Build.VERSION.SDK_INT
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.material.slider.Slider
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import moe.emi.finite.databinding.ActivitySettingsBinding
 import moe.emi.finite.service.datastore.AppSettings
 import moe.emi.finite.dump.getStorable
 import moe.emi.finite.dump.isDarkTheme
 import moe.emi.finite.dump.setStorable
+import moe.emi.finite.service.datastore.appSettings
 import moe.emi.finite.service.datastore.storeGeneral
 import moe.emi.finite.ui.currency.CurrencyPickerSheet
 import kotlin.math.roundToInt
@@ -37,10 +41,14 @@ class SettingsActivity : AppCompatActivity() {
 		setContentView(binding.root)
 		
 		lifecycleScope.launch {
+			
+			
 			repeatOnLifecycle(Lifecycle.State.CREATED) {
 				
 				initLayout()
 				initListeners()
+				
+				loadOnce(appSettings.first())
 				
 				storeGeneral.getStorable<AppSettings>().collect {
 					settings = it
@@ -70,12 +78,23 @@ class SettingsActivity : AppCompatActivity() {
 			settings = settings.copy(normalizeColors = isChecked)
 		}
 		
-		binding.sliderBrightness.addOnChangeListener { slider, value, fromUser ->
-			val v =
-				if (isDarkTheme) value
-				else 10f - value
-			if (fromUser) settings = settings.copy(normalizeFactor = v.roundToInt())
-		}
+//		binding.sliderBrightness.addOnChangeListener { slider, value, fromUser ->
+//			val v =
+//				if (isDarkTheme) value
+//				else 10f - value
+//			if (fromUser) settings = settings.copy(normalizeFactor = v.roundToInt())
+//		}
+		binding.sliderBrightness.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
+			override fun onStartTrackingTouch(slider: Slider) {}
+			
+			override fun onStopTrackingTouch(slider: Slider) {
+				val v =
+					if (isDarkTheme) slider.value
+					else 10f - slider.value
+				settings = settings.copy(normalizeFactor = v.roundToInt())
+			}
+			
+		})
 		
 		binding.rowCurrency.setOnClickListener {
 			CurrencyPickerSheet(this) {
@@ -85,14 +104,19 @@ class SettingsActivity : AppCompatActivity() {
 		}
 	}
 	
+	fun loadOnce(it: AppSettings) {
+		Log.d("TAG", "factor: ${it.normalizeFactor}")
+		binding.sliderBrightness.value =
+			if (isDarkTheme) it.normalizeFactor.toFloat()
+			else 10f - it.normalizeFactor
+	}
+	
 	fun loadData(it: AppSettings) {
 		
 		binding.rowHarmonize.switchView.isChecked = it.harmonizeColors
 		
 		binding.rowNormalize.switchView.isChecked = it.normalizeColors
-		binding.sliderBrightness.value =
-			if (isDarkTheme) it.normalizeFactor.toFloat()
-			else 10f - it.normalizeFactor
+		
 		
 		binding.textCurrency.text = it.preferredCurrency.fullName
 	}

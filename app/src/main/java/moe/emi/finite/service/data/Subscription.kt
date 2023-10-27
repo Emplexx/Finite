@@ -55,14 +55,24 @@ data class Subscription(
 				Timespan.Month -> this.plusMonths(period.every.toLong())
 				Timespan.Year -> this.plusYears(period.every.toLong())
 			}
-			Log.d("LocalDate.plus", "local date $this")
-			Log.d("LocalDate.plus", "period $period")
-			Log.d("LocalDate.plus", "result $r")
+//			Log.d("LocalDate.plus", "local date $this")
+//			Log.d("LocalDate.plus", "period $period")
+//			Log.d("LocalDate.plus", "result $r")
 			return r
 		}
 		
 		tailrec fun LocalDate.findNextPayment(period: BillingPeriod): LocalDate =
 			if (this > LocalDate.now()) this else (this.plus(period)).findNextPayment(period)
+	
+		val dateComparator = compareBy<Subscription> {
+			it.daysUntilNextPayment
+		}
+		val alphabeticalComparator = compareBy<Subscription> {
+			it.name.lowercase()
+		}
+		val priceComparator = compareBy<Subscription> {
+			it.price
+		}
 	}
 	
 	fun findNextPayment(): LocalDate? {

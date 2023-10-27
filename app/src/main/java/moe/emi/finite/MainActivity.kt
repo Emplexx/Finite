@@ -12,6 +12,8 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.view.WindowCompat
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -27,8 +29,11 @@ import moe.emi.finite.dump.DataStoreExt.read
 import moe.emi.finite.dump.DataStoreExt.write
 import moe.emi.finite.dump.HasSnackbarAnchor
 import moe.emi.finite.dump.fDp
+import moe.emi.finite.dump.setStorable
 import moe.emi.finite.dump.snackbar
+import moe.emi.finite.service.datastore.appSettings
 import moe.emi.finite.service.datastore.storeGeneral
+import moe.emi.finite.ui.home.DisplayOptionsSheet
 import moe.emi.finite.ui.home.SubscriptionListViewModel
 import moe.emi.finite.ui.home.SubscriptionsListFragment
 
@@ -37,6 +42,14 @@ class MainActivity : AppCompatActivity(), HasSnackbarAnchor {
 	
 	private val viewModel by viewModels<MainViewModel>()
 	private lateinit var binding: ActivityMainBinding
+	
+	val launcherEditor = registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+	onResult@ {
+		it.data?.getStringExtra("Message")?.let {
+			binding.root.snackbar(it)
+		}
+	}
+	
 	
 	override fun onCreate(savedInstanceState: Bundle?) {
 		WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -67,16 +80,18 @@ class MainActivity : AppCompatActivity(), HasSnackbarAnchor {
 		
 		
 		binding.fab.setOnClickListener { view ->
-			startActivity(Intent(this, SubscriptionEditorActivity::class.java))
+			launcherEditor.launch(Intent(this, SubscriptionEditorActivity::class.java))
 		}
 		binding.bottomAppBar.setOnMenuItemClickListener {
 			when (it.itemId) {
 				R.id.action_show_upcoming -> {
-					lifecycleScope.launch {
-						val key = booleanPreferencesKey("ShowTimeLeft")
-						val value = storeGeneral.read(key, false).first()
-						storeGeneral.write(key, !value)
-					}
+//					lifecycleScope.launch {
+//						val key = booleanPreferencesKey("ShowTimeLeft")
+//						val value = storeGeneral.read(key, false).first()
+//						storeGeneral.write(key, !value)
+//					}
+					
+					DisplayOptionsSheet(this).show()
 					
 					true
 				}

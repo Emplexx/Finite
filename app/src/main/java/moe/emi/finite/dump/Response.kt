@@ -89,15 +89,15 @@ sealed class Response<out T> {
 		}
 	}
 	
-//	fun <R> mapCatching(transform: (T) -> R): Response<R> {
-//		return when (this) {
-//			is Success -> try {
-//				Success(transform(this.data))
-//			} catch (e: Exception) {
-//				Failure(e)
-//			}
-//			is Failure -> Failure(this.error)
-//			is Loading -> Loading
-//		}
-//	}
+	fun <R> mapCatching(transform: (T) -> R): Response<R> {
+		return when (this) {
+			is Success -> try {
+				Success(transform(this.data))
+			} catch (e: Exception) {
+				Failure(e)
+			}
+			is Failure -> Failure(this.e)
+			is Loading -> Loading
+		}
+	}
 }

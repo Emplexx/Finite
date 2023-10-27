@@ -9,6 +9,8 @@ import moe.emi.finite.dump.FastOutExtraSlowInInterpolator
 import moe.emi.finite.dump.enableAnimateChildren
 import moe.emi.finite.dump.round
 import moe.emi.finite.service.data.Currency
+import java.math.RoundingMode
+import java.text.DecimalFormat
 import kotlin.math.round
 
 class HomeHeaderAdapterItem(
@@ -45,7 +47,10 @@ class HomeHeaderAdapterItem(
 			TotalView.Monthly -> R.string.period_monthly
 			TotalView.Weekly -> R.string.period_weekly
 		}.let { binding.root.context.getString(it) }
-		binding.textTotal.setText(amount.round(2).toString(), true)
+//		binding.textTotal.setText(amount.round(2).toString(), true)
+		binding.textTotal.text = DecimalFormat("0.00")
+			.apply { roundingMode = RoundingMode.CEILING }
+			.format(amount)
 	}
 	
 	override fun bind(

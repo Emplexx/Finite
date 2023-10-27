@@ -119,7 +119,6 @@ class SubscriptionsListFragment : Fragment() {
 		)
 	}
 	
-	@SuppressLint("RestrictedApi")
 	private fun observe() {
 		viewModel.subscriptions.observe(viewLifecycleOwner) { subscriptions ->
 			
@@ -132,37 +131,7 @@ class SubscriptionsListFragment : Fragment() {
 			}
 			
 			sectionActive.update(subscriptions
-				.sortedBy { it.daysUntilNextPayment }
-				.map { subscription ->
-				
-//					val color = listColors.random()
-//					val primary = requireActivity().materialColor(TonalColor.primary)
-//					val harmonized = Blend.harmonize(color, primary)
-//						.let { Hct.fromInt(it) }
-//						.also { it.tone = 80.0 }
-//						.toInt()
-//					val palette = Blend.harmonize(color, primary)
-//						.let { TonalPalette.fromInt(it) }
-					
-					val rate = viewModel.rates.find { it.code == subscription.currency.iso4217Alpha } ?: Rate.EUR
-					val preferredRate = viewModel.rates.find { it.code == defCurrency.iso4217Alpha } ?: Rate.EUR
-					
-					SubscriptionAdapterItem(
-						subscription,
-						defCurrency,
-						convert(subscription.price, rate, preferredRate, viewModel.totalView, subscription.period),
-						viewModel.showTimeLeftFlow .value ?: false,
-						palette = requireContext().makeItemColors(subscription.color),
-						onClick = { cardView ->
-							navigateToDetail(subscription, cardView)
-						},
-						onLongClick = {
-//							lifecycleScope.launch {  }
-							startActivity(Intent(requireActivity(), SubscriptionEditorActivity::class.java)
-								.putExtra("Subscription", subscription))
-						}
-					)
-				}
+				.map(itemMapper)
 			)
 			
 			updateTotal()
@@ -182,7 +151,7 @@ class SubscriptionsListFragment : Fragment() {
 		}
 		
 		viewModel.settingsFlow.observe(viewLifecycleOwner) { settings ->
-			
+
 			sectionActive.forEvery<SubscriptionAdapterItem> { group ->
 				group.updateCurrency(settings.preferredCurrency)
 				group.updatePalette(requireContext().makeItemColors(group.model.color))
@@ -203,6 +172,29 @@ class SubscriptionsListFragment : Fragment() {
 			}
 		}
 	}
+	
+	private val itemMapper: (Subscription) -> SubscriptionAdapterItem =
+		{subscription ->
+			
+			val rate = viewModel.rates.find { it.code == subscription.currency.iso4217Alpha } ?: Rate.EUR
+			val preferredRate = viewModel.rates.find { it.code == defCurrency.iso4217Alpha } ?: Rate.EUR
+			
+			SubscriptionAdapterItem(
+				subscription,
+				defCurrency,
+				convert(subscription.price, rate, preferredRate, viewModel.totalView, subscription.period),
+				viewModel.showTimeLeftFlow .value ?: false,
+				palette = requireContext().makeItemColors(subscription.color),
+				onClick = { cardView ->
+					navigateToDetail(subscription, cardView)
+				},
+				onLongClick = {
+					startActivity(Intent(requireActivity(), SubscriptionEditorActivity::class.java)
+						.putExtra("Subscription", subscription))
+				}
+			)
+			
+		}
 	
 	private fun updateTotal() {
 		

@@ -8,12 +8,12 @@ import moe.emi.finite.dump.getStorable
 import moe.emi.finite.dump.isDarkTheme
 import moe.emi.finite.service.datastore.storeGeneral
 
-data class Tokens(
+data class ToneTokens(
 	val container: Int,
 	val onContainer: Int,
 )
 
-val Context.colorTokens: Tokens
+val Context.colorTokens: ToneTokens
 	get() {
 		
 		// between 0 - 10(?) where 0 would be the default container color (90 for light, 30 for dark)
@@ -23,11 +23,11 @@ val Context.colorTokens: Tokens
 		val contrastFactor = runBlocking { storeGeneral.getStorable<AppSettings>().first().normalizeFactor }
 		
 		return when (isDarkTheme) {
-			false -> Tokens(
+			false -> ToneTokens(
 				container = 90 - contrastFactor,
 				onContainer = 10,
 			)
-			true -> Tokens(
+			true -> ToneTokens(
 				container = 30 + contrastFactor,
 				onContainer = 90
 			)

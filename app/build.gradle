@@ -118,8 +118,6 @@ dependencies {
 
     implementation "dev.chrisbanes.insetter:insetter:0.6.1"
 
-    implementation 'com.github.itsaky:MaterialColorPicker:1.0.2'
-
     implementation "codes.side:andcolorpicker:0.6.2"
 
     implementation "org.jetbrains.kotlin:kotlin-reflect:1.9.10"

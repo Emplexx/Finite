@@ -5,14 +5,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.LinearInterpolator
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
-import androidx.room.util.appendPlaceholders
+import androidx.transition.Slide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.motion.MotionUtils
 import com.google.android.material.transition.MaterialContainerTransform
 import dev.chrisbanes.insetter.applyInsetter
 import kotlinx.coroutines.flow.first
@@ -28,6 +28,7 @@ import moe.emi.finite.service.datastore.preferredCurrency
 import moe.emi.finite.ui.colors.makeItemColors
 import java.math.RoundingMode
 import java.text.DecimalFormat
+import com.google.android.material.R as GR
 
 class SubscriptionDetailsFragment : Fragment() {
 	
@@ -139,14 +140,22 @@ class SubscriptionDetailsFragment : Fragment() {
 			}
 		}
 		
-		viewModel.messages.observe(viewLifecycleOwner) { it ?: return@observe
+		viewModel.events.observe(viewLifecycleOwner) { it ?: return@observe
 			if (!it.consumed) when (it.key) {
-				"Error" -> binding.root.snackbar("Something went wrong")
+				Event.Error -> binding.root.snackbar("Something went wrong")
 				"Paused" -> binding.root.snackbar("Subscription paused")
 				"Resumed" -> binding.root.snackbar("Subscription resumed")
-				"Delete" -> {
+				Event.Delete -> {
+					
+					sharedElementEnterTransition = null
+					returnTransition = Slide().apply {
+						interpolator = MotionUtils.resolveThemeInterpolator(requireContext(),
+							GR.attr.motionEasingEmphasizedAccelerateInterpolator, LinearInterpolator())
+						duration = 400
+					}
+					
 					activity.onBackPressedDispatcher.onBackPressed()
-					mainViewModel.messages.postValue(Message("Delete"))
+					mainViewModel.messages.postValue(Event(Event.Delete))
 				}
 			}
 			it.consume()

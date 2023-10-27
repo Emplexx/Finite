@@ -6,9 +6,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
 import moe.emi.finite.Constant
 import moe.emi.finite.FiniteApp
@@ -46,8 +48,12 @@ class SubscriptionListViewModel @Inject constructor(
 		.asLiveData()
 	
 	
-	private val _subscriptions by lazy { MutableLiveData<List<Subscription>>() }
-	val subscriptions: LiveData<List<Subscription>> get() = _subscriptions
+	private val _subscriptions by lazy { MutableLiveData<
+			List<Subscription>
+			>() }
+	val subscriptions: LiveData<
+			List<Subscription>
+			> get() = _subscriptions
 	
 	
 	fun getSubscriptions() = viewModelScope.launch {
@@ -56,13 +62,12 @@ class SubscriptionListViewModel @Inject constructor(
 			SubscriptionsRepo.getSubscriptions(),
 			RatesRepo.getLocalRates(),
 			FiniteApp.instance.storeGeneral.read(Keys.RatesLastUpdated, 0L),
-			savedState.getStateFlow("Total", TotalView.Monthly),
-			FiniteApp.instance.storeGeneral.getStorable<AppSettings>()
-		) { subscriptions, rates, lastUpdated, totalView, appSettings ->
+			FiniteApp.instance.storeGeneral.getStorable<AppSettings>(),
+		) { subscriptions, rates, lastUpdated, appSettings ->
 			
 			if (rates.isEmpty()) {
 				// If local rates db is empty, refresh it quietly
-				launch { RatesRepo.refreshRates() }
+				launch { RatesRepo. refreshRates() }
 				emptyList<Subscription>()
 			} else {
 				
@@ -76,6 +81,8 @@ class SubscriptionListViewModel @Inject constructor(
 				subscriptions
 			}
 		}
+//			.zip(savedState.getStateFlow("Total", TotalView.Monthly)) { it, _ -> it }
+//			.zip(savedState.getStateFlow("Sort", Sort.Date)) { it, _ -> it }
 			.collect {
 				_subscriptions.postValue(it)
 			}
