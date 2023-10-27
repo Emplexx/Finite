@@ -1,13 +1,10 @@
 package moe.emi.finite.service.data
 
-import android.util.Log
 import moe.emi.finite.service.db.SubscriptionEntity
 import java.io.Serializable
-import java.time.Duration
 import java.time.LocalDate
 import java.time.Period
 import java.time.temporal.ChronoUnit
-import kotlin.reflect.jvm.internal.impl.descriptors.Visibilities.Local
 
 data class Subscription(
 	
@@ -70,8 +67,8 @@ data class Subscription(
 		val alphabeticalComparator = compareBy<Subscription> {
 			it.name.lowercase()
 		}
-		val priceComparator = compareBy<Subscription> {
-			it.price
+		fun priceComparator(from: (Currency) -> Rate, to: Rate) = compareBy<Subscription> {
+			convert(it.price, from(it.currency), to)
 		}
 	}
 	

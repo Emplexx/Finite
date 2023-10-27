@@ -3,29 +3,20 @@ package moe.emi.finite.ui.home
 import android.content.Context
 import android.graphics.Color
 import android.util.Log
-import android.view.animation.Animation
-import android.view.animation.RotateAnimation
-import android.widget.TextView
-import androidx.core.view.children
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import dev.chrisbanes.insetter.applyInsetter
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import moe.emi.convenience.TonalColor
 import moe.emi.convenience.materialColor
-import moe.emi.finite.FiniteApp
 import moe.emi.finite.databinding.LayoutSheetDisplayBinding
 import moe.emi.finite.databinding.LayoutSortRowBinding
 import moe.emi.finite.dump.FastOutExtraSlowInInterpolator
-import moe.emi.finite.dump.getStorable
 import moe.emi.finite.dump.visible
-import moe.emi.finite.service.datastore.AppSettings
 import moe.emi.finite.service.datastore.appSettings
-import moe.emi.finite.service.datastore.storeGeneral
 import moe.emi.finite.set
 
 class DisplayOptionsSheet(
@@ -143,9 +134,9 @@ class DisplayOptionsSheet(
 				
 				root.setBackgroundColor(materialColor(TonalColor.primaryContainer))
 				textLabel.setTextColor(materialColor(TonalColor.onPrimaryContainer))
-				textHint.children.forEach {
-					(it as? TextView)?.setTextColor(materialColor(TonalColor.onPrimaryContainer))
-				}
+//				textHint.children.forEach {
+//					(it as? TextView)?.setTextColor(materialColor(TonalColor.onPrimaryContainer))
+//				}
 			}
 			
 			val asc = context.appSettings.first().sortIsAscending
@@ -162,9 +153,9 @@ class DisplayOptionsSheet(
 			
 			root.setBackgroundColor(Color.TRANSPARENT)
 			textLabel.setTextColor(materialColor(TonalColor.onSurface))
-			textHint.children.forEach {
-				(it as? TextView)?.setTextColor(materialColor(TonalColor.onSurface))
-			}
+//			textHint.children.forEach {
+//				(it as? TextView)?.setTextColor(materialColor(TonalColor.onSurface))
+//			}
 			trailingIcon.visible = false
 			
 		}

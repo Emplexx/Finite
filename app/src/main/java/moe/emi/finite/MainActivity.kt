@@ -2,40 +2,23 @@ package moe.emi.finite
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.view.WindowCompat
-import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import moe.emi.finite.databinding.ActivityMainBinding
-import moe.emi.finite.dump.DataStoreExt.read
-import moe.emi.finite.dump.DataStoreExt.write
 import moe.emi.finite.dump.HasSnackbarAnchor
-import moe.emi.finite.dump.fDp
-import moe.emi.finite.dump.setStorable
 import moe.emi.finite.dump.snackbar
-import moe.emi.finite.service.datastore.appSettings
-import moe.emi.finite.service.datastore.storeGeneral
+import moe.emi.finite.ui.editor.SubscriptionEditorActivity
 import moe.emi.finite.ui.home.DisplayOptionsSheet
-import moe.emi.finite.ui.home.SubscriptionListViewModel
-import moe.emi.finite.ui.home.SubscriptionsListFragment
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), HasSnackbarAnchor {

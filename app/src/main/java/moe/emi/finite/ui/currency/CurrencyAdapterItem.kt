@@ -1,13 +1,12 @@
-package moe.emi.finite.ui
+package moe.emi.finite.ui.currency
 
 import android.view.View
 import com.xwray.groupie.Item
 import com.xwray.groupie.viewbinding.BindableItem
+import moe.emi.convenience.drawable
 import moe.emi.finite.R
 import moe.emi.finite.databinding.ItemCurrencyBinding
 import moe.emi.finite.service.data.Currency
-import moe.emi.finite.service.data.Rate
-import moe.emi.finite.ui.home.SubscriptionAdapterItem
 
 class CurrencyAdapterItem(
 	val currency: Currency,
@@ -20,6 +19,11 @@ class CurrencyAdapterItem(
 			binding.textCode.text = currency.iso4217Alpha
 			
 			binding.root.setOnClickListener { onClick() }
+			
+			
+			binding.icon.setImageDrawable(
+				currency.flag?.let { drawable(it) }
+			)
 		}
 	}
 	

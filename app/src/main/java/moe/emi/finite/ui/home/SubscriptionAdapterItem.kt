@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.view.View
 import androidx.transition.ChangeBounds
-import androidx.transition.ChangeClipBounds
 import androidx.transition.Fade
 import androidx.transition.TransitionManager
 import androidx.transition.TransitionSet
@@ -15,7 +14,6 @@ import com.xwray.groupie.viewbinding.BindableItem
 import moe.emi.finite.R
 import moe.emi.finite.databinding.ItemSubscriptionBinding
 import moe.emi.finite.dump.FastOutExtraSlowInInterpolator
-import moe.emi.finite.dump.fDp
 import moe.emi.finite.dump.gone
 import moe.emi.finite.dump.visible
 import moe.emi.finite.service.data.Currency
@@ -28,10 +26,10 @@ import java.text.DecimalFormat
 @SuppressLint("RestrictedApi")
 class SubscriptionAdapterItem(
 	val model: Subscription,
-	var preferredCurrency: Currency,
+	private var preferredCurrency: Currency,
 	
-	var convertedAmount: SubscriptionsListFragment.ConvertedAmount,
-	var showUpcomingTime: Boolean,
+	private var convertedAmount: SubscriptionsListFragment.ConvertedAmount,
+	private var showUpcomingTime: Boolean,
 	var palette: ItemColors,
 	
 	val onClick: (MaterialCardView) -> Unit,
@@ -88,7 +86,7 @@ class SubscriptionAdapterItem(
 		binding.root.setOnLongClickListener { onLongClick(); true }
 	}
 	
-	fun bindTimeLeft(binding: ItemSubscriptionBinding) {
+	private fun bindTimeLeft(binding: ItemSubscriptionBinding) {
 		binding.layoutTimeLeft.visibility = if (showUpcomingTime) View.VISIBLE else View.GONE
 		
 		binding.textTimeLeft.text = buildString {
@@ -110,7 +108,7 @@ class SubscriptionAdapterItem(
 		}
 	}
 	
-	fun bindPalette(binding: ItemSubscriptionBinding) {
+	private fun bindPalette(binding: ItemSubscriptionBinding) {
 		binding.root.backgroundTintList = ColorStateList.valueOf(palette.container)
 		
 		val onContainer = palette.onContainer
@@ -121,11 +119,11 @@ class SubscriptionAdapterItem(
 		binding.textTimeLeft.setTextColor(onContainer)
 	}
 	
-	fun bindAmount(binding: ItemSubscriptionBinding) {
+	private fun bindAmount(binding: ItemSubscriptionBinding) {
 		
-		val changeClipBounds = ChangeClipBounds().apply {
-			this.addTarget(binding.textPrice)
-		}
+//		val changeClipBounds = ChangeClipBounds().apply {
+//			this.addTarget(binding.textPrice)
+//		}
 //		TransitionManager.beginDelayedTransition(binding.root, changeClipBounds)
 		
 		binding.textPrice.text = buildString {
@@ -300,16 +298,16 @@ class SubscriptionAdapterItem(
 	override fun initializeViewBinding(view: View) = ItemSubscriptionBinding.bind(view)
 	
 	companion object {
-		fun ItemSubscriptionBinding.hideSubtitleAlt() {
-			this.layoutPrice.animate()
-				.translationY(0.fDp)
-				.apply {
-					interpolator = FastOutExtraSlowInInterpolator()
-					duration = 400
-				}
-			this.textPriceSubtitle.animate()
-				.alpha(0f)
-		}
+//		fun ItemSubscriptionBinding.hideSubtitle() {
+//			this.layoutPrice.animate()
+//				.translationY(0.fDp)
+//				.apply {
+//					interpolator = FastOutExtraSlowInInterpolator()
+//					duration = 400
+//				}
+//			this.textPriceSubtitle.animate()
+//				.alpha(0f)
+//		}
 	}
 	
 }

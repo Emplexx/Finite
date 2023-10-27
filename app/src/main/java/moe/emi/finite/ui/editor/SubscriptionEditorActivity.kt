@@ -1,4 +1,4 @@
-package moe.emi.finite
+package moe.emi.finite.ui.editor
 
 import android.content.Intent
 import android.content.res.ColorStateList
@@ -13,6 +13,7 @@ import codes.side.andcolorpicker.model.IntegerHSLColor
 import com.google.android.material.datepicker.MaterialDatePicker
 import dagger.hilt.android.AndroidEntryPoint
 import moe.emi.convenience.materialColor
+import moe.emi.finite.R
 import moe.emi.finite.databinding.ActivitySubscriptionEditorBinding
 import moe.emi.finite.dump.alpha
 import moe.emi.finite.dump.visible
@@ -20,8 +21,8 @@ import moe.emi.finite.service.data.BillingPeriod
 import moe.emi.finite.service.data.Currency
 import moe.emi.finite.service.data.FullDate
 import moe.emi.finite.ui.currency.CurrencyPickerSheet
-import moe.emi.finite.ui.editor.FrequencyPickerSheet
-import moe.emi.finite.ui.editor.showColorPickerDialog
+import java.math.RoundingMode
+import java.text.DecimalFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -82,7 +83,10 @@ class SubscriptionEditorActivity : AppCompatActivity() {
 		
 		
 		if (viewModel.subscription.price > 0.0)
-			binding.fieldAmount.setText(viewModel.subscription.price.toString())
+			binding.fieldAmount.setText(
+				DecimalFormat("0.##")
+				.apply { roundingMode = RoundingMode.CEILING }
+				.format(viewModel.subscription.price))
 		binding.fieldAmount.doAfterTextChanged {
 			viewModel.subscription =
 				viewModel.subscription.copy(price = it?.toString()?.toDoubleOrNull() ?: 0.0)

@@ -16,7 +16,7 @@ class SubscriptionDetailsViewModel @Inject constructor(
 	savedState: SavedStateHandle,
 ) : ViewModel() {
 	
-	val entityId = savedState.get<Int>("ID")!!
+	private val entityId = savedState.get<Int>("ID")!!
 	val subscription = SubscriptionsRepo.getSubscription(entityId).asLiveData()
 
 	val events = MutableLiveData<Event>(null)

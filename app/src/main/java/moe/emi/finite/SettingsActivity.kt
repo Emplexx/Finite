@@ -1,10 +1,9 @@
 package moe.emi.finite
 
 import android.os.Build
-import android.os.Build.VERSION.SDK_INT
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -13,10 +12,10 @@ import com.google.android.material.slider.Slider
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import moe.emi.finite.databinding.ActivitySettingsBinding
-import moe.emi.finite.service.datastore.AppSettings
 import moe.emi.finite.dump.getStorable
 import moe.emi.finite.dump.isDarkTheme
 import moe.emi.finite.dump.setStorable
+import moe.emi.finite.service.datastore.AppSettings
 import moe.emi.finite.service.datastore.appSettings
 import moe.emi.finite.service.datastore.storeGeneral
 import moe.emi.finite.ui.currency.CurrencyPickerSheet
@@ -59,11 +58,11 @@ class SettingsActivity : AppCompatActivity() {
 	}
 	
 	fun initLayout() {
-		binding.rowHarmonize.switchView.text = "Harmonise colours"
-		binding.footerHarmonize.text.text = "Slightly adjust hue of subscription colours so they better match the theme of your device and You"
+		binding.rowHarmonize.switchView.setText(R.string.setting_harmonize)
+		binding.footerHarmonize.text.setText(R.string.setting_harmonize_description)
 		
-		binding.rowNormalize.switchView.text = "Normalise colours"
-		binding.footerNormalize.text.text = "Make subscription colours the same tone so they are more consistent and match light or dark theme"
+		binding.rowNormalize.switchView.setText(R.string.setting_normalise)
+		binding.footerNormalize.text.setText(R.string.setting_normalise_description)
 		
 		binding.sliderBrightness.value = 10f - binding.sliderBrightness.value
 	}

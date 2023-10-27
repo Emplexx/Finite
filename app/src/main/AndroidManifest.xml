@@ -23,7 +23,7 @@
 			android:name=".SettingsActivity"
 			android:exported="false" />
 		<activity
-			android:name=".SubscriptionEditorActivity"
+			android:name=".ui.editor.SubscriptionEditorActivity"
 			android:exported="false" />
 		<activity
 			android:name=".MainActivity"

@@ -22,6 +22,7 @@
 		>
 
 		<com.google.android.material.imageview.ShapeableImageView
+			android:id="@+id/icon"
 			android:layout_width="28dp"
 			android:layout_height="28dp"
 			app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.ExtraSmall"

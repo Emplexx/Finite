@@ -1,34 +1,26 @@
 package moe.emi.finite.ui.home
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.view.doOnPreDraw
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.card.MaterialCardView
-import com.google.android.material.transition.MaterialElevationScale
 import com.google.android.material.transition.MaterialSharedAxis
 import com.xwray.groupie.GroupieAdapter
 import com.xwray.groupie.Section
 import dev.chrisbanes.insetter.applyInsetter
-import kotlinx.coroutines.launch
 import moe.emi.finite.MainActivity
 import moe.emi.finite.MainViewModel
 import moe.emi.finite.R
-import moe.emi.finite.SecondFragment
-import moe.emi.finite.SubscriptionEditorActivity
 import moe.emi.finite.databinding.FragmentSubscriptionsListBinding
-import moe.emi.finite.dump.HasSnackbarAnchor
 import moe.emi.finite.dump.Response
 import moe.emi.finite.dump.forEvery
 import moe.emi.finite.dump.iDp
@@ -37,8 +29,8 @@ import moe.emi.finite.service.data.BillingPeriod
 import moe.emi.finite.service.data.Currency
 import moe.emi.finite.service.data.Rate
 import moe.emi.finite.service.data.Subscription
-import moe.emi.finite.service.repo.SubscriptionsRepo
 import moe.emi.finite.ui.colors.makeItemColors
+import moe.emi.finite.ui.editor.SubscriptionEditorActivity
 
 class SubscriptionsListFragment : Fragment() {
 	
@@ -70,6 +62,13 @@ class SubscriptionsListFragment : Fragment() {
 	}
 	private val sectionHeader by lazy { Section() }
 	private val sectionActive by lazy { Section() }
+	private val expandableHeader by lazy {
+		ExpandableHeaderItem()
+	}
+	private val sectionInactive by lazy {
+		Section()
+//		com.xwray.groupie.ExpandableGroup(expandableHeader)
+	}
 	
 	override fun onCreateView(
 		inflater: LayoutInflater, container: ViewGroup?,
@@ -108,6 +107,8 @@ class SubscriptionsListFragment : Fragment() {
 		
 		adapter.add(sectionHeader)
 		adapter.add(sectionActive)
+//		sectionInactive.setHeader(expandableHeader)
+		adapter.add(sectionInactive)
 		binding.recyclerView.adapter = adapter
 		binding.recyclerView.addItemDecoration(
 			AutoLayoutDecoration(
@@ -130,9 +131,12 @@ class SubscriptionsListFragment : Fragment() {
 				sectionHeader.update(listOf(header))
 			}
 			
-			sectionActive.update(subscriptions
-				.map(itemMapper)
-			)
+			val (active, inactive) = subscriptions.partition {
+				it.active
+			}
+			
+			sectionActive.update(active.map(itemMapper))
+			sectionInactive.update(inactive.map(itemMapper))
 			
 			updateTotal()
 		}

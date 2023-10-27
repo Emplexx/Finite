@@ -1,22 +1,17 @@
 package moe.emi.finite.ui.currency
 
 import android.content.Context
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.widget.doAfterTextChanged
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.xwray.groupie.GroupieAdapter
 import com.xwray.groupie.Section
 import dev.chrisbanes.insetter.applyInsetter
-import moe.emi.finite.R
 import moe.emi.finite.databinding.LayoutSheetCurrencyBinding
 import moe.emi.finite.dump.AlphaOnLiftListener
 import moe.emi.finite.dump.deco.tableViewDecor
 import moe.emi.finite.dump.setLiftOnScrollListener
-import moe.emi.finite.service.data.BillingPeriod
 import moe.emi.finite.service.data.Currency
-import moe.emi.finite.service.data.Timespan
-import moe.emi.finite.ui.CurrencyAdapterItem
 
 class CurrencyPickerSheet(
 	context: Context,

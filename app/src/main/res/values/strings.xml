@@ -4,7 +4,6 @@
 	<!-- Strings used for fragments for navigation -->
 	<string name="first_fragment_label">First Fragment</string>
 	<string name="second_fragment_label">Second Fragment</string>
-	<string name="next">Next</string>
 	<string name="previous">Previous</string>
 
 	<string name="lorem_ipsum">
@@ -50,5 +49,10 @@
 	<string name="period_quarterly">Quarterly</string>
 	<string name="period_6months">Every 6 months</string>
 	<string name="period_yearly">Yearly</string>
+
+	<string name="setting_harmonize">Harmonise colours</string>
+	<string name="setting_harmonize_description">Slightly adjust hue of subscription colours so they better match the theme of your device and You</string>
+	<string name="setting_normalise">Normalise colours</string>
+	<string name="setting_normalise_description">Make subscription colours the same tone so they are more consistent and match light or dark theme</string>
 
 </resources>

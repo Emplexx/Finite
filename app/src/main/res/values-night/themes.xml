@@ -7,7 +7,14 @@
 	</style>
 
 	<style name="ThemeOverlay.Finite.OutlineFix" parent="ThemeOverlay.Material3.DynamicColors.Dark">
-		<item name="background">@color/material_dynamic_neutral0</item>
 		<item name="colorOutline">@color/material_dynamic_neutral_variant20</item>
+
+		<item name="background">@color/material_dynamic_neutral0</item>
+		<item name="colorSurface">@color/material_dynamic_neutral_variant10</item>
+
+		<item name="colorSheetBackground">@color/material_dynamic_neutral_variant10</item>
+		<item name="colorSheetSurface">@color/material_dynamic_neutral_variant20</item>
+
+		<item name="colorDivider">@color/m3_ref_palette_neutral_variant30</item>
 	</style>
 </resources>

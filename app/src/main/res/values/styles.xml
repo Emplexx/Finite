@@ -12,14 +12,6 @@
 		<item name="colorOnSurface">?attr/colorOnBackground</item>
 	</style>
 
-	<style name="Widget.Finite.AppBarLayout.Transparent" parent="Widget.Material3.AppBarLayout">
-		<item name="materialThemeOverlay">@style/ThemeOverlay.Finite.AppBarLayout.Transparent</item>
-	</style>
-
-	<style name="ThemeOverlay.Finite.AppBarLayout.Transparent" parent="">
-		<item name="colorSurface">@android:color/transparent</item>
-	</style>
-
 
 	<style name="ThemeOverlay.Finite.BottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
 
@@ -37,11 +29,35 @@
 	<style name="ModalBottomSheet" parent="Widget.Material3.BottomSheet.Modal">
 		<item name="paddingBottomSystemWindowInsets">false</item>
 
+		<!--<item name="elevationOverlayEnabled">false</item>-->
+
+		<item name="backgroundTint">?attr/colorSheetBackground</item>
+
 		<!--<item name="paddingTopSystemWindowInsets">false</item>-->
 		<!--<item name="forceApplySystemWindowInsetTop">false</item>
 		<item name="marginTopSystemWindowInsets">false</item>-->
 
 		<item name="shapeAppearance">?attr/shapeAppearanceCornerMedium</item>
 	</style>
+
+	<style name="Widget.Finite.CardView.Untoned" parent="Widget.Material3.CardView.Outlined">
+
+		<item name="strokeColor">@android:color/transparent</item>
+		<item name="shapeAppearance">@style/ShapeAppearance.Material3.Corner.Small</item>
+		<item name="cardPreventCornerOverlap">false</item>
+		<item name="materialThemeOverlay">@style/ThemeOverlay.Finite.Card.Untoned</item>
+	</style>
+	<style name="ThemeOverlay.Finite.Card.Untoned" parent="">
+		<item name="elevationOverlayEnabled">false</item>
+	</style>
+
+	<style name="Widget.Finite.MaterialDivider" parent="Widget.Material3.MaterialDivider">
+		<item name="materialThemeOverlay">@style/ThemeOverlay.Finite.MaterialDivider</item>
+	</style>
+	<style name="ThemeOverlay.Finite.MaterialDivider" parent="">
+		<item name="colorOutline">?attr/colorDivider</item>
+		<item name="colorOutlineVariant">?attr/colorDivider</item>
+	</style>
+
 
 </resources>

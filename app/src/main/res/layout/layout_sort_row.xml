@@ -27,8 +27,7 @@
 		/>
 
 
-	<TextSwitcher
-		android:id="@+id/textHint"
+	<!--<TextSwitcher
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_gravity="start|center"
@@ -55,7 +54,7 @@
 			tools:text="Next billing date"
 			/>
 
-	</TextSwitcher>
+	</TextSwitcher>-->
 
 	<ImageView
 		android:id="@+id/trailingIcon"

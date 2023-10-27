@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<attr name="colorThemeInverse" format="reference|color"/>
+	<attr name="colorSheetBackground" format="reference|color"/>
+	<attr name="colorSheetSurface" format="reference|color"/>
+	<attr name="colorDivider" format="reference|color"/>
 </resources>

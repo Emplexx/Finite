@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import moe.emi.finite.FiniteApp
+import moe.emi.finite.service.data.Rate.Companion.get
 import moe.emi.finite.service.data.Subscription
 import moe.emi.finite.service.datastore.appSettings
 import moe.emi.finite.ui.home.Sort
@@ -20,13 +21,20 @@ object SubscriptionsRepo {
 	}
 	
 	fun getSubscriptions(): Flow<List<Subscription>> =
-		combine(dao.getAllObservable(), FiniteApp.instance.appSettings) { list, settings ->
+		combine(
+			dao.getAllObservable(),
+			RatesRepo.getLocalRates(),
+			FiniteApp.instance.appSettings
+		) { list, rates, settings ->
 			list.map { Subscription(it) }
 				.sortedWith(
 					when (settings.sort) {
 						Sort.Date -> Subscription.dateComparator
 						Sort.Alphabetical -> Subscription.alphabeticalComparator
-						Sort.Price -> Subscription.priceComparator
+						Sort.Price -> Subscription.priceComparator(
+							from = { rates.get(it)!! },
+							to = rates.get(settings.preferredCurrency)!!
+						)
 					}
 				)
 				.let { if (settings.sortIsAscending) it else it.reversed() }

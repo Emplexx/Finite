@@ -1,10 +1,11 @@
-package moe.emi.finite
+package moe.emi.finite.ui.editor
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import moe.emi.finite.FiniteApp
 import moe.emi.finite.service.data.Currency
 import moe.emi.finite.service.data.Subscription
 import moe.emi.finite.service.db.SubscriptionEntity
