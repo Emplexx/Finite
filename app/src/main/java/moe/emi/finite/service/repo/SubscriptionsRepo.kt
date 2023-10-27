@@ -8,29 +8,28 @@ import moe.emi.finite.service.data.Subscription
 
 object SubscriptionsRepo {
 	
-	val dao by lazy { FiniteApp.db.subscriptionDao() }
+	private val dao by lazy { FiniteApp.db.subscriptionDao() }
 	
 	suspend fun pauseSubscription(id: Int, pause: Boolean) {
 		dao.getObservable(id).first()?.let {
 			dao.insertAll(it.copy(active = !pause))
 		}
-		
 	}
 	
 	fun getSubscriptions(): Flow<List<Subscription>> =
-		FiniteApp.db.subscriptionDao()
+		dao
 			.getAllObservable()
 			.map { list ->
 				list.map { Subscription(it) }
 			}
 	
 	fun getSubscription(id: Int): Flow<Subscription?> =
-		FiniteApp.db.subscriptionDao()
+		dao
 			.getObservable(id)
 			.map { it?.let { Subscription(it) } }
 	
-	suspend fun deleteSubscription(id: Int): Result<Nothing?> {
-		return FiniteApp.db.subscriptionDao()
+	suspend fun deleteSubscription(id: Int): Result<Nothing?> =
+		dao
 			.delete(id)
 			.let {
 				when (it) {
@@ -39,5 +38,4 @@ object SubscriptionsRepo {
 					else -> Result.failure(IllegalStateException())
 				}
 			}
-	}
 }

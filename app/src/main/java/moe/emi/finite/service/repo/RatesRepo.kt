@@ -3,7 +3,6 @@ package moe.emi.finite.service.repo
 import android.util.Log
 import com.slack.eithernet.ApiResult
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import moe.emi.finite.FiniteApp
@@ -21,36 +20,46 @@ import java.util.Date
 
 object RatesRepo {
 	
+	private const val TAG = "RatesRepo"
+	private val dao by lazy { FiniteApp.db.rateDao() }
+	
+	/**
+	 * Makes a request to the API, refreshes the rates in the local DB if successful
+	 */
 	suspend fun refreshRates(): Response<Nothing?> =
 		apiClient.getLatestRates()
-			.also { Log.d("TAG", "$it")
+			.also {
+				Log.d(TAG, "$it")
 				if (it is ApiResult.Failure.UnknownFailure) {
-					Log.d("RatesRepository", "", it.error)
+					Log.d(TAG, "", it.error)
 				}
 			}
 			.toResponse()
 			.ifSuccess { data ->
 				FiniteApp.instance.storeGeneral.write(Keys.RatesLastUpdated, data.timestamp)
-				FiniteApp.db.rateDao().insertAll(
+				dao.insertAll(
 					*
 					data.listRates
 						.map { RateEntity(it.code, it.rate) }
 						.toTypedArray()
 				)
 			}
-			.map { data ->
-				Rates(
-					lastUpdated = Date(data.timestamp * 1000L),
-					rates = data.listRates.map { Rate(it.code, it.rate) }
-				)
-				null
-			}
+			.map { null }
 	
-	@Deprecated("")
+	
+	fun getLocalRates(): Flow<List<Rate>> {
+		return dao
+			.getAllObservable()
+			.map { list ->
+				list.map { Rate(it.code, it.rate) }
+			}
+	}
+	
+	@Deprecated("Keeping it for keepsake purposes")
 	suspend fun updateRates(): Response<Rates> {
 		
 		// Get local rates from DB and last updated timestamp
-		var rates = FiniteApp.db.rateDao().getAll()
+		val rates = dao.getAll()
 			.map {
 				Rate(it.code, it.rate)
 			}
@@ -64,7 +73,7 @@ object RatesRepo {
 		if (rates.isEmpty()) {
 			response = apiClient.getLatestRates()
 				.also { Log.d("TAG", "$it")
-				
+					
 					if (it is ApiResult.Failure.UnknownFailure) {
 						Log.d("Tag", "Fuck", it.error)
 					}
@@ -85,17 +94,9 @@ object RatesRepo {
 						rates = data.listRates.map { Rate(it.code, it.rate) }
 					)
 				}
-				
+			
 		}
 		
 		return response
-	}
-	
-	fun getLocalRates(): Flow<List<Rate>> {
-		return FiniteApp.db.rateDao()
-			.getAllObservable()
-			.map { list ->
-				list.map { Rate(it.code, it.rate) }
-			}
 	}
 }
