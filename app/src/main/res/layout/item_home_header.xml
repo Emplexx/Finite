@@ -9,12 +9,15 @@
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
 
+		android:layout_marginHorizontal="16dp"
 		android:layout_weight="1"
 
 		android:layout_gravity="center"
 
 		android:textAppearance="?attr/textAppearanceTitleLarge"
-		android:layout_marginHorizontal="16dp"
+		android:textColor="?attr/colorOnSurface"
+		android:letterSpacing="-0.06"
+		android:fontFeatureSettings="liga 1"
 
 		android:text="@string/app_name_stylised"
 		/>
@@ -26,7 +29,7 @@
 		android:layout_gravity="center|end"
 		android:orientation="vertical"
 
-		android:layout_marginEnd="16dp"
+		android:layout_marginEnd="4dp"
 		>
 
 		<LinearLayout
@@ -41,7 +44,8 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 
-				android:textAppearance="?attr/textAppearanceHeadlineLarge"
+				android:textAppearance="@style/TextAppearance.Finite.HeadlineLarge.Thin"
+				android:textColor="?attr/colorOnSurface"
 
 				android:layout_gravity="end"
 
@@ -54,7 +58,8 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 
-				android:textAppearance="?attr/textAppearanceHeadlineLarge"
+				android:textAppearance="@style/TextAppearance.Finite.HeadlineLarge.Bold"
+				android:textColor="?attr/colorOnSurface"
 
 				android:layout_gravity="end"
 
@@ -76,6 +81,7 @@
 
 			android:layout_marginTop="-6dp"
 			android:textAppearance="?attr/textAppearanceTitleMedium"
+			android:textColor="?attr/colorOnSurfaceVariant"
 			android:textAlignment="textEnd"
 
 			tools:text="Monthly"
@@ -83,6 +89,16 @@
 
 	</LinearLayout>
 
+	<ImageView
+		android:layout_width="16dp"
+		android:layout_height="16dp"
 
+		android:src="@drawable/ic_unfold_more_24"
+		android:layout_gravity="center"
+		android:layout_marginEnd="12dp"
+		app:tint="?attr/colorOnSurface"
+		android:alpha="0.54"
+		>
 
+	</ImageView>
 </LinearLayout>

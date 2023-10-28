@@ -88,4 +88,128 @@
 
 	</style>
 
+
+
+
+
+	<style name="TextAppearance.Finite.DisplayMedium.Thin" parent="TextAppearance.Material3.DisplayMedium">
+		<item name="android:fontFamily">@font/font_dm_opsz40</item>
+		<item name="fontFamily">@font/font_dm_opsz40</item>
+		<item name="android:textFontWeight">200</item>
+
+		<item name="android:elegantTextHeight">false</item>
+		<item name="android:letterSpacing">0</item>
+
+		<item name="android:fontFeatureSettings">"'ss03' on,'ss07' on"</item>
+	</style>
+
+	<style name="TextAppearance.Finite.DisplayMedium.Bold" parent="TextAppearance.Material3.DisplayMedium">
+		<item name="android:fontFamily">@font/font_dm_opsz40</item>
+		<item name="fontFamily">@font/font_dm_opsz40</item>
+		<item name="android:textFontWeight">700</item>
+
+		<item name="android:elegantTextHeight">false</item>
+		<item name="android:letterSpacing">0</item>
+
+		<item name="android:fontFeatureSettings">"'ss03' on, 'ss07' on"</item>
+	</style>
+
+	<style name="TextAppearance.Finite.HeadlineLarge.Thin" parent="TextAppearance.Material3.HeadlineLarge">
+		<item name="android:fontFamily">@font/font_dm_opsz32</item>
+		<item name="fontFamily">@font/font_dm_opsz32</item>
+		<item name="android:textFontWeight">200</item>
+
+		<item name="android:elegantTextHeight">false</item>
+		<item name="android:letterSpacing">0</item>
+
+		<item name="android:fontFeatureSettings">"'ss03' on, 'ss07' on"</item>
+	</style>
+
+	<style name="TextAppearance.Finite.HeadlineLarge" parent="TextAppearance.Material3.HeadlineLarge">
+		<item name="android:fontFamily">@font/font_dm_opsz32</item>
+		<item name="fontFamily">@font/font_dm_opsz32</item>
+		<item name="android:textFontWeight">600</item>
+
+		<item name="android:elegantTextHeight">false</item>
+		<item name="android:letterSpacing">0</item>
+
+		<item name="android:fontFeatureSettings">"'ss03' on,'ss07' on"</item>
+	</style>
+
+	<style name="TextAppearance.Finite.HeadlineLarge.Bold" parent="TextAppearance.Material3.HeadlineLarge">
+		<item name="android:fontFamily">@font/font_dm_opsz32</item>
+		<item name="fontFamily">@font/font_dm_opsz32</item>
+		<item name="android:textFontWeight">700</item>
+
+		<item name="android:elegantTextHeight">false</item>
+		<item name="android:letterSpacing">0</item>
+
+		<item name="android:fontFeatureSettings">"'ss03' on,'ss07' on"</item>
+	</style>
+
+	<style name="TextAppearance.Finite.TitleLarge" parent="TextAppearance.Material3.TitleLarge">
+		<item name="android:fontFamily">@font/font_dm_opsz22</item>
+		<item name="fontFamily">@font/font_dm_opsz22</item>
+		<item name="android:textFontWeight">400</item>
+
+		<item name="android:elegantTextHeight">false</item>
+		<item name="android:letterSpacing">0</item>
+
+		<item name="android:fontFeatureSettings">"'ss03' on,'ss07' on"</item>
+	</style>
+
+	<style name="TextAppearance.Finite.TitleMedium.Bold" parent="TextAppearance.Material3.TitleMedium">
+		<item name="android:fontFamily">@font/font_dm_opsz22</item>
+		<item name="fontFamily">@font/font_dm_opsz22</item>
+		<item name="android:textFontWeight">600</item>
+
+		<item name="android:elegantTextHeight">false</item>
+		<item name="android:letterSpacing">0</item>
+
+		<item name="android:fontFeatureSettings">"'ss03' on,'ss07' on"</item>
+	</style>
+
+	<style name="TextAppearance.Finite.TitleMedium" parent="TextAppearance.Material3.TitleMedium">
+		<item name="android:fontFamily">@font/font_dm_opsz16</item>
+		<item name="fontFamily">@font/font_dm_opsz16</item>
+		<item name="android:textFontWeight">500</item>
+
+		<item name="android:elegantTextHeight">false</item>
+		<item name="android:letterSpacing">0</item>
+
+		<item name="android:fontFeatureSettings">"'ss03' on,'ss07' on"</item>
+	</style>
+
+	<style name="TextAppearance.Finite.BodyLarge" parent="TextAppearance.Material3.BodyLarge">
+		<item name="android:fontFamily">@font/font_dm_opsz16</item>
+		<item name="fontFamily">@font/font_dm_opsz16</item>
+		<item name="android:textFontWeight">400</item>
+
+		<item name="android:elegantTextHeight">false</item>
+		<item name="android:letterSpacing">0</item>
+
+		<item name="android:fontFeatureSettings">"'ss03' on,'ss07' on"</item>
+	</style>
+	<style name="TextAppearance.Finite.BodyMedium" parent="TextAppearance.Material3.BodyMedium">
+		<item name="android:fontFamily">@font/font_dm_opsz14</item>
+		<item name="fontFamily">@font/font_dm_opsz14</item>
+		<item name="android:textFontWeight">400</item>
+
+		<item name="android:elegantTextHeight">false</item>
+		<item name="android:letterSpacing">0</item>
+
+		<item name="android:fontFeatureSettings">"'ss03' on,'ss07' on"</item>
+	</style>
+	<style name="TextAppearance.Finite.BodySmall" parent="TextAppearance.Material3.BodySmall">
+		<item name="android:fontFamily">@font/font_dm_opsz12</item>
+		<item name="fontFamily">@font/font_dm_opsz12</item>
+		<item name="android:textFontWeight">400</item>
+
+		<item name="android:elegantTextHeight">false</item>
+		<item name="android:letterSpacing">0</item>
+
+		<item name="android:fontFeatureSettings">"'ss03' on,'ss07' on"</item>
+	</style>
+
+
 </resources>

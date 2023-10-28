@@ -25,9 +25,7 @@ import moe.emi.finite.service.repo.SubscriptionsRepo
 import moe.emi.finite.ui.home.enums.Sort
 
 class DisplayOptionsSheet(
-	context: Context,
-//	val onSelect: (Sort) -> Unit,
-//	val onAsc: (Boolean) -> Unit,
+	context: Context
 ) : BottomSheetDialog(context) {
 	
 	private lateinit var binding: LayoutSheetDisplayBinding

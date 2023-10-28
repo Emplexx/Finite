@@ -1,6 +1,7 @@
 package moe.emi.finite.ui.home.adapter
 
 import android.view.View
+import androidx.core.content.res.ResourcesCompat
 import com.xwray.groupie.viewbinding.BindableItem
 import moe.emi.finite.R
 import moe.emi.finite.databinding.ItemHomeHeaderBinding
@@ -30,7 +31,16 @@ class HomeHeaderAdapterItem(
 //		binding.root.enableAnimateChildren()
 		binding.textTotal.setCharacterLists("0123456789")
 		binding.textTotal.animationInterpolator = FastOutExtraSlowInInterpolator()
+		val font = ResourcesCompat.getFont(binding.root.context, R.font.font_dm_ticker_large)
+		binding.textTotal.typeface = font
 		
+//		binding.textTotal.typeface = Typeface.Builder(binding.root.context.assets, "dm_sans.ttf")
+//			.setFontVariationSettings("'wght' 700, 'opsz' 32")
+//			.build()
+		
+//		val t = Font.Builder(binding.root.context.resources, R.font.font_dm_opsz32)
+//			.setFontVariationSettings("'wght' 700, 'opsz' 32")
+//			.build()
 		
 		bindTotal(binding)
 		

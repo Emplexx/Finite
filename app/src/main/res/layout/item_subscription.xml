@@ -39,7 +39,7 @@
 				android:layout_weight="1"
 				android:layout_gravity="center|start"
 
-				android:textAppearance="?attr/textAppearanceTitleMedium"
+				android:textAppearance="@style/TextAppearance.Finite.TitleMedium.Bold"
 				android:firstBaselineToTopHeight="20sp"
 				android:lastBaselineToBottomHeight="8sp"
 
@@ -72,7 +72,6 @@
 
 			android:layout_gravity="center|end"
 			android:layout_marginEnd="16dp"
-
 
 			android:gravity="end"
 
@@ -126,6 +125,9 @@
 				android:id="@+id/textPriceSubtitle"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
+
+				android:layout_marginTop="-1dp"
+				android:layout_marginBottom="1dp"
 
 				android:layout_gravity="center|end"
 

@@ -65,7 +65,7 @@
 
 					android:background="@android:color/transparent"
 
-					android:textAppearance="?attr/textAppearanceDisplayMedium"
+					android:textAppearance="@style/TextAppearance.Finite.DisplayMedium.Thin"
 					android:firstBaselineToTopHeight="48sp"
 					android:lastBaselineToBottomHeight="12sp"
 
@@ -81,7 +81,7 @@
 
 					android:background="@android:color/transparent"
 
-					android:textAppearance="?attr/textAppearanceDisplayMedium"
+					android:textAppearance="@style/TextAppearance.Finite.DisplayMedium.Bold"
 					android:inputType="numberDecimal"
 					android:firstBaselineToTopHeight="48sp"
 					android:lastBaselineToBottomHeight="12sp"

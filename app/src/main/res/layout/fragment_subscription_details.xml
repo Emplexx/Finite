@@ -63,7 +63,7 @@
 						android:layout_height="wrap_content"
 						android:layout_weight="1"
 
-						android:textAppearance="?attr/textAppearanceHeadlineLarge"
+						android:textAppearance="@style/TextAppearance.Finite.HeadlineLarge"
 						android:firstBaselineToTopHeight="48sp"
 						android:lastBaselineToBottomHeight="16sp"
 
@@ -85,7 +85,7 @@
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 
-						android:textAppearance="?attr/textAppearanceDisplayMedium"
+						android:textAppearance="@style/TextAppearance.Finite.DisplayMedium.Thin"
 						android:firstBaselineToTopHeight="48sp"
 						android:lastBaselineToBottomHeight="16sp"
 						android:layout_marginEnd="8sp"
@@ -98,7 +98,7 @@
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 
-						android:textAppearance="?attr/textAppearanceDisplayMedium"
+						android:textAppearance="@style/TextAppearance.Finite.DisplayMedium.Bold"
 						android:firstBaselineToTopHeight="48sp"
 						android:lastBaselineToBottomHeight="16sp"
 

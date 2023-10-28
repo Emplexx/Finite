@@ -15,6 +15,13 @@
 
 		<item name="bottomSheetDialogTheme">@style/ThemeOverlay.Finite.BottomSheetDialog</item>
 		<item name="materialDividerStyle">@style/Widget.Finite.MaterialDivider</item>
+
+		<item name="textAppearanceTitleLarge">@style/TextAppearance.Finite.TitleLarge</item>
+		<item name="textAppearanceTitleMedium">@style/TextAppearance.Finite.TitleMedium</item>
+
+		<item name="textAppearanceBodyLarge">@style/TextAppearance.Finite.BodyLarge</item>
+		<item name="textAppearanceBodyMedium">@style/TextAppearance.Finite.BodyMedium</item>
+		<item name="textAppearanceBodySmall">@style/TextAppearance.Finite.BodySmall</item>
 	</style>
 
 	<style name="ThemeOverlay.Finite.OutlineFix" parent="ThemeOverlay.Material3.DynamicColors.Light">

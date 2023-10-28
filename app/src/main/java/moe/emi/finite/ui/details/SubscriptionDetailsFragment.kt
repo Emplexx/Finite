@@ -1,5 +1,6 @@
 package moe.emi.finite.ui.details
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -27,6 +28,7 @@ import moe.emi.finite.dump.visible
 import moe.emi.finite.service.data.convert
 import moe.emi.finite.service.datastore.appSettings
 import moe.emi.finite.ui.colors.makeItemColors
+import moe.emi.finite.ui.editor.SubscriptionEditorActivity
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import com.google.android.material.R as GR
@@ -73,6 +75,13 @@ class SubscriptionDetailsFragment : Fragment() {
 			when (it.itemId) {
 				R.id.action_pause -> {
 					viewModel.pauseSubscription()
+					true
+				}
+				R.id.action_edit -> {
+					viewModel.subscription.value?.let {
+						startActivity(Intent(requireActivity(), SubscriptionEditorActivity::class.java)
+								.putExtra("Subscription", it))
+					}
 					true
 				}
 				R.id.action_delete -> {

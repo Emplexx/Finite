@@ -3,6 +3,7 @@ package moe.emi.finite.ui.home.adapter
 import android.animation.Animator
 import android.content.res.ColorStateList
 import android.view.View
+import androidx.core.content.res.ResourcesCompat
 import androidx.transition.ChangeBounds
 import androidx.transition.Fade
 import androidx.transition.TransitionManager
@@ -67,6 +68,8 @@ class SubscriptionAdapterItem(
 		binding.textCurrencySign.text = preferredCurrency.symbol
 		binding.textPrice.setCharacterLists("0123456789.")
 		binding.textPrice.animationInterpolator = FastOutExtraSlowInInterpolator()
+		val font = ResourcesCompat.getFont(binding.root.context, R.font.font_dm_ticker_small)
+		binding.textPrice.typeface = font
 		bindAmount(binding, false)
 		
 		bindTimeLeft(binding)
@@ -104,10 +107,11 @@ class SubscriptionAdapterItem(
 		
 		val onContainer = palette.onContainer
 		binding.textName.setTextColor(onContainer)
-		binding.textDescription.setTextColor(onContainer)
-		binding.textPriceSubtitle.setTextColor(onContainer)
 		binding.textPrice.textColor = onContainer
 		binding.textTimeLeft.setTextColor(onContainer)
+		
+		binding.textDescription.setTextColor(palette.onContainerVariant)
+		binding.textPriceSubtitle.setTextColor(palette.onContainerVariant)
 	}
 	
 	private fun bindAmount(binding: ItemSubscriptionBinding, animate: Boolean = true) {

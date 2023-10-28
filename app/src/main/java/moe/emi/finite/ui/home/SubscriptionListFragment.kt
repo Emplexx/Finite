@@ -223,7 +223,7 @@ class SubscriptionListFragment : Fragment() {
 		
 		header.updateTotal(
 			viewModel.totalView,
-			viewModel.subscriptions.value.orEmpty().sumOf { subscription ->
+			viewModel.subscriptions.value.orEmpty().filter { it.active }.sumOf { subscription ->
 				
 				val rate = rates.find { it.code == subscription.currency.iso4217Alpha } ?: Rate.EUR
 				val preferredRate = rates.find { it.code == defCurrency.iso4217Alpha } ?: Rate.EUR
