@@ -19,9 +19,14 @@ data class AppSettings(
 	
 	// Settings
 	val preferredCurrency: Currency = Currency.EUR,
+	val appTheme: AppTheme = AppTheme.Unspecified,
 	val harmonizeColors: Boolean = true,
 	val normalizeColors: Boolean = false,
 	val normalizeFactor: Int = 0,
 ) {
 	companion object : Storable<AppSettings> by storableKey("AppSettings")
+}
+
+enum class AppTheme {
+	Unspecified, Light, Dark
 }

@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.FragmentNavigatorExtras
@@ -18,7 +17,6 @@ import com.xwray.groupie.GroupieAdapter
 import com.xwray.groupie.Section
 import dev.chrisbanes.insetter.applyInsetter
 import moe.emi.finite.MainActivity
-import moe.emi.finite.MainViewModel
 import moe.emi.finite.R
 import moe.emi.finite.databinding.FragmentSubscriptionsListBinding
 import moe.emi.finite.dump.Response
@@ -40,7 +38,7 @@ import moe.emi.finite.ui.home.enums.TotalView
 
 class SubscriptionListFragment : Fragment() {
 	
-	private val mainViewModel by activityViewModels<MainViewModel>()
+//	private val mainViewModel by activityViewModels<MainViewModel>()
 	private val viewModel by viewModels<SubscriptionListViewModel>()
 	private lateinit var binding: FragmentSubscriptionsListBinding
 	
@@ -87,7 +85,7 @@ class SubscriptionListFragment : Fragment() {
 		postponeEnterTransition()
 		view.doOnPreDraw { startPostponedEnterTransition() }
 		
-		setFragmentResultListener("key") { key, bundle ->
+		setFragmentResultListener("key") { _, bundle ->
 			bundle.getString("Message")?.let {
 				binding.root.snackbar(it)
 			}
@@ -160,8 +158,8 @@ class SubscriptionListFragment : Fragment() {
 					convert(subscription.price, rate, preferredRate, totalView, subscription.period)
 				)
 			}
-			sectionActive.forEvery<SubscriptionAdapterItem>(action)
-			sectionInactive.forEvery<SubscriptionAdapterItem>(action)
+			sectionActive.forEvery(action)
+			sectionInactive.forEvery(action)
 		}
 		
 		viewModel.settingsFlow.observe(viewLifecycleOwner) { settings ->
@@ -242,7 +240,7 @@ class SubscriptionListFragment : Fragment() {
 		)
 	}
 	
-	fun navigateToDetail(model: Subscription, cardView: MaterialCardView) {
+	private fun navigateToDetail(model: Subscription, cardView: MaterialCardView) {
 		
 		exitTransition = MaterialSharedAxis(MaterialSharedAxis.Y, true)
 		reenterTransition = MaterialSharedAxis(MaterialSharedAxis.Y, false)
@@ -273,7 +271,7 @@ class SubscriptionListFragment : Fragment() {
 		val to: Rate
 	)
 	
-	fun convert(
+	private fun convert(
 		amount: Double,
 		from: Rate, to: Rate,
 		timeframe: TotalView, period: BillingPeriod,

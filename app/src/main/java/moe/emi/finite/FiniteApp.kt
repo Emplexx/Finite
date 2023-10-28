@@ -27,6 +27,19 @@ class FiniteApp : Application() {
 		super.onCreate()
 		instance = this
 		
+//		GlobalScope.launch {
+//			when (appSettings.first().appTheme) {
+//				AppTheme.Light -> launch(Dispatchers.Main) {
+//					AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+//				}
+//				AppTheme.Dark -> launch(Dispatchers.Main) {
+//					AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+//				}
+//				else -> Unit
+//			}
+//			this.cancel()
+//		}
+		
 //		GlobalScope.launch(Dispatchers.IO) {
 //			appSettings.collect {
 //				settingsSync = it
@@ -44,7 +57,8 @@ class FiniteApp : Application() {
 		
 		val colors = arrayListOf(
 			R.color.red,
-			R.color.mint
+			R.color.mint,
+			R.color.pink,
 		).toIntArray()
 		
 		val harmonyOptions = HarmonizedColorsOptions.Builder()

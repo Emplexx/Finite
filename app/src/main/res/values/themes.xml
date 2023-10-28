@@ -15,13 +15,18 @@
 
 		<item name="bottomSheetDialogTheme">@style/ThemeOverlay.Finite.BottomSheetDialog</item>
 		<item name="materialDividerStyle">@style/Widget.Finite.MaterialDivider</item>
+		<item name="materialSwitchStyle">@style/Widget.Finite.Switch</item>
 
+		<!-- Text -->
 		<item name="textAppearanceTitleLarge">@style/TextAppearance.Finite.TitleLarge</item>
 		<item name="textAppearanceTitleMedium">@style/TextAppearance.Finite.TitleMedium</item>
 
 		<item name="textAppearanceBodyLarge">@style/TextAppearance.Finite.BodyLarge</item>
 		<item name="textAppearanceBodyMedium">@style/TextAppearance.Finite.BodyMedium</item>
 		<item name="textAppearanceBodySmall">@style/TextAppearance.Finite.BodySmall</item>
+
+		<item name="textAppearanceLabelLarge">@style/TextAppearance.Finite.LabelLarge</item>
+		<item name="textAppearanceLabelMedium">@style/TextAppearance.Finite.LabelMedium</item>
 	</style>
 
 	<style name="ThemeOverlay.Finite.OutlineFix" parent="ThemeOverlay.Material3.DynamicColors.Light">
@@ -33,6 +38,15 @@
 		<item name="colorSheetSurface">?attr/colorSurface</item>
 
 		<item name="colorDivider">@color/material_dynamic_neutral_variant90</item>
+
+		<item name="colorSwitchTrackChecked">@color/material_dynamic_primary40</item>
+		<item name="colorSwitchThumbChecked">@color/material_dynamic_primary100</item>
+		<item name="colorSwitchThumbCheckedPressed">@color/material_dynamic_primary90</item>
+
+		<item name="colorSwitchTrackUnchecked">@color/material_dynamic_neutral_variant90</item>
+		<item name="colorSwitchThumbUnchecked">@color/material_dynamic_neutral_variant80</item>
+		<item name="colorSwitchThumbUncheckedPressed">@color/material_dynamic_neutral_variant30</item>
+
 	</style>
 
 

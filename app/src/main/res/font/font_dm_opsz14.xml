@@ -43,18 +43,6 @@
     <font
         app:font="@font/dm_sans"
         app:fontStyle="normal"
-        app:fontWeight="450"
-
-        android:font="@font/dm_sans"
-        android:fontStyle="normal"
-        android:fontWeight="450"
-
-        android:fontVariationSettings="'wght' 450, 'opsz' 14"
-        />
-
-    <font
-        app:font="@font/dm_sans"
-        app:fontStyle="normal"
         app:fontWeight="500"
 
         android:font="@font/dm_sans"

@@ -128,8 +128,12 @@ class DisplayOptionsSheet(
 		binding.headerFilter.text.text = context.getString(R.string.option_header_filter)
 
 		val payments = SubscriptionsRepo.getSubscriptions().first()
-			.map { it.paymentMethod }
+			.map { it.paymentMethod.trim() }
 			.filter { it.isNotBlank() }
+			.associateBy {
+				it.lowercase()
+			}
+			.values
 			.toSet()
 		val selectedPayments = context.appSettings.first().selectedPaymentMethods
 		
@@ -137,14 +141,14 @@ class DisplayOptionsSheet(
 			val chip = ViewChipFilterBinding.inflate(layoutInflater).root
 			chip.apply {
 				text = string
-				isChecked = string in selectedPayments
+				isChecked = string.lowercase() in selectedPayments.map { it.lowercase() }
 				setOnCheckedChangeListener { _, isChecked ->
 					lifecycleScope.launch {
 						
 						context.appSettings.first().let {
 							it.copy(
-								selectedPaymentMethods = if (isChecked) it.selectedPaymentMethods + string
-								else it.selectedPaymentMethods - string
+								selectedPaymentMethods = if (isChecked) it.selectedPaymentMethods + string.lowercase()
+								else it.selectedPaymentMethods - string.lowercase()
 							)
 						}.set()
 						

@@ -27,7 +27,7 @@
 		android:layout_marginEnd="16dp"
 
 		android:src="@drawable/ic_caret_down_static"
-		app:tint="?attr/colorOnSurface"
+		app:tint="?attr/colorSecondary"
 
 		/>
 

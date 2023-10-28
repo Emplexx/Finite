@@ -4,4 +4,12 @@
 	<attr name="colorSheetBackground" format="reference|color"/>
 	<attr name="colorSheetSurface" format="reference|color"/>
 	<attr name="colorDivider" format="reference|color"/>
+
+	<attr name="colorSwitchTrackChecked" format="reference|color"/>
+	<attr name="colorSwitchTrackUnchecked" format="reference|color"/>
+
+	<attr name="colorSwitchThumbChecked" format="reference|color"/>
+	<attr name="colorSwitchThumbCheckedPressed" format="reference|color"/>
+	<attr name="colorSwitchThumbUnchecked" format="reference|color"/>
+	<attr name="colorSwitchThumbUncheckedPressed" format="reference|color"/>
 </resources>

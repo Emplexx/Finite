@@ -8,17 +8,23 @@ import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import moe.emi.finite.databinding.ActivityMainBinding
 import moe.emi.finite.dump.HasSnackbarAnchor
 import moe.emi.finite.dump.snackbar
+import moe.emi.finite.service.datastore.AppTheme
+import moe.emi.finite.service.datastore.appSettings
 import moe.emi.finite.ui.editor.SubscriptionEditorActivity
 import moe.emi.finite.ui.home.DisplayOptionsSheet
+import moe.emi.finite.ui.settings.SettingsSheetFragment
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), HasSnackbarAnchor {
@@ -37,6 +43,16 @@ class MainActivity : AppCompatActivity(), HasSnackbarAnchor {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		WindowCompat.setDecorFitsSystemWindows(window, false)
 		super.onCreate(savedInstanceState)
+		
+		runBlocking {
+			when (appSettings.first().appTheme) {
+				AppTheme.Light ->
+					AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+				AppTheme.Dark ->
+					AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+				else -> Unit
+			}
+		}
 		
 		binding = ActivityMainBinding.inflate(layoutInflater)
 		setContentView(binding.root)
@@ -72,7 +88,9 @@ class MainActivity : AppCompatActivity(), HasSnackbarAnchor {
 					true
 				}
 				R.id.action_settings -> {
-					startActivity(Intent(this, SettingsActivity::class.java))
+//					startActivity(Intent(this, SettingsActivity::class.java))
+//					SettingsSheet(this).show()
+					SettingsSheetFragment().show(supportFragmentManager, null)
 					true
 				}
 				else -> false

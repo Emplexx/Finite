@@ -29,7 +29,7 @@
 
 			android:layout_gravity="bottom"
 
-			android:text="@string/title_view_options"
+			android:text="Settings"
 			android:textAppearance="?attr/textAppearanceTitleMedium"
 			android:lastBaselineToBottomHeight="24dp"
 			/>
@@ -67,29 +67,19 @@
 					android:layout_height="wrap_content"
 					android:orientation="vertical"
 					>
+
 					<include
-						android:id="@+id/rowShowTimeLeft"
-						layout="@layout/preference_switch"
+						android:id="@+id/rowCurrency"
+						layout="@layout/preference_leading_icon_trailing_text"
 						/>
-					<!--<com.google.android.material.divider.MaterialDivider
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						app:dividerInsetStart="16dp"
-						/>
-					<include
-						android:id="@+id/rowShowLabels"
-						layout="@layout/preference_switch"
-						/>-->
 					<com.google.android.material.divider.MaterialDivider
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
 						app:dividerInsetStart="16dp"
-						android:visibility="gone"
 						/>
 					<include
-						android:id="@+id/rowRoughlySign"
-						layout="@layout/preference_switch"
-						android:visibility="gone"
+						android:id="@+id/rowTheme"
+						layout="@layout/preference_leading_icon_trailing_text"
 						/>
 
 				</LinearLayout>
@@ -98,11 +88,6 @@
 			<Space
 				android:layout_width="match_parent"
 				android:layout_height="16dp"
-				/>
-
-			<include
-				android:id="@+id/headerSort"
-				layout="@layout/preference_header"
 				/>
 
 			<com.google.android.material.card.MaterialCardView
@@ -117,97 +102,12 @@
 					android:layout_height="wrap_content"
 					android:orientation="vertical"
 					>
-
 					<include
-						android:id="@+id/rowName"
-						layout="@layout/layout_sort_row"
+						android:id="@+id/rowColors"
+						layout="@layout/preference_leading_icon_trailing_text"
 						/>
-					<include
-						android:id="@+id/rowPrice"
-						layout="@layout/layout_sort_row"
-						/>
-					<include
-						android:id="@+id/rowDate"
-						layout="@layout/layout_sort_row"
-						/>
-
-					<!--<TextView
-						android:id="@+id/rowName"
-						android:layout_width="match_parent"
-						android:layout_height="56dp"
-
-						android:paddingHorizontal="16dp"
-						android:gravity="center|start"
-
-						android:text="Name"
-						android:textAppearance="?attr/textAppearanceBodyLarge"
-
-						app:drawableTint="?attr/colorPrimary"
-						/>
-
-					<TextView
-						android:id="@+id/rowPrice"
-						android:layout_width="match_parent"
-						android:layout_height="56dp"
-
-						android:paddingHorizontal="16dp"
-						android:gravity="center|start"
-
-						android:text="Price"
-						android:textAppearance="?attr/textAppearanceBodyLarge"
-
-						app:drawableTint="?attr/colorPrimary"
-						/>
-
-					<TextView
-						android:id="@+id/rowDate"
-						android:layout_width="match_parent"
-						android:layout_height="56dp"
-
-						android:paddingHorizontal="16dp"
-						android:gravity="center|start"
-
-						android:text="Next billing date"
-						android:textAppearance="?attr/textAppearanceBodyLarge"
-
-						app:drawableTint="?attr/colorPrimary"
-						/>-->
 
 				</LinearLayout>
-			</com.google.android.material.card.MaterialCardView>
-
-			<Space
-				android:layout_width="match_parent"
-				android:layout_height="16dp"
-				/>
-
-			<include
-				android:id="@+id/headerFilter"
-				layout="@layout/preference_header"
-				/>
-
-			<com.google.android.material.card.MaterialCardView
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-
-				style="@style/Widget.Finite.CardView.Untoned"
-				app:cardBackgroundColor="?attr/colorSheetSurface"
-				>
-
-				<com.google.android.material.chip.ChipGroup
-					android:id="@+id/chipGroupPayment"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-
-					android:paddingHorizontal="12dp"
-					android:paddingVertical="4dp"
-					app:chipSpacingVertical="-8dp"
-
-					app:selectionRequired="false"
-					app:singleSelection="false"
-					>
-
-				</com.google.android.material.chip.ChipGroup>
 			</com.google.android.material.card.MaterialCardView>
 
 		</LinearLayout>

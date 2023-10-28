@@ -17,7 +17,6 @@ import moe.emi.finite.dump.setStorable
 import moe.emi.finite.service.datastore.AppSettings
 import moe.emi.finite.service.datastore.appSettings
 import moe.emi.finite.service.datastore.storeGeneral
-import moe.emi.finite.ui.currency.CurrencyPickerSheet
 import kotlin.math.roundToInt
 import kotlin.properties.Delegates.observable
 
@@ -93,13 +92,6 @@ class SettingsActivity : AppCompatActivity() {
 			}
 			
 		})
-		
-		binding.rowCurrency.setOnClickListener {
-			CurrencyPickerSheet(this) {
-				settings = settings.copy(preferredCurrency = it)
-			}
-				.show()
-		}
 	}
 	
 	fun loadOnce(it: AppSettings) {
@@ -114,8 +106,5 @@ class SettingsActivity : AppCompatActivity() {
 		binding.rowHarmonize.switchView.isChecked = it.harmonizeColors
 		
 		binding.rowNormalize.switchView.isChecked = it.normalizeColors
-		
-		
-		binding.textCurrency.text = it.preferredCurrency.fullName
 	}
 }

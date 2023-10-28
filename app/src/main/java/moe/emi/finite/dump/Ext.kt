@@ -1,7 +1,9 @@
 package moe.emi.finite.dump
 
+import android.animation.ArgbEvaluator
 import android.animation.LayoutTransition
 import android.animation.TimeInterpolator
+import android.animation.ValueAnimator
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
@@ -15,6 +17,7 @@ import android.widget.TextView
 import androidx.annotation.CheckResult
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
+import androidx.core.animation.doOnEnd
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import kotlin.contracts.ExperimentalContracts
@@ -141,4 +144,16 @@ fun ImageView.animatedDrawable(@DrawableRes drawableId: Int, context: Context) {
 	if (animatable is Animatable) {
 		animatable.start()
 	}
+}
+
+@CheckResult
+fun colorAnimator(
+	@ColorInt from: Pair<Int, Int>,
+	duration: Long,
+	onEnd: () -> Unit = {},
+	onUpdate: (ValueAnimator) -> Unit,
+) = ValueAnimator.ofObject(ArgbEvaluator(), from.first, from.second).apply {
+	this.duration = duration
+	this.addUpdateListener(onUpdate)
+	this.doOnEnd { onEnd() }
 }

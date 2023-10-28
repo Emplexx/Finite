@@ -62,7 +62,7 @@
 
 	<style name="Widget.Finite.Chip.Filter" parent="Widget.Material3.Chip.Filter">
 
-		<item name="android:textAppearance">?attr/textAppearanceBodyMedium</item>
+		<item name="android:textAppearance">?attr/textAppearanceLabelLarge</item>
 		<item name="materialThemeOverlay">@style/ThemeOverlay.Finite.Card.Untoned</item>
 
 		<item name="chipStartPadding"> 8dp </item>
@@ -88,9 +88,21 @@
 
 	</style>
 
+	<style name="Widget.Finite.Switch" parent="Widget.Material3.CompoundButton.MaterialSwitch">
+		<item name="trackTint">@color/finite_switch_track_tint</item>
+		<item name="thumbTint">@color/finite_switch_thumb_tint</item>
+
+		<item name="trackDecorationTint">@android:color/transparent</item>
+<!--		<item name="materialThemeOverlay">@style/ThemeOverlay.Finite.Switch</item>-->
+	</style>
+
+	<style name="ThemeOverlay.Finite.Switch" parent="">
+	</style>
 
 
 
+
+	<!-- Text Styles -->
 
 	<style name="TextAppearance.Finite.DisplayMedium.Thin" parent="TextAppearance.Material3.DisplayMedium">
 		<item name="android:fontFamily">@font/font_dm_opsz40</item>
@@ -147,13 +159,23 @@
 		<item name="android:fontFeatureSettings">"'ss03' on,'ss07' on"</item>
 	</style>
 
-	<style name="TextAppearance.Finite.TitleLarge" parent="TextAppearance.Material3.TitleLarge">
+	<style name="TextAppearance.Finite.TitleLarge.Thin" parent="TextAppearance.Material3.TitleLarge">
 		<item name="android:fontFamily">@font/font_dm_opsz22</item>
 		<item name="fontFamily">@font/font_dm_opsz22</item>
 		<item name="android:textFontWeight">400</item>
 
 		<item name="android:elegantTextHeight">false</item>
 		<item name="android:letterSpacing">0</item>
+
+		<item name="android:fontFeatureSettings">"'ss03' on,'ss07' on"</item>
+	</style>
+	<style name="TextAppearance.Finite.TitleLarge" parent="TextAppearance.Material3.TitleLarge">
+		<item name="android:fontFamily">@font/font_dm_opsz22</item>
+		<item name="fontFamily">@font/font_dm_opsz22</item>
+		<item name="android:textFontWeight">700</item>
+
+		<item name="android:elegantTextHeight">false</item>
+		<item name="android:letterSpacing">-0.05</item>
 
 		<item name="android:fontFeatureSettings">"'ss03' on,'ss07' on"</item>
 	</style>
@@ -210,6 +232,27 @@
 
 		<item name="android:fontFeatureSettings">"'ss03' on,'ss07' on"</item>
 	</style>
+
+	<style name="TextAppearance.Finite.LabelLarge" parent="TextAppearance.Material3.LabelLarge">
+		<item name="android:fontFamily">@font/font_dm_chip</item>
+		<item name="fontFamily">@font/font_dm_chip</item>
+
+		<item name="android:elegantTextHeight">false</item>
+		<item name="android:letterSpacing">0</item>
+
+		<item name="android:fontFeatureSettings">"'ss03' on,'ss07' on"</item>
+	</style>
+	<style name="TextAppearance.Finite.LabelMedium" parent="TextAppearance.Material3.LabelMedium">
+		<item name="android:fontFamily">@font/font_dm_opsz12</item>
+		<item name="fontFamily">@font/font_dm_opsz12</item>
+		<item name="android:textFontWeight">700</item>
+
+		<item name="android:elegantTextHeight">false</item>
+		<item name="android:letterSpacing">0</item>
+
+		<item name="android:fontFeatureSettings">"'ss03' on,'ss07' on"</item>
+	</style>
+
 
 
 </resources>

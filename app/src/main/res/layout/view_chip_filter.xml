@@ -7,8 +7,7 @@
 
 	style="@style/Widget.Finite.Chip.Filter"
 
-
-
+	android:text="Revolut"
 	>
 
 </com.google.android.material.chip.Chip>

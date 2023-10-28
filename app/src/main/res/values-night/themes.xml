@@ -16,5 +16,13 @@
 		<item name="colorSheetSurface">@color/material_dynamic_neutral_variant20</item>
 
 		<item name="colorDivider">@color/material_dynamic_neutral_variant30</item>
+
+		<item name="colorSwitchTrackChecked">@color/material_dynamic_primary60</item>
+		<item name="colorSwitchThumbChecked">@color/material_dynamic_primary100</item>
+		<item name="colorSwitchThumbCheckedPressed">@color/material_dynamic_primary90</item>
+
+		<item name="colorSwitchTrackUnchecked">@color/material_dynamic_neutral_variant30</item>
+		<item name="colorSwitchThumbUnchecked">@color/material_dynamic_neutral_variant60</item>
+		<item name="colorSwitchThumbUncheckedPressed">@color/material_dynamic_neutral_variant90</item>
 	</style>
 </resources>

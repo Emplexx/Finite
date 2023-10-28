@@ -18,3 +18,7 @@ var Activity.isStatusBarLightTheme: Boolean
 		WindowInsetsControllerCompat(window, window.decorView)
 			.isAppearanceLightStatusBars = value
 	}
+
+fun Activity.setStatusBarThemeMatchSystem() {
+	isStatusBarLightTheme = !isDarkTheme
+}

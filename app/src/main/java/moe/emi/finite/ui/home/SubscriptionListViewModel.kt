@@ -19,6 +19,7 @@ import moe.emi.finite.service.data.Subscription
 import moe.emi.finite.service.datastore.AppSettings
 import moe.emi.finite.service.datastore.Keys
 import moe.emi.finite.service.datastore.appSettings
+import moe.emi.finite.service.datastore.set
 import moe.emi.finite.service.datastore.storeGeneral
 import moe.emi.finite.service.repo.RatesRepo
 import moe.emi.finite.service.repo.SubscriptionsRepo
@@ -78,9 +79,20 @@ class SubscriptionListViewModel @Inject constructor(
 				this@SubscriptionListViewModel.rates = rates
 				this@SubscriptionListViewModel.settings = appSettings
 				
-				subscriptions.filter {
-					appSettings.selectedPaymentMethods.isEmpty() || it.paymentMethod in appSettings.selectedPaymentMethods
-				}
+				subscriptions
+					.filter {
+						appSettings.selectedPaymentMethods.isEmpty()
+								|| it.paymentMethod.trim().lowercase() in appSettings.selectedPaymentMethods
+							.map { it.trim().lowercase() }
+					}
+					.also {
+						// if the final returned list is empty and there are selected filters,
+						// there is a chance that one of those selected filters was removed from
+						// any item, so essentially it's broken and we clear filters manually
+						if (it.isEmpty() && appSettings.selectedPaymentMethods.isNotEmpty()) {
+							appSettings.copy(selectedPaymentMethods = emptySet()).set()
+						}
+					}
 			}
 		}
 //			.zip(savedState.getStateFlow("Total", TotalView.Monthly)) { it, _ -> it }

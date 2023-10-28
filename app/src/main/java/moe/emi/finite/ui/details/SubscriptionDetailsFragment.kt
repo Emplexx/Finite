@@ -1,12 +1,14 @@
 package moe.emi.finite.ui.details
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
+import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -19,14 +21,19 @@ import com.google.android.material.transition.MaterialSharedAxis
 import dev.chrisbanes.insetter.applyInsetter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import moe.emi.convenience.materialColor
 import moe.emi.finite.MainActivity
 import moe.emi.finite.MainViewModel
 import moe.emi.finite.R
 import moe.emi.finite.databinding.FragmentSubscriptionDetailsBinding
+import moe.emi.finite.dump.isStatusBarLightTheme
+import moe.emi.finite.dump.setStatusBarThemeMatchSystem
 import moe.emi.finite.dump.snackbar
 import moe.emi.finite.dump.visible
 import moe.emi.finite.service.data.convert
 import moe.emi.finite.service.datastore.appSettings
+import moe.emi.finite.ui.colors.ItemColors
+import moe.emi.finite.ui.colors.PaletteTone
 import moe.emi.finite.ui.colors.makeItemColors
 import moe.emi.finite.ui.editor.SubscriptionEditorActivity
 import java.math.RoundingMode
@@ -41,6 +48,27 @@ class SubscriptionDetailsFragment : Fragment() {
 	
 	private val activity: MainActivity
 		get() = requireActivity() as MainActivity
+	
+	private lateinit var colors: ItemColors
+	private val appBarListener by lazy { object : AppBarChangeColorListener(binding.toolbar) {
+		
+		override fun getCollapsedColor(): Int {
+			return requireActivity().materialColor(GR.attr.colorControlNormal)
+		}
+		
+		override fun getExpandedColor(): Int {
+			return colors.onContainerVariant
+		}
+		
+		override fun onExpandCallback() {
+			requireActivity().isStatusBarLightTheme =
+				colors.tone.getMatchingStatusBarColor(requireContext())
+		}
+		
+		override fun onCollapseCallback() {
+			requireActivity().setStatusBarThemeMatchSystem()
+		}
+	} }
 	
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -61,6 +89,8 @@ class SubscriptionDetailsFragment : Fragment() {
 	
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+		
+		colors = ItemColors(requireContext())
 		
 		binding.scrollView.applyInsetter {
 			type(navigationBars = true) {
@@ -98,14 +128,37 @@ class SubscriptionDetailsFragment : Fragment() {
 				else -> false
 			}
 		}
+		binding.appBarLayout.addOnOffsetChangedListener(appBarListener)
 		
 		collect()
+	}
+	
+	override fun onResume() {
+		super.onResume()
+		setMatchingStatusBarColor(colors.tone)
+	}
+	
+	override fun onPause() {
+		requireActivity().setStatusBarThemeMatchSystem()
+		super.onPause()
 	}
 	
 	private fun collect() {
 		viewModel.subscription.observe(viewLifecycleOwner) { model -> model ?: return@observe
 			
 			requireContext().makeItemColors(model.color).let {
+				
+				if (this.colors != it) {
+					setMatchingStatusBarColor(it.tone)
+					binding.toolbar.setNavigationIconTint(it.onContainerVariant)
+					binding.toolbar.menu.forEach { item ->
+						item.iconTintList = ColorStateList.valueOf(it.onContainerVariant)
+					}
+					binding.toolbar.overflowIcon?.setTint(it.onContainerVariant)
+				}
+				
+				this.colors = it
+				
 				binding.layoutReceipt.setBackgroundColor(it.container)
 				binding.receiptView.color = it.container
 				binding.appBarLayout.setBackgroundColor(it.container)
@@ -170,6 +223,14 @@ class SubscriptionDetailsFragment : Fragment() {
 				}
 			}
 			it.consume()
+		}
+	}
+	
+	fun setMatchingStatusBarColor(tone: PaletteTone) {
+		if (appBarListener.lastAnimatedState == AppBarStateChangeListener.State.COLLAPSED) {
+			requireActivity().setStatusBarThemeMatchSystem()
+		} else {
+			requireActivity().isStatusBarLightTheme = tone.getMatchingStatusBarColor(requireContext())
 		}
 	}
 	
