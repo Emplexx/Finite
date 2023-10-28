@@ -85,11 +85,14 @@
 					android:background="@android:color/transparent"
 
 					android:textAppearance="@style/TextAppearance.Finite.DisplayMedium.Bold"
-					android:inputType="numberDecimal"
 					android:firstBaselineToTopHeight="48sp"
 					android:lastBaselineToBottomHeight="12sp"
 
+					tools:ignore="HardcodedText"
 					android:hint="0.00"
+
+					android:inputType="numberDecimal"
+					android:autofillHints=""
 					/>
 
 				<com.google.android.material.card.MaterialCardView
@@ -173,7 +176,8 @@
 							android:imeOptions="actionNext"
 							android:maxLength="20"
 
-							android:hint="Name"
+							android:hint="@string/editor_name"
+							android:autofillHints=""
 							/>
 
 						<com.google.android.material.divider.MaterialDivider
@@ -193,11 +197,11 @@
 							android:textAppearance="?attr/textAppearanceBodyLarge"
 
 							android:inputType="text"
-							android:imeOptions="actionNext"
+							android:imeOptions="actionDone"
 							android:maxLength="50"
 
-
-							android:hint="Short description"
+							android:hint="@string/editor_description"
+							android:autofillHints=""
 
 							tools:text="abc"
 							/>
@@ -254,6 +258,8 @@
 										android:src="@drawable/ic_calendar_24"
 										app:tint="@color/white"
 										android:layout_gravity="center"
+
+										android:importantForAccessibility="no"
 										/>
 								</com.google.android.material.card.MaterialCardView>
 							</FrameLayout>
@@ -262,7 +268,7 @@
 								android:layout_width="0dp"
 								android:layout_height="wrap_content"
 								android:layout_weight="1"
-								android:text="Started on"
+								android:text="@string/editor_started_on"
 								android:textAppearance="?attr/textAppearanceTitleMedium"
 								android:textColor="?attr/colorOnSurface"
 								/>
@@ -315,6 +321,8 @@
 										android:src="@drawable/ic_refresh_24"
 										app:tint="@color/white"
 										android:layout_gravity="center"
+
+										android:importantForAccessibility="no"
 										/>
 								</com.google.android.material.card.MaterialCardView>
 							</FrameLayout>
@@ -323,7 +331,7 @@
 								android:layout_width="0dp"
 								android:layout_height="wrap_content"
 								android:layout_weight="1"
-								android:text="Frequency"
+								android:text="@string/editor_frequency"
 								android:textAppearance="?attr/textAppearanceTitleMedium"
 								android:textColor="?attr/colorOnSurface"
 								/>
@@ -369,7 +377,8 @@
 						android:imeOptions="actionNext"
 						android:maxLength="50"
 
-						android:hint="Payment method"
+						android:hint="@string/editor_payment_method"
+						android:autofillHints=""
 						/>
 
 				</com.google.android.material.card.MaterialCardView>
@@ -402,10 +411,10 @@
 						android:textAppearance="?attr/textAppearanceBodyLarge"
 
 						android:maxLength="50"
+						android:inputType="textMultiLine"
 
-
-						android:hint="Notes"
-
+						android:hint="@string/editor_notes"
+						android:autofillHints=""
 						/>
 
 				</com.google.android.material.card.MaterialCardView>
@@ -426,7 +435,9 @@
 		android:layout_gravity="bottom|end"
 		android:layout_marginEnd="@dimen/fab_margin"
 		android:layout_marginBottom="16dp"
+
 		app:srcCompat="@drawable/ic_check_24"
+		android:contentDescription="@string/editor_action_save"
 
 		android:backgroundTint="?attr/colorPrimaryFixedDim"
 		app:tint="?attr/colorOnPrimaryFixedVariant"

@@ -4,6 +4,15 @@
 
 	<string name="action_settings">Settings</string>
 
+	<string name="editor_action_save">Save subscription</string>
+
+	<string name="editor_name">Name</string>
+	<string name="editor_description">Short description</string>
+	<string name="editor_started_on">Started on</string>
+	<string name="editor_frequency">Frequency</string>
+	<string name="editor_payment_method">Payment method</string>
+	<string name="editor_notes">Notes</string>
+
 	<string name="period_weekly">Weekly</string>
 	<string name="period_2weeks">Every 2 weeks</string>
 	<string name="period_monthly">Monthly</string>
