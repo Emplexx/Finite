@@ -25,7 +25,6 @@
 
 		style="@style/Widget.Finite.AppBarLayout.Background"
 
-		tools:visibility="gone"
 		>
 
 		<com.google.android.material.appbar.MaterialToolbar
@@ -35,6 +34,10 @@
 			android:elevation="0dp"
 
 			app:navigationIcon="@drawable/ic_close_24"
+			tools:menu="@menu/menu_editor"
+
+			android:paddingStart="0dp"
+			android:paddingEnd="4dp"
 			/>
 
 	</com.google.android.material.appbar.AppBarLayout>
@@ -424,6 +427,11 @@
 		android:layout_marginEnd="@dimen/fab_margin"
 		android:layout_marginBottom="16dp"
 		app:srcCompat="@drawable/ic_check_24"
+
+		android:backgroundTint="?attr/colorPrimaryFixedDim"
+		app:tint="?attr/colorOnPrimaryFixedVariant"
+
+		app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Full"
 		/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

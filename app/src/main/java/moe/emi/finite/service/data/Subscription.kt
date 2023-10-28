@@ -6,6 +6,7 @@ import java.time.LocalDate
 import java.time.Period
 import java.time.temporal.ChronoUnit
 
+@kotlinx.serialization.Serializable
 data class Subscription(
 	
 	val name: String = "",

@@ -42,3 +42,5 @@ suspend inline fun <reified T> DataStore<Preferences>.setStorable(value: T) {
 	if (obj !is Storable<*>) error("${T::class.simpleName} must have a companion object that implements Storable<${T::class.simpleName}>")
 	this.write(obj.dataStoreKey, Json.encodeToString(value))
 }
+
+

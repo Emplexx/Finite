@@ -6,6 +6,7 @@ import java.util.Calendar
 import java.util.GregorianCalendar
 import java.util.TimeZone
 
+@kotlinx.serialization.Serializable
 data class FullDate(
 	/**
 	 * Numeric Year (2017)

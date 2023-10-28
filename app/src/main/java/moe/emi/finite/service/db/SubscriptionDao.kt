@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 interface SubscriptionDao {
 	
 	@Insert(onConflict = OnConflictStrategy.REPLACE)
-	suspend fun insertAll(vararg subscriptions: SubscriptionEntity)
+	suspend fun insertAll(vararg subscriptions: SubscriptionEntity): List<Long>
 	
 	@Query("SELECT * FROM subscriptions")
 	fun getAllObservable(): Flow<List<SubscriptionEntity>>

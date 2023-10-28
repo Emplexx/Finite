@@ -3,6 +3,7 @@ package moe.emi.finite.service.data
 import moe.emi.finite.R
 import java.io.Serializable
 
+@kotlinx.serialization.Serializable
 data class BillingPeriod(
 	val every: Int,
 	val unit: Timespan

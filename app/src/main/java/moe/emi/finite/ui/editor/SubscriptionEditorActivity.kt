@@ -3,23 +3,31 @@ package moe.emi.finite.ui.editor
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.widget.doAfterTextChanged
+import androidx.lifecycle.lifecycleScope
 import codes.side.andcolorpicker.converter.toColorInt
 import codes.side.andcolorpicker.model.IntegerHSLColor
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import moe.emi.convenience.materialColor
 import moe.emi.finite.R
 import moe.emi.finite.databinding.ActivitySubscriptionEditorBinding
+import moe.emi.finite.dump.HasSnackbarAnchor
 import moe.emi.finite.dump.alpha
+import moe.emi.finite.dump.snackbar
 import moe.emi.finite.dump.visible
 import moe.emi.finite.service.data.BillingPeriod
 import moe.emi.finite.service.data.Currency
 import moe.emi.finite.service.data.FullDate
+import moe.emi.finite.service.datastore.clearDraft
+import moe.emi.finite.service.datastore.setDraft
 import moe.emi.finite.ui.currency.CurrencyPickerSheet
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -28,7 +36,7 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
 @AndroidEntryPoint
-class SubscriptionEditorActivity : AppCompatActivity() {
+class SubscriptionEditorActivity : AppCompatActivity(), HasSnackbarAnchor {
 	
 	private val viewModel by viewModels<SubscriptionEditorViewModel>()
 	private lateinit var binding: ActivitySubscriptionEditorBinding
@@ -36,12 +44,17 @@ class SubscriptionEditorActivity : AppCompatActivity() {
 	private val callback = object : OnBackPressedCallback(true) {
 		override fun handleOnBackPressed() {
 			if (viewModel.subscription.id == 0) {
-				// TODO save draft
-				finishWithMessage()
+				lifecycleScope.launch {
+					setDraft(viewModel.subscription)
+					finish(viewModel.hasUnsavedChanges)
+				}
 			} else {
-				// TODO compare changes and alert dialog
-				this.isEnabled = false
-				onBackPressedDispatcher.onBackPressed()
+				if (viewModel.hasUnsavedChanges) {
+					showUnsavedChangesDialog()
+				} else {
+					this.isEnabled = false
+					onBackPressedDispatcher.onBackPressed()
+				}
 			}
 		}
 	}
@@ -62,10 +75,31 @@ class SubscriptionEditorActivity : AppCompatActivity() {
 		binding.toolbar.setNavigationOnClickListener {
 			onBackPressedDispatcher.onBackPressed()
 		}
+		binding.toolbar.setOnMenuItemClickListener { item ->
+			when (item.itemId) {
+				R.id.action_clear_draft -> {
+					lifecycleScope.launch {
+						viewModel.replaceDraft()
+						clearDraft()
+						binding.toolbar.menu.clear()
+						initViews()
+					}
+					true
+				}
+				else -> false
+			}
+		}
+		lifecycleScope.launch {
+			if (viewModel.isDraft()) {
+				binding.toolbar.inflateMenu(R.menu.menu_editor)
+			}
+		}
 		
 		binding.fab.visible = viewModel.canSave
 		binding.fab.setOnClickListener {
 			viewModel.saveSubscription()
+			binding.toolbar.menu.clear()
+			binding.root.snackbar("Changes saved")
 		}
 		
 		binding.fieldName.setText(viewModel.subscription.name)
@@ -87,6 +121,7 @@ class SubscriptionEditorActivity : AppCompatActivity() {
 				DecimalFormat("0.##")
 				.apply { roundingMode = RoundingMode.CEILING }
 				.format(viewModel.subscription.price))
+		else binding.fieldAmount.setText("")
 		binding.fieldAmount.doAfterTextChanged {
 			viewModel.subscription =
 				viewModel.subscription.copy(price = it?.toString()?.toDoubleOrNull() ?: 0.0)
@@ -192,11 +227,26 @@ class SubscriptionEditorActivity : AppCompatActivity() {
 			.show(supportFragmentManager, null)
 	}
 	
-	private fun finishWithMessage() {
-		setResult(5, Intent().apply {
+	private fun showUnsavedChangesDialog() {
+		MaterialAlertDialogBuilder(this)
+			.setTitle("Discard changes?")
+			.setMessage("You have made changes to this item that have not been saved")
+			.setPositiveButton("Discard") { _, _ ->
+				finish()
+			}
+			.setNegativeButton("Cancel", null)
+			.show()
+	}
+	
+	
+	private fun finish(withMessage: Boolean) {
+		if (withMessage) setResult(5, Intent().apply {
 			putExtra("Message", "Draft saved")
 		})
 		this.finish()
 	}
+	
+	override val snackbarAnchor: View
+		get() = binding.fab
 	
 }
