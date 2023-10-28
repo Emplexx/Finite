@@ -110,7 +110,6 @@
 				android:id="@+id/buttonCurrency"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="EUR"
 
 				android:minWidth="40dp"
 				android:height="40dp"
@@ -123,11 +122,11 @@
 
 				app:icon="@drawable/ic_expand_more_24"
 				app:iconSize="16dp"
-				app:iconPadding="8dp"
+				app:iconPadding="4dp"
 				app:iconTint="?attr/colorOnSurfaceVariant"
 				app:iconGravity="end"
 
-				android:textAppearance="?attr/textAppearanceBodyLarge"
+				android:textAppearance="?attr/textAppearanceLabelLarge"
 				android:textColor="?attr/colorOnSurface"
 
 				style="@style/Widget.Material3.Button.TextButton.Icon"

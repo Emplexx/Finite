@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.res.Configuration
 import androidx.core.view.WindowInsetsControllerCompat
 
+
 val Context.isDarkTheme: Boolean
 	get() {
 		val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK

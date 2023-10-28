@@ -115,9 +115,9 @@ enum class PaletteTone {
 	
 	fun getMatchingStatusBarColor(context: Context): Boolean =
 		when (this) {
-			PaletteTone.DeviceTheme -> !context.isDarkTheme
-			PaletteTone.Dark -> true
-			PaletteTone.Light -> false
+			DeviceTheme -> !context.isDarkTheme
+			Dark -> true
+			Light -> false
 		}
 }
 

@@ -143,6 +143,11 @@ class SubscriptionDetailsFragment : Fragment() {
 		super.onPause()
 	}
 	
+	override fun onDestroy() {
+		requireActivity().setStatusBarThemeMatchSystem()
+		super.onDestroy()
+	}
+	
 	private fun collect() {
 		viewModel.subscription.observe(viewLifecycleOwner) { model -> model ?: return@observe
 			
