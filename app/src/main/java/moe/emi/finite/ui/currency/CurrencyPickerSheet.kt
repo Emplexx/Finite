@@ -20,13 +20,13 @@ class CurrencyPickerSheet(
 	
 	private lateinit var binding: LayoutSheetCurrencyBinding
 	
-	val decorator by lazy { context.tableViewDecor() }
+	private val decorator by lazy { context.tableViewDecor() }
 	
 	private val adapter by lazy { GroupieAdapter() }
 	private val section by lazy { Section() }
 	
-	val list = Currency.values().toList()
-	var filteredList = list
+	private val list = Currency.values().toList()
+	private var filteredList = list
 	
 	override fun onStart() {
 		super.onStart()
@@ -53,16 +53,13 @@ class CurrencyPickerSheet(
 		binding.recyclerView.adapter = adapter
 		updateRecycler()
 		
-		initViews()
-	}
-	
-	private fun initViews() {
 		binding.searchBar.field.doAfterTextChanged { editable ->
-			if (editable.isNullOrBlank()) filteredList = list
-			else filteredList = list.filter {
-				it.iso4217Alpha.lowercase().contains(editable.toString().lowercase())
-						|| it.fullName(context).lowercase().contains(editable.toString().lowercase())
-			}
+			filteredList =
+				if (editable.isNullOrBlank()) list
+				else list.filter {
+					it.iso4217Alpha.lowercase().contains(editable.toString().lowercase())
+							|| it.fullName(context).lowercase().contains(editable.toString().lowercase())
+				}
 			updateRecycler()
 		}
 	}

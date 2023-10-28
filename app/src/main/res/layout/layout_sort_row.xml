@@ -20,7 +20,7 @@
 		android:paddingHorizontal="16dp"
 		android:gravity="center|start"
 
-		android:textAppearance="?attr/textAppearanceBodyLarge"
+		android:textAppearance="?attr/textAppearanceTitleMedium"
 		app:drawableTint="?attr/colorPrimary"
 
 		tools:text="Next billing date"

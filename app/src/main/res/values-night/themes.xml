@@ -15,6 +15,6 @@
 		<item name="colorSheetBackground">@color/material_dynamic_neutral_variant10</item>
 		<item name="colorSheetSurface">@color/material_dynamic_neutral_variant20</item>
 
-		<item name="colorDivider">@color/m3_ref_palette_neutral_variant30</item>
+		<item name="colorDivider">@color/material_dynamic_neutral_variant30</item>
 	</style>
 </resources>

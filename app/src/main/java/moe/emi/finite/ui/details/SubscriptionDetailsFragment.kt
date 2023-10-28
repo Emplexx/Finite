@@ -14,6 +14,7 @@ import androidx.transition.Slide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.motion.MotionUtils
 import com.google.android.material.transition.MaterialContainerTransform
+import com.google.android.material.transition.MaterialSharedAxis
 import dev.chrisbanes.insetter.applyInsetter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -24,7 +25,7 @@ import moe.emi.finite.databinding.FragmentSubscriptionDetailsBinding
 import moe.emi.finite.dump.snackbar
 import moe.emi.finite.dump.visible
 import moe.emi.finite.service.data.convert
-import moe.emi.finite.service.datastore.preferredCurrency
+import moe.emi.finite.service.datastore.appSettings
 import moe.emi.finite.ui.colors.makeItemColors
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -45,6 +46,7 @@ class SubscriptionDetailsFragment : Fragment() {
 			drawingViewId = R.id.nav_host_fragment_content_main
 			scrimColor = Color.TRANSPARENT
 		}
+		returnTransition = MaterialSharedAxis(MaterialSharedAxis.Y, false)
 	}
 	
 	override fun onCreateView(
@@ -119,7 +121,7 @@ class SubscriptionDetailsFragment : Fragment() {
 			
 			lifecycleScope.launch {
 				
-				val defCurrency = requireContext().preferredCurrency.first()
+				val defCurrency = appSettings.first().preferredCurrency
 				
 				binding.textName.text = model.name
 				binding.textCurrencySign.text = model.currency.symbol ?: model.currency.iso4217Alpha
@@ -150,8 +152,8 @@ class SubscriptionDetailsFragment : Fragment() {
 					sharedElementEnterTransition = null
 					returnTransition = Slide().apply {
 						interpolator = MotionUtils.resolveThemeInterpolator(requireContext(),
-							GR.attr.motionEasingEmphasizedAccelerateInterpolator, LinearInterpolator())
-						duration = 400
+							GR.attr.motionEasingStandardAccelerateInterpolator, LinearInterpolator())
+						duration = 250
 					}
 					
 					activity.onBackPressedDispatcher.onBackPressed()

@@ -31,8 +31,14 @@ import moe.emi.finite.service.data.Rate
 import moe.emi.finite.service.data.Subscription
 import moe.emi.finite.ui.colors.makeItemColors
 import moe.emi.finite.ui.editor.SubscriptionEditorActivity
+import moe.emi.finite.ui.home.adapter.AutoLayoutDecoration
+import moe.emi.finite.ui.home.adapter.HomeHeaderAdapterItem
+import moe.emi.finite.ui.home.adapter.SubscriptionAdapterItem
+import moe.emi.finite.ui.home.adapter.java.ExpandableHeaderItem
+import moe.emi.finite.ui.home.adapter.java.ExpandableSection
+import moe.emi.finite.ui.home.enums.TotalView
 
-class SubscriptionsListFragment : Fragment() {
+class SubscriptionListFragment : Fragment() {
 	
 	private val mainViewModel by activityViewModels<MainViewModel>()
 	private val viewModel by viewModels<SubscriptionListViewModel>()
@@ -62,12 +68,9 @@ class SubscriptionsListFragment : Fragment() {
 	}
 	private val sectionHeader by lazy { Section() }
 	private val sectionActive by lazy { Section() }
-	private val expandableHeader by lazy {
-		ExpandableHeaderItem()
-	}
+	private val expandableHeader by lazy { ExpandableHeaderItem() }
 	private val sectionInactive by lazy {
-		Section()
-//		com.xwray.groupie.ExpandableGroup(expandableHeader)
+		ExpandableSection(expandableHeader, false)
 	}
 	
 	override fun onCreateView(
@@ -108,7 +111,7 @@ class SubscriptionsListFragment : Fragment() {
 		adapter.add(sectionHeader)
 		adapter.add(sectionActive)
 //		sectionInactive.setHeader(expandableHeader)
-		adapter.add(sectionInactive)
+//		adapter.add(sectionInactive)
 		binding.recyclerView.adapter = adapter
 		binding.recyclerView.addItemDecoration(
 			AutoLayoutDecoration(
@@ -137,13 +140,18 @@ class SubscriptionsListFragment : Fragment() {
 			
 			sectionActive.update(active.map(itemMapper))
 			sectionInactive.update(inactive.map(itemMapper))
+			if (inactive.isEmpty()) {
+				adapter.getAdapterPosition(sectionInactive).let { if (it != -1) adapter.remove(sectionInactive) }
+			} else {
+				adapter.getAdapterPosition(sectionInactive).let { if (it == -1) adapter.add(sectionInactive) }
+			}
 			
 			updateTotal()
 		}
 		
 		viewModel.totalViewFlow.observe(viewLifecycleOwner) { totalView ->
 			
-			sectionActive.forEvery<SubscriptionAdapterItem> { group ->
+			val action: (SubscriptionAdapterItem) -> Unit = { group ->
 				val subscription = group.model
 				val rate = viewModel.rates.find { it.code == subscription.currency.iso4217Alpha } ?: Rate.EUR
 				val preferredRate = viewModel.rates.find { it.code == defCurrency.iso4217Alpha } ?: Rate.EUR
@@ -152,6 +160,8 @@ class SubscriptionsListFragment : Fragment() {
 					convert(subscription.price, rate, preferredRate, totalView, subscription.period)
 				)
 			}
+			sectionActive.forEvery<SubscriptionAdapterItem>(action)
+			sectionInactive.forEvery<SubscriptionAdapterItem>(action)
 		}
 		
 		viewModel.settingsFlow.observe(viewLifecycleOwner) { settings ->
@@ -160,10 +170,17 @@ class SubscriptionsListFragment : Fragment() {
 				group.updateCurrency(settings.preferredCurrency)
 				group.updatePalette(requireContext().makeItemColors(group.model.color))
 			}
+			sectionInactive.forEvery<SubscriptionAdapterItem> { group ->
+				group.updateCurrency(settings.preferredCurrency)
+				group.updatePalette(requireContext().makeItemColors(group.model.color))
+			}
 		}
 		
 		viewModel.showTimeLeftFlow.observe(viewLifecycleOwner) { bool ->
 			sectionActive.forEvery<SubscriptionAdapterItem> {
+				it.updateShowTimeLeft(bool)
+			}
+			sectionInactive.forEvery<SubscriptionAdapterItem> {
 				it.updateShowTimeLeft(bool)
 			}
 		}
@@ -178,7 +195,7 @@ class SubscriptionsListFragment : Fragment() {
 	}
 	
 	private val itemMapper: (Subscription) -> SubscriptionAdapterItem =
-		{subscription ->
+		{ subscription ->
 			
 			val rate = viewModel.rates.find { it.code == subscription.currency.iso4217Alpha } ?: Rate.EUR
 			val preferredRate = viewModel.rates.find { it.code == defCurrency.iso4217Alpha } ?: Rate.EUR
@@ -227,12 +244,8 @@ class SubscriptionsListFragment : Fragment() {
 	
 	fun navigateToDetail(model: Subscription, cardView: MaterialCardView) {
 		
-		exitTransition = MaterialSharedAxis(MaterialSharedAxis.Y, true).apply {
-		
-		}
-		reenterTransition = MaterialSharedAxis(MaterialSharedAxis.Y, false).apply {
-		
-		}
+		exitTransition = MaterialSharedAxis(MaterialSharedAxis.Y, true)
+		reenterTransition = MaterialSharedAxis(MaterialSharedAxis.Y, false)
 		
 		val extras = FragmentNavigatorExtras(cardView to "card_detail")
 		

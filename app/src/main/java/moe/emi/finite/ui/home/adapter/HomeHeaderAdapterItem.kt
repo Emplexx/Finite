@@ -1,4 +1,4 @@
-package moe.emi.finite.ui.home
+package moe.emi.finite.ui.home.adapter
 
 import android.view.View
 import com.xwray.groupie.viewbinding.BindableItem
@@ -6,6 +6,7 @@ import moe.emi.finite.R
 import moe.emi.finite.databinding.ItemHomeHeaderBinding
 import moe.emi.finite.dump.FastOutExtraSlowInInterpolator
 import moe.emi.finite.service.data.Currency
+import moe.emi.finite.ui.home.enums.TotalView
 import java.math.RoundingMode
 import java.text.DecimalFormat
 

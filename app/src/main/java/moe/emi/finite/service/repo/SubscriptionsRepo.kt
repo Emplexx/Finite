@@ -8,7 +8,7 @@ import moe.emi.finite.FiniteApp
 import moe.emi.finite.service.data.Rate.Companion.get
 import moe.emi.finite.service.data.Subscription
 import moe.emi.finite.service.datastore.appSettings
-import moe.emi.finite.ui.home.Sort
+import moe.emi.finite.ui.home.enums.Sort
 
 object SubscriptionsRepo {
 	

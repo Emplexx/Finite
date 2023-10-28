@@ -7,12 +7,7 @@ import com.google.android.material.color.DynamicColorsOptions
 import com.google.android.material.color.HarmonizedColors
 import com.google.android.material.color.HarmonizedColorsOptions
 import dagger.hilt.android.HiltAndroidApp
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import moe.emi.finite.service.datastore.AppSettings
 import moe.emi.finite.service.db.FiniteDB
-import kotlin.properties.Delegates
 
 @HiltAndroidApp
 class FiniteApp : Application() {
@@ -25,18 +20,18 @@ class FiniteApp : Application() {
 		lateinit var db: FiniteDB
 			private set
 		
-		@OptIn(DelicateCoroutinesApi::class)
-		var settings: AppSettings by Delegates.observable(AppSettings()) { prop, old, new ->
-			GlobalScope.launch {
-//				settings.
-//				this.cancel()
-			}
-		}
+		
 	}
 	
 	override fun onCreate() {
 		super.onCreate()
 		instance = this
+		
+//		GlobalScope.launch(Dispatchers.IO) {
+//			appSettings.collect {
+//				settingsSync = it
+//			}
+//		}
 		
 		initDb()
 		

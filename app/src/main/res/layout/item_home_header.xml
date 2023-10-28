@@ -16,7 +16,7 @@
 		android:textAppearance="?attr/textAppearanceTitleLarge"
 		android:layout_marginHorizontal="16dp"
 
-		android:text="finite"
+		android:text="@string/app_name_stylised"
 		/>
 
 	<LinearLayout

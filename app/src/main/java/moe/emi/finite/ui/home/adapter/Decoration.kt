@@ -1,8 +1,7 @@
-package moe.emi.finite.ui.home
+package moe.emi.finite.ui.home.adapter
 
 import android.graphics.Rect
 import android.view.View
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.xwray.groupie.viewbinding.GroupieViewHolder
 

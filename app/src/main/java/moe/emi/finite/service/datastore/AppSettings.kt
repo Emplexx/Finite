@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 import moe.emi.finite.dump.Storable
 import moe.emi.finite.dump.storableKey
 import moe.emi.finite.service.data.Currency
-import moe.emi.finite.ui.home.Sort
+import moe.emi.finite.ui.home.enums.Sort
 
 @Serializable
 data class AppSettings(
@@ -13,6 +13,9 @@ data class AppSettings(
 	// View options
 	val sort: Sort = Sort.Date,
 	val sortIsAscending: Boolean = true,
+	val showTimeLeft: Boolean = true,
+	val showRoughlySign: Boolean = true,
+	val selectedPaymentMethods: Set<String> = emptySet(),
 	
 	// Settings
 	val preferredCurrency: Currency = Currency.EUR,

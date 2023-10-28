@@ -10,9 +10,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import moe.emi.convenience.TonalColor
 import moe.emi.convenience.materialColor
-import moe.emi.finite.service.datastore.AppSettings
-import moe.emi.finite.dump.getStorable
-import moe.emi.finite.service.datastore.storeGeneral
+import moe.emi.finite.service.datastore.appSettings
 
 data class ItemColors(
 	val source: Int,
@@ -30,7 +28,7 @@ fun Context.makeItemColors(source: Int?): ItemColors {
 	)
 	
 	// TODO make function suspend?
-	val settings = runBlocking { storeGeneral.getStorable<AppSettings>().first() }
+	val settings = runBlocking { appSettings.first() }
 	
 	val harmonize = settings.harmonizeColors
 	val normalize = settings.normalizeColors

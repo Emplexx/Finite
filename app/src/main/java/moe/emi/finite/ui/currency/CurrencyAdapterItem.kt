@@ -18,12 +18,11 @@ class CurrencyAdapterItem(
 			binding.textName.text = currency.fullName
 			binding.textCode.text = currency.iso4217Alpha
 			
-			binding.root.setOnClickListener { onClick() }
-			
-			
 			binding.icon.setImageDrawable(
 				currency.flag?.let { drawable(it) }
 			)
+			
+			binding.root.setOnClickListener { onClick() }
 		}
 	}
 	
@@ -38,8 +37,6 @@ class CurrencyAdapterItem(
 			is CurrencyAdapterItem -> currency == other.currency
 			else -> super.isSameAs(other)
 		}
-	
-	
 	
 	override fun getLayout() = R.layout.item_currency
 	override fun initializeViewBinding(view: View) = ItemCurrencyBinding.bind(view)

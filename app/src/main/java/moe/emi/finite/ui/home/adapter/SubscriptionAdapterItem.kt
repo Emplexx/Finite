@@ -1,7 +1,6 @@
-package moe.emi.finite.ui.home
+package moe.emi.finite.ui.home.adapter
 
 import android.animation.Animator
-import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.view.View
 import androidx.transition.ChangeBounds
@@ -20,15 +19,15 @@ import moe.emi.finite.service.data.Currency
 import moe.emi.finite.service.data.Subscription
 import moe.emi.finite.service.data.Timespan
 import moe.emi.finite.ui.colors.ItemColors
+import moe.emi.finite.ui.home.SubscriptionListFragment
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
-@SuppressLint("RestrictedApi")
 class SubscriptionAdapterItem(
 	val model: Subscription,
 	private var preferredCurrency: Currency,
 	
-	private var convertedAmount: SubscriptionsListFragment.ConvertedAmount,
+	private var convertedAmount: SubscriptionListFragment.ConvertedAmount,
 	private var showUpcomingTime: Boolean,
 	var palette: ItemColors,
 	
@@ -41,7 +40,7 @@ class SubscriptionAdapterItem(
 		notifyChanged("TimeLeft")
 	}
 	
-	fun updateAmount(amount: SubscriptionsListFragment.ConvertedAmount) {
+	fun updateAmount(amount: SubscriptionListFragment.ConvertedAmount) {
 		convertedAmount = amount
 		notifyChanged("Amount")
 	}
@@ -62,22 +61,14 @@ class SubscriptionAdapterItem(
 		bindPalette(binding)
 		
 		binding.textName.text = model.name
-		
 		binding.textDescription.visible = model.description.isNotBlank()
 		binding.textDescription.text = model.description
-		
-//		binding.textPrice.text = convertedAmount.amountMatchedToTimeframe.round(2).toString()
-		
-		
-		
-		
+
 		binding.textCurrencySign.text = preferredCurrency.symbol
-		
 		binding.textPrice.setCharacterLists("0123456789.")
 		binding.textPrice.animationInterpolator = FastOutExtraSlowInInterpolator()
-//		binding.layoutPrice.enableAnimateChildren(200L)
+		bindAmount(binding, false)
 		
-		bindAmount(binding)
 		bindTimeLeft(binding)
 		
 		binding.root.setOnClickListener {
@@ -119,14 +110,14 @@ class SubscriptionAdapterItem(
 		binding.textTimeLeft.setTextColor(onContainer)
 	}
 	
-	private fun bindAmount(binding: ItemSubscriptionBinding) {
-		
+	private fun bindAmount(binding: ItemSubscriptionBinding, animate: Boolean = true) {
+	
 //		val changeClipBounds = ChangeClipBounds().apply {
 //			this.addTarget(binding.textPrice)
 //		}
 //		TransitionManager.beginDelayedTransition(binding.root, changeClipBounds)
 		
-		binding.textPrice.text = buildString {
+		binding.textPrice.setText(buildString {
 			
 			if (convertedAmount.from.code != convertedAmount.to.code) {
 				append("≈ ")
@@ -140,7 +131,7 @@ class SubscriptionAdapterItem(
 				.apply { roundingMode = RoundingMode.CEILING }
 				.format(convertedAmount.amountMatchedToTimeframe)
 				.let(::append)
-		}
+		}, animate)
 		
 		binding.textPriceSubtitle.text = buildString {
 			
@@ -164,6 +155,15 @@ class SubscriptionAdapterItem(
 				}
 			append(period)
 		}
+		
+		if (!animate) {
+			if (convertedAmount.amountMatchedToTimeframe != convertedAmount.amountOriginal) {
+				binding.textPriceSubtitle.visible = true
+			} else {
+				binding.textPriceSubtitle.gone = true
+			}
+		}
+		
 		
 		
 		val changeBounds = ChangeBounds().apply {

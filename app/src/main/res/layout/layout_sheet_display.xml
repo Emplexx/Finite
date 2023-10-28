@@ -29,7 +29,7 @@
 
 			android:layout_gravity="bottom"
 
-			android:text="View options"
+			android:text="@string/title_view_options"
 			android:textAppearance="?attr/textAppearanceTitleMedium"
 			android:lastBaselineToBottomHeight="24dp"
 			/>
@@ -38,6 +38,7 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:layout_gravity="bottom"
+			tools:dividerColor="?attr/colorSurfaceVariant"
 			/>
 	</FrameLayout>
 
@@ -51,8 +52,56 @@
 			android:layout_height="wrap_content"
 
 			android:layout_margin="16dp"
+			android:orientation="vertical"
 			>
 
+			<com.google.android.material.card.MaterialCardView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+
+				style="@style/Widget.Finite.CardView.Untoned"
+				app:cardBackgroundColor="?attr/colorSheetSurface"
+				>
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="vertical"
+					>
+					<include
+						android:id="@+id/rowShowTimeLeft"
+						layout="@layout/preference_switch"
+						/>
+					<!--<com.google.android.material.divider.MaterialDivider
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						app:dividerInsetStart="16dp"
+						/>
+					<include
+						android:id="@+id/rowShowLabels"
+						layout="@layout/preference_switch"
+						/>-->
+					<com.google.android.material.divider.MaterialDivider
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						app:dividerInsetStart="16dp"
+						/>
+					<include
+						android:id="@+id/rowRoughlySign"
+						layout="@layout/preference_switch"
+						/>
+
+				</LinearLayout>
+			</com.google.android.material.card.MaterialCardView>
+
+			<Space
+				android:layout_width="match_parent"
+				android:layout_height="16dp"
+				/>
+
+			<include
+				android:id="@+id/headerSort"
+				layout="@layout/preference_header"
+				/>
 
 			<com.google.android.material.card.MaterialCardView
 				android:layout_width="match_parent"
@@ -123,6 +172,40 @@
 						/>-->
 
 				</LinearLayout>
+			</com.google.android.material.card.MaterialCardView>
+
+			<Space
+				android:layout_width="match_parent"
+				android:layout_height="16dp"
+				/>
+
+			<include
+				android:id="@+id/headerFilter"
+				layout="@layout/preference_header"
+				/>
+
+			<com.google.android.material.card.MaterialCardView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+
+				style="@style/Widget.Finite.CardView.Untoned"
+				app:cardBackgroundColor="?attr/colorSheetSurface"
+				>
+
+				<com.google.android.material.chip.ChipGroup
+					android:id="@+id/chipGroupPayment"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+
+					android:paddingHorizontal="12dp"
+					android:paddingVertical="4dp"
+					app:chipSpacingVertical="-8dp"
+
+					app:selectionRequired="false"
+					app:singleSelection="false"
+					>
+
+				</com.google.android.material.chip.ChipGroup>
 			</com.google.android.material.card.MaterialCardView>
 
 		</LinearLayout>

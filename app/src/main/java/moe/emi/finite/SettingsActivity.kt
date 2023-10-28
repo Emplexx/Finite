@@ -12,7 +12,6 @@ import com.google.android.material.slider.Slider
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import moe.emi.finite.databinding.ActivitySettingsBinding
-import moe.emi.finite.dump.getStorable
 import moe.emi.finite.dump.isDarkTheme
 import moe.emi.finite.dump.setStorable
 import moe.emi.finite.service.datastore.AppSettings
@@ -49,7 +48,7 @@ class SettingsActivity : AppCompatActivity() {
 				
 				loadOnce(appSettings.first())
 				
-				storeGeneral.getStorable<AppSettings>().collect {
+				appSettings.collect {
 					settings = it
 					loadData(it)
 				}

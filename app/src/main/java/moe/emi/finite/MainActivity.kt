@@ -2,12 +2,12 @@ package moe.emi.finite
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
@@ -67,15 +67,8 @@ class MainActivity : AppCompatActivity(), HasSnackbarAnchor {
 		}
 		binding.bottomAppBar.setOnMenuItemClickListener {
 			when (it.itemId) {
-				R.id.action_show_upcoming -> {
-//					lifecycleScope.launch {
-//						val key = booleanPreferencesKey("ShowTimeLeft")
-//						val value = storeGeneral.read(key, false).first()
-//						storeGeneral.write(key, !value)
-//					}
-					
+				R.id.action_view_options -> {
 					DisplayOptionsSheet(this).show()
-					
 					true
 				}
 				R.id.action_settings -> {

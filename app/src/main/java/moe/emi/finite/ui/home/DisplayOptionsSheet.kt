@@ -2,8 +2,8 @@ package moe.emi.finite.ui.home
 
 import android.content.Context
 import android.graphics.Color
-import android.util.Log
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import dev.chrisbanes.insetter.applyInsetter
 import kotlinx.coroutines.Job
@@ -12,12 +12,17 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import moe.emi.convenience.TonalColor
 import moe.emi.convenience.materialColor
+import moe.emi.finite.R
 import moe.emi.finite.databinding.LayoutSheetDisplayBinding
 import moe.emi.finite.databinding.LayoutSortRowBinding
+import moe.emi.finite.databinding.ViewChipFilterBinding
 import moe.emi.finite.dump.FastOutExtraSlowInInterpolator
+import moe.emi.finite.dump.textRes
 import moe.emi.finite.dump.visible
 import moe.emi.finite.service.datastore.appSettings
-import moe.emi.finite.set
+import moe.emi.finite.service.datastore.set
+import moe.emi.finite.service.repo.SubscriptionsRepo
+import moe.emi.finite.ui.home.enums.Sort
 
 class DisplayOptionsSheet(
 	context: Context,
@@ -28,11 +33,6 @@ class DisplayOptionsSheet(
 	private lateinit var binding: LayoutSheetDisplayBinding
 	private var selectedRow: LayoutSortRowBinding? = null
 	private var isAscending = true
-	
-	data class SortSpec(
-		val ascending: String,
-		val descending: String,
-	)
 	
 	override fun onStart() {
 		super.onStart()
@@ -46,14 +46,41 @@ class DisplayOptionsSheet(
 			}
 		}
 		
-		lifecycleScope.launch { initLayout() }
+		behavior.state = BottomSheetBehavior.STATE_EXPANDED
+		behavior.skipCollapsed = true
+		
+		lifecycleScope.launch {
+			initDisplay()
+			initSort()
+			initFilter()
+		}
 	}
 	
-	private suspend fun initLayout() {
-		// TODO string res
-		binding.rowName.textLabel.text = "Name"
-		binding.rowPrice.textLabel.text = "Price"
-		binding.rowDate.textLabel.text = "Next billing date"
+	private suspend fun initDisplay() {
+		val s = context.appSettings.first()
+		binding.rowShowTimeLeft.switchView.isChecked = s.showTimeLeft
+		binding.rowRoughlySign.switchView.isChecked = s.showRoughlySign
+		
+		binding.rowShowTimeLeft.switchView.textRes = R.string.option_show_time_left
+		binding.rowRoughlySign.switchView.textRes = R.string.option_show_roughly_sign
+		
+		binding.rowShowTimeLeft.switchView.setOnCheckedChangeListener { _, isChecked ->
+			lifecycleScope.launch {
+				context.appSettings.first().copy(showTimeLeft = isChecked).set()
+			}
+		}
+		binding.rowRoughlySign.switchView.setOnCheckedChangeListener { _, isChecked ->
+			lifecycleScope.launch {
+				context.appSettings.first().copy(showRoughlySign = isChecked).set()
+			}
+		}
+	}
+	
+	private suspend fun initSort() {
+		binding.headerSort.text.textRes = R.string.option_header_sort
+		binding.rowName.textLabel.textRes = R.string.option_sort_name
+		binding.rowPrice.textLabel.textRes = R.string.option_sort_price
+		binding.rowDate.textLabel.textRes = R.string.option_sort_date
 		
 		selectedRow = when (context.appSettings.first().sort) {
 			Sort.Alphabetical -> binding.rowName
@@ -99,6 +126,37 @@ class DisplayOptionsSheet(
 		}
 	}
 	
+	private suspend fun initFilter() {
+		binding.headerFilter.text.text = context.getString(R.string.option_header_filter)
+
+		val payments = SubscriptionsRepo.getSubscriptions().first()
+			.map { it.paymentMethod }
+			.filter { it.isNotBlank() }
+			.toSet()
+		val selectedPayments = context.appSettings.first().selectedPaymentMethods
+		
+		payments.forEach { string ->
+			val chip = ViewChipFilterBinding.inflate(layoutInflater).root
+			chip.apply {
+				text = string
+				isChecked = string in selectedPayments
+				setOnCheckedChangeListener { _, isChecked ->
+					lifecycleScope.launch {
+						
+						context.appSettings.first().let {
+							it.copy(
+								selectedPaymentMethods = if (isChecked) it.selectedPaymentMethods + string
+								else it.selectedPaymentMethods - string
+							)
+						}.set()
+						
+					}
+				}
+			}
+			binding.chipGroupPayment.addView(chip)
+		}
+	}
+	
 	private var jobReturnArrow: Job? = null
 	private fun LayoutSortRowBinding.toggle() {
 		jobReturnArrow?.cancel()
@@ -140,7 +198,6 @@ class DisplayOptionsSheet(
 			}
 			
 			val asc = context.appSettings.first().sortIsAscending
-			Log.d("TAG", "asc $asc")
 			trailingIcon.rotation = if (asc) 0f else 180f
 			trailingIcon.isSelected = asc
 			
@@ -153,9 +210,7 @@ class DisplayOptionsSheet(
 			
 			root.setBackgroundColor(Color.TRANSPARENT)
 			textLabel.setTextColor(materialColor(TonalColor.onSurface))
-//			textHint.children.forEach {
-//				(it as? TextView)?.setTextColor(materialColor(TonalColor.onSurface))
-//			}
+
 			trailingIcon.visible = false
 			
 		}

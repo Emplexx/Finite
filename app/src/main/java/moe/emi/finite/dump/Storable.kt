@@ -28,26 +28,17 @@ val Storable<*>.dataStoreKey: Preferences.Key<String>
 	get() = stringPreferencesKey(this.key)
 
 inline fun <reified T : Any> DataStore<Preferences>.getStorable(): Flow<T> {
-	
-	
 	val obj = T::class.companionObjectInstance
-	
 	if (obj !is Storable<*>) error("${T::class.simpleName} must have a companion object that implements Storable<${T::class.simpleName}>")
 	
 	return this.read(obj.dataStoreKey).map {
-		
 		if (it == null) (obj.default ?: T::class.createInstance()) as T
 		else Json.decodeFromString(it)
 	}
 }
 
-suspend inline fun <reified T> DataStore<Preferences>.setStorable(value: T) /*where T : SerializationStrategy<T>*/ {
+suspend inline fun <reified T> DataStore<Preferences>.setStorable(value: T) {
 	val obj = T::class.companionObjectInstance
-	
 	if (obj !is Storable<*>) error("${T::class.simpleName} must have a companion object that implements Storable<${T::class.simpleName}>")
-	
 	this.write(obj.dataStoreKey, Json.encodeToString(value))
 }
-
-
-

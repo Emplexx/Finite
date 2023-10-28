@@ -2,15 +2,21 @@ package moe.emi.finite.dump
 
 import android.animation.LayoutTransition
 import android.animation.TimeInterpolator
+import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
+import android.graphics.drawable.Animatable
+import android.graphics.drawable.Drawable
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.annotation.CheckResult
 import androidx.annotation.ColorInt
+import androidx.annotation.DrawableRes
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
-import java.math.RoundingMode
-import java.text.DecimalFormat
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
@@ -28,6 +34,16 @@ var View.gone: Boolean
 var View.invisible: Boolean
 	get() = this.visibility == View.INVISIBLE
 	set(value) { this.visibility = if (value) View.INVISIBLE else View.VISIBLE }
+
+@get:CheckResult("Set-only property. Getting this property is an error and will throw")
+var <T : TextView> T.textRes: Int
+	get() { error("set-only property") }
+	set(value) = this.setText(value)
+
+//context(Context)
+//fun @receiver:StringRes Int.get() = this@Context.getString(this@Int)
+
+//infix fun @receiver:StringRes Int.from(context: Context) = context.getString(this@Int)
 
 //fun Double.round(): Double {
 //	val df = DecimalFormat("#.##")
@@ -113,4 +129,16 @@ inline fun <T1: Any, T2: Any, R: Any> safe(p1: T1?, p2: T2?, block: (T1, T2) -> 
 		callsInPlace(block, InvocationKind.EXACTLY_ONCE)
 	}
 	return if (p1 != null && p2 != null) block(p1, p2) else null
+}
+
+fun ImageView.animatedDrawable(@DrawableRes drawableId: Int, context: Context) {
+	val animDrawable: AnimatedVectorDrawableCompat? =
+		AnimatedVectorDrawableCompat.create(context, drawableId)
+	
+	this.setImageDrawable(animDrawable)
+	val animatable: Drawable? = this.drawable
+	
+	if (animatable is Animatable) {
+		animatable.start()
+	}
 }

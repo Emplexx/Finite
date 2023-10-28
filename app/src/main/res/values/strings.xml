@@ -1,10 +1,29 @@
 <resources>
 	<string name="app_name">Finite</string>
+	<string name="app_name_stylised">finite</string>
+
 	<string name="action_settings">Settings</string>
-	<!-- Strings used for fragments for navigation -->
-	<string name="first_fragment_label">First Fragment</string>
-	<string name="second_fragment_label">Second Fragment</string>
-	<string name="previous">Previous</string>
+
+	<string name="period_weekly">Weekly</string>
+	<string name="period_2weeks">Every 2 weeks</string>
+	<string name="period_monthly">Monthly</string>
+	<string name="period_quarterly">Quarterly</string>
+	<string name="period_6months">Every 6 months</string>
+	<string name="period_yearly">Yearly</string>
+
+	<string name="title_view_options">Display options</string>
+	<string name="option_show_time_left">Time until next payment</string>
+	<string name="option_show_roughly_sign">Roughly ‘≈’ sign next to converted prices</string>
+	<string name="option_header_sort">Sort</string>
+	<string name="option_sort_name">Name</string>
+	<string name="option_sort_price">Price</string>
+	<string name="option_sort_date">Next billing date</string>
+	<string name="option_header_filter">Filter by payment method</string>
+
+	<string name="setting_harmonize">Harmonise colours</string>
+	<string name="setting_harmonize_description">Slightly adjust hue of subscription colours so they better match the theme of your device and You</string>
+	<string name="setting_normalise">Normalise colours</string>
+	<string name="setting_normalise_description">Make subscription colours the same tone so they are more consistent and match light or dark theme</string>
 
 	<string name="lorem_ipsum">
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
@@ -42,17 +61,5 @@
 		libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
 		vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
 	</string>
-
-	<string name="period_weekly">Weekly</string>
-	<string name="period_2weeks">Every 2 weeks</string>
-	<string name="period_monthly">Monthly</string>
-	<string name="period_quarterly">Quarterly</string>
-	<string name="period_6months">Every 6 months</string>
-	<string name="period_yearly">Yearly</string>
-
-	<string name="setting_harmonize">Harmonise colours</string>
-	<string name="setting_harmonize_description">Slightly adjust hue of subscription colours so they better match the theme of your device and You</string>
-	<string name="setting_normalise">Normalise colours</string>
-	<string name="setting_normalise_description">Make subscription colours the same tone so they are more consistent and match light or dark theme</string>
 
 </resources>
