@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SubscriptionEditorViewModel @Inject constructor(
-	val savedState: SavedStateHandle,
+	savedState: SavedStateHandle,
 ) : ViewModel() {
 	
 	var subscription = savedState["Subscription"]
@@ -26,7 +26,7 @@ class SubscriptionEditorViewModel @Inject constructor(
 			// TODO async?
 			currency = runBlocking { FiniteApp.instance.appSettings.first().preferredCurrency }
 		)
-	var subscriptionComparable = savedState["Subscription"]
+	private var subscriptionComparable = savedState["Subscription"]
 		?: runBlocking { getDraft().first() }
 		?: Subscription(
 			// TODO async?
