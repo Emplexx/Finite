@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+
+	android:orientation="vertical"
+
+	xmlns:tools="http://schemas.android.com/tools"
+	tools:background="?attr/colorSurfaceDim"
+	>
+
+	<FrameLayout
+		android:layout_width="match_parent"
+		android:layout_height="72dp"
+		>
+		<com.google.android.material.bottomsheet.BottomSheetDragHandleView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+
+			android:paddingBottom="28dp"
+			app:tint="?attr/colorOutlineVariant"
+			/>
+
+		<TextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginHorizontal="16dp"
+
+			android:layout_gravity="bottom"
+
+			android:text="Reminder"
+			android:textAppearance="?attr/textAppearanceTitleMedium"
+			android:lastBaselineToBottomHeight="24dp"
+			/>
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/buttonSave"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+
+			android:layout_marginEnd="4dp"
+			android:layout_marginVertical="6dp"
+			android:layout_gravity="end|bottom"
+
+			style="@style/Widget.Material3.Button.TextButton"
+
+			android:text="Save"
+			/>
+
+		<com.google.android.material.divider.MaterialDivider
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_gravity="bottom"
+			tools:dividerColor="?attr/colorSurfaceVariant"
+			/>
+	</FrameLayout>
+
+	<androidx.core.widget.NestedScrollView
+		android:id="@+id/scrollView"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		>
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+
+			android:layout_margin="16dp"
+			android:orientation="vertical"
+			>
+
+			<include
+				android:id="@+id/headerDate"
+				layout="@layout/preference_header"
+				/>
+
+			<com.google.android.material.card.MaterialCardView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+
+				style="@style/Widget.Finite.CardView.Untoned"
+				app:cardBackgroundColor="?attr/colorSheetSurface"
+				>
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="vertical"
+					>
+
+					<LinearLayout
+						android:id="@+id/rowSameDay"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+
+						android:minHeight="56dp"
+						android:orientation="horizontal"
+						android:paddingHorizontal="12dp"
+						android:foreground="?attr/selectableItemBackground"
+						>
+
+						<RadioButton
+							android:id="@+id/radioSameDay"
+							android:layout_width="32dp"
+							android:layout_height="56dp"
+							android:gravity="center_horizontal|center_vertical"
+							/>
+						<TextView
+							android:layout_width="0dp"
+							android:layout_height="wrap_content"
+							android:layout_weight="1"
+
+							android:layout_marginStart="12dp"
+							android:layout_marginEnd="4dp"
+							android:layout_gravity="center"
+
+							android:textAppearance="?attr/textAppearanceTitleMedium"
+							android:paddingVertical="16dp"
+							android:text="Same day"
+							/>
+
+					</LinearLayout>
+					<com.google.android.material.divider.MaterialDivider
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						app:dividerInsetStart="56dp"
+						/>
+					<LinearLayout
+						android:id="@+id/rowPrior"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+
+						android:minHeight="56dp"
+						android:orientation="horizontal"
+						android:paddingHorizontal="12dp"
+						android:foreground="?attr/selectableItemBackground"
+						>
+
+						<RadioButton
+							android:id="@+id/radioPrior"
+							android:layout_width="32dp"
+							android:layout_height="56dp"
+							android:gravity="center_horizontal|center_vertical"
+							/>
+
+
+						<com.google.android.material.card.MaterialCardView
+							android:layout_width="60dp"
+							android:layout_height="40dp"
+
+							android:layout_marginStart="12dp"
+							android:layout_gravity="center"
+
+							style="@style/Widget.Finite.CardView.Untoned"
+							app:cardBackgroundColor="?attr/colorSurfaceVariant"
+							>
+
+							<EditText
+								android:id="@+id/fieldPeriodCount"
+								android:layout_width="60dp"
+								android:layout_height="match_parent"
+								android:background="@android:color/transparent"
+
+								android:paddingHorizontal="16dp"
+								android:hint="1"
+
+								android:textAppearance="?attr/textAppearanceBodyLarge"
+								android:textColor="?attr/colorOnSurface"
+								/>
+						</com.google.android.material.card.MaterialCardView>
+
+						<com.google.android.material.card.MaterialCardView
+							android:id="@+id/cardPeriod"
+							android:layout_width="104dp"
+							android:layout_height="40dp"
+
+							android:layout_marginStart="8dp"
+							android:layout_gravity="center"
+
+							style="@style/Widget.Finite.CardView.Untoned"
+							app:cardBackgroundColor="?attr/colorSurfaceVariant"
+							>
+
+							<TextView
+								android:id="@+id/fieldPeriod"
+								android:layout_width="match_parent"
+								android:layout_height="wrap_content"
+								android:background="@android:color/transparent"
+
+								android:layout_gravity="center|start"
+								android:paddingHorizontal="16dp"
+
+								android:text="Day"
+
+								android:textAppearance="?attr/textAppearanceBodyLarge"
+								android:textColor="?attr/colorOnSurface"
+								/>
+						</com.google.android.material.card.MaterialCardView>
+
+
+						<TextView
+							android:id="@+id/textLabel"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+
+							android:layout_marginStart="12dp"
+							android:layout_marginEnd="4dp"
+							android:layout_gravity="center|start"
+
+							android:textAppearance="?attr/textAppearanceTitleMedium"
+							android:paddingVertical="16dp"
+							android:text="before"
+							/>
+
+					</LinearLayout>
+
+				</LinearLayout>
+			</com.google.android.material.card.MaterialCardView>
+
+			<include
+				android:id="@+id/footerDateError"
+				layout="@layout/preference_footer"
+				/>
+
+			<Space
+				android:layout_width="match_parent"
+				android:layout_height="16dp"
+				/>
+
+			<com.google.android.material.card.MaterialCardView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+
+				style="@style/Widget.Finite.CardView.Untoned"
+				app:cardBackgroundColor="?attr/colorSheetSurface"
+				>
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="vertical"
+					>
+					<include
+						android:id="@+id/rowTime"
+						layout="@layout/preference_leading_icon_trailing_text"
+						/>
+				</LinearLayout>
+			</com.google.android.material.card.MaterialCardView>
+
+		</LinearLayout>
+	</androidx.core.widget.NestedScrollView>
+
+
+
+</LinearLayout>

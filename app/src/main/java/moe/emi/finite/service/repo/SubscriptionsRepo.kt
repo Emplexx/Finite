@@ -20,7 +20,7 @@ object SubscriptionsRepo {
 		}
 	}
 	
-	fun getSubscriptions(): Flow<List<Subscription>> =
+	fun getAllSubscriptions(): Flow<List<Subscription>> =
 		combine(
 			dao.getAllObservable(),
 			RatesRepo.getLocalRates(),

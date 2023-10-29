@@ -1,6 +1,7 @@
 package moe.emi.finite.service.data
 
 import java.io.Serializable
+import java.time.LocalDate
 import java.time.ZoneOffset.UTC
 import java.util.Calendar
 import java.util.GregorianCalendar
@@ -63,6 +64,8 @@ data class FullDate(
 		calendar.set(this.year, this.month-1, this.day)
 		return calendar.timeInMillis
 	}
+	
+	fun toLocalDate() = LocalDate.of(this.year, this.month, this.day)
 	
 	override fun compareTo(other: FullDate): Int {
 		

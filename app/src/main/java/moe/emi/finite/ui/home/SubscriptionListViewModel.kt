@@ -60,7 +60,7 @@ class SubscriptionListViewModel @Inject constructor(
 	fun getSubscriptions() = viewModelScope.launch {
 		
 		combine(
-			SubscriptionsRepo.getSubscriptions(),
+			SubscriptionsRepo.getAllSubscriptions(),
 			RatesRepo.getLocalRates(),
 			FiniteApp.instance.storeGeneral.read(Keys.RatesLastUpdated, 0L),
 			FiniteApp.instance.appSettings,

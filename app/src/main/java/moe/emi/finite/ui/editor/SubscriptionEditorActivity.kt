@@ -96,6 +96,7 @@ class SubscriptionEditorActivity : AppCompatActivity(), HasSnackbarAnchor {
 		}
 		
 		binding.fab.visible = viewModel.canSave
+		binding.textRequiredFieldsHint.visible = !viewModel.canSave
 		binding.fab.setOnClickListener {
 			viewModel.saveSubscription()
 			binding.toolbar.menu.clear()
@@ -106,7 +107,13 @@ class SubscriptionEditorActivity : AppCompatActivity(), HasSnackbarAnchor {
 		binding.fieldName.doAfterTextChanged {
 			viewModel.subscription =
 				viewModel.subscription.copy(name = it?.toString() ?: "")
-			if (viewModel.canSave) binding.fab.show() else binding.fab.hide()
+			if (viewModel.canSave) {
+				binding.textRequiredFieldsHint.visible = false
+				binding.fab.show()
+			} else {
+				binding.textRequiredFieldsHint.visible = true
+				binding.fab.hide()
+			}
 		}
 		
 		binding.fieldDescription.setText(viewModel.subscription.description)
@@ -142,7 +149,13 @@ class SubscriptionEditorActivity : AppCompatActivity(), HasSnackbarAnchor {
 					startedOn = date
 				)
 				updateDate(date)
-				if (viewModel.canSave) binding.fab.show() else binding.fab.hide()
+				if (viewModel.canSave) {
+					binding.textRequiredFieldsHint.visible = false
+					binding.fab.show()
+				} else {
+					binding.textRequiredFieldsHint.visible = true
+					binding.fab.hide()
+				}
 			}
 		}
 		

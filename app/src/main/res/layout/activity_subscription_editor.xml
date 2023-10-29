@@ -25,6 +25,7 @@
 
 		style="@style/Widget.Finite.AppBarLayout.Background"
 
+		tools:visibility="gone"
 		>
 
 		<com.google.android.material.appbar.MaterialToolbar
@@ -419,8 +420,25 @@
 
 				</com.google.android.material.card.MaterialCardView>
 
-			</LinearLayout>
+				<TextView
+					android:id="@+id/textRequiredFieldsHint"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
 
+					android:paddingHorizontal="16dp"
+
+					android:firstBaselineToTopHeight="32sp"
+					android:lastBaselineToBottomHeight="16sp"
+
+
+					android:textAppearance="?attr/textAppearanceBodySmall"
+					android:textColor="?attr/colorOnBackground"
+					android:alpha="0.54"
+
+					android:text="Name and start date are required"
+					/>
+
+			</LinearLayout>
 
 
 

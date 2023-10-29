@@ -38,8 +38,8 @@ data class SubscriptionEntity(
 		currency = model.currency,
 		
 		startedOn = model.startedOn?.toLong(),
-		periodAmount = model.period.every,
-		periodTimespan = model.period.unit,
+		periodAmount = model.period.count,
+		periodTimespan = model.period.timespan,
 		paymentMethod = model.paymentMethod,
 		notes = model.notes,
 		active = model.active,

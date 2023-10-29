@@ -2,29 +2,30 @@ package moe.emi.finite.service.data
 
 import moe.emi.finite.R
 import java.io.Serializable
+import java.time.Period
 
 @kotlinx.serialization.Serializable
 data class BillingPeriod(
-	val every: Int,
-	val unit: Timespan
+	val count: Int,
+	val timespan: Timespan
 ) : Serializable {
 	val stringId: Int? =
-		when (unit) {
+		when (timespan) {
 			Timespan.Week ->
-				when (every) {
+				when (count) {
 					1 -> R.string.period_weekly
 					2 -> R.string.period_2weeks
 					else -> null
 				}
 			Timespan.Month ->
-				when (every) {
+				when (count) {
 					1 -> R.string.period_monthly
 					3 -> R.string.period_quarterly
 					6 -> R.string.period_6months
 					else -> null
 				}
 			Timespan.Year ->
-				when (every) {
+				when (count) {
 					1 -> R.string.period_yearly
 					else -> null
 				}
@@ -32,26 +33,35 @@ data class BillingPeriod(
 		}
 	
 	fun priceEveryYear(price: Double): Double =
-		when (this.unit) {
-			Timespan.Year -> price / this.every
-			Timespan.Month -> price * (12 / this.every)
-			Timespan.Week -> price * (52.14 / this.every)
-			Timespan.Day -> price * (365 / this.every)
+		when (this.timespan) {
+			Timespan.Year -> price / this.count
+			Timespan.Month -> price * (12 / this.count)
+			Timespan.Week -> price * (52.14 / this.count)
+			Timespan.Day -> price * (365 / this.count)
 		}
 	
 	fun priceEveryMonth(price: Double): Double =
-		when (this.unit) {
-			Timespan.Year -> price / this.every / 12
-			Timespan.Month -> price / this.every
-			Timespan.Week -> price * (4.35 / this.every)
-			Timespan.Day -> price * (30.42 / this.every)
+		when (this.timespan) {
+			Timespan.Year -> price / this.count / 12
+			Timespan.Month -> price / this.count
+			Timespan.Week -> price * (4.35 / this.count)
+			Timespan.Day -> price * (30.42 / this.count)
 		}
 	
 	fun priceEveryWeek(price: Double): Double =
-		when (this.unit) {
-			Timespan.Year -> price / this.every / 52.14
-			Timespan.Month -> price / this.every / 4.35
-			Timespan.Week -> price / this.every
-			Timespan.Day -> price * (7 / this.every)
+		when (this.timespan) {
+			Timespan.Year -> price / this.count / 52.14
+			Timespan.Month -> price / this.count / 4.35
+			Timespan.Week -> price / this.count
+			Timespan.Day -> price * (7 / this.count)
+		}
+	
+	
+	fun toJavaPeriod() =
+		when (timespan) {
+			Timespan.Day -> Period.ofDays(count)
+			Timespan.Week -> Period.ofWeeks(count)
+			Timespan.Month -> Period.ofMonths(count)
+			Timespan.Year -> Period.ofYears(count)
 		}
 }

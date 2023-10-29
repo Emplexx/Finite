@@ -5,7 +5,6 @@ import android.widget.TextView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import dev.chrisbanes.insetter.applyInsetter
 import moe.emi.convenience.TonalColor
-import moe.emi.convenience.drawable
 import moe.emi.convenience.materialColor
 import moe.emi.finite.R
 import moe.emi.finite.databinding.LayoutSheetFrequencyBinding
@@ -32,22 +31,22 @@ class FrequencyPickerSheet(
 			}
 		}
 		
-		when (period.unit) {
+		when (period.timespan) {
 			Timespan.Week ->
-				when (period.every) {
+				when (period.count) {
 					1 -> binding.rowWeekly
 					2 -> binding.row2Weeks
 					else -> null
 				}
 			Timespan.Month ->
-				when (period.every) {
+				when (period.count) {
 					1 -> binding.rowMonthly
 					3 -> binding.rowQuarterly
 					6 -> binding.row6Months
 					else -> null
 				}
 			Timespan.Year ->
-				when (period.every) {
+				when (period.count) {
 					1 -> binding.rowYearly
 					else -> null
 				}

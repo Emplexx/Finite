@@ -1,13 +1,17 @@
 package moe.emi.finite.ui.details
 
+import android.app.AlarmManager
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
+import androidx.core.content.getSystemService
 import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -18,10 +22,15 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.motion.MotionUtils
 import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialSharedAxis
+import com.xwray.groupie.GroupieAdapter
+import com.xwray.groupie.Section
+import dagger.hilt.android.AndroidEntryPoint
 import dev.chrisbanes.insetter.applyInsetter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
 import moe.emi.convenience.materialColor
+import moe.emi.finite.JavaSerializable
 import moe.emi.finite.MainActivity
 import moe.emi.finite.MainViewModel
 import moe.emi.finite.R
@@ -30,21 +39,28 @@ import moe.emi.finite.dump.isStatusBarLightTheme
 import moe.emi.finite.dump.setStatusBarThemeMatchSystem
 import moe.emi.finite.dump.snackbar
 import moe.emi.finite.dump.visible
+import moe.emi.finite.service.data.BillingPeriod
+import moe.emi.finite.service.data.Timespan
 import moe.emi.finite.service.data.convert
 import moe.emi.finite.service.datastore.appSettings
+import moe.emi.finite.service.notifications.AlarmScheduler
 import moe.emi.finite.ui.colors.ItemColors
 import moe.emi.finite.ui.colors.PaletteTone
 import moe.emi.finite.ui.colors.makeItemColors
 import moe.emi.finite.ui.editor.SubscriptionEditorActivity
 import java.math.RoundingMode
 import java.text.DecimalFormat
+import java.time.Period
 import com.google.android.material.R as GR
 
+@AndroidEntryPoint
 class SubscriptionDetailsFragment : Fragment() {
 	
 	private val mainViewModel by activityViewModels<MainViewModel>()
 	private val viewModel by viewModels<SubscriptionDetailsViewModel>()
 	lateinit var binding: FragmentSubscriptionDetailsBinding
+	
+	val alarmScheduler by lazy { AlarmScheduler(requireContext()) }
 	
 	private val activity: MainActivity
 		get() = requireActivity() as MainActivity
@@ -69,6 +85,9 @@ class SubscriptionDetailsFragment : Fragment() {
 			requireActivity().setStatusBarThemeMatchSystem()
 		}
 	} }
+	
+	lateinit var adapter: GroupieAdapter
+	val section by lazy { Section() }
 	
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -98,6 +117,10 @@ class SubscriptionDetailsFragment : Fragment() {
 			}
 		}
 		
+		adapter = GroupieAdapter()
+		adapter.add(section)
+		binding.recyclerViewReminders.adapter = adapter
+		
 		binding.toolbar.setNavigationOnClickListener {
 			requireActivity().onBackPressedDispatcher.onBackPressed()
 		}
@@ -105,6 +128,27 @@ class SubscriptionDetailsFragment : Fragment() {
 			when (it.itemId) {
 				R.id.action_pause -> {
 					viewModel.pauseSubscription()
+					true
+				}
+				R.id.action_notification -> {
+					
+					if (requireContext().getSystemService<AlarmManager>()!!.canScheduleExactAlarms()) {
+						createNotification()
+					} else {
+						
+						MaterialAlertDialogBuilder(requireActivity())
+							.setTitle("Permission required")
+							.setMessage("Finite requires a permission to schedule notifications, which you can grant in settings")
+							.setPositiveButton("Take me there") { _, _ ->
+								
+								Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
+									Uri.parse("package:" + requireContext().packageName))
+									.let(requireActivity()::startActivity)
+							}
+							.setNegativeButton("Cancel", null)
+							.show()
+					}
+					
 					true
 				}
 				R.id.action_edit -> {
@@ -209,6 +253,22 @@ class SubscriptionDetailsFragment : Fragment() {
 			}
 		}
 		
+		viewModel.reminders.observe(viewLifecycleOwner) { reminders ->
+			
+			reminders.map { reminder ->
+				ReminderAdapterItem(
+					reminder,
+					onEdit = {
+						ReminderEditorSheet.newInstance(viewModel.entityId, reminder)
+							.show(parentFragmentManager, null)
+					},
+					onRemove = {
+						viewModel.deleteReminder(reminder.id)
+					}
+				)
+			}.let(section::update)
+		}
+		
 		viewModel.events.observe(viewLifecycleOwner) { it ?: return@observe
 			if (!it.consumed) when (it.key) {
 				Event.Error -> binding.root.snackbar("Something went wrong")
@@ -238,5 +298,72 @@ class SubscriptionDetailsFragment : Fragment() {
 			requireActivity().isStatusBarLightTheme = tone.getMatchingStatusBarColor(requireContext())
 		}
 	}
+	
+	fun createNotification() {
+
+		ReminderEditorSheet.newInstance(viewModel.entityId)
+			.show(parentFragmentManager, null)
+		
+//		lifecycleScope.launch {
+//
+//			val (hour, minute) = Calendar.getInstance().let {
+//				it.add(Calendar.MINUTE, 1)
+//				it.get(Calendar.HOUR_OF_DAY) to it.get(Calendar.MINUTE)
+//			}
+//
+//			Log.d("TAG", "$hour : $minute")
+//
+//			NotificationRepo.dao.insertAll(
+//				NotificationEntity(
+//					Reminder(
+//						0,
+//						viewModel.subscription.value?.id!!,
+//						null,
+//						hour, minute
+//					)
+//				)
+//
+//			).let {
+//
+//
+//				Log.d("TAG", "$it")
+//
+//				alarmScheduler.scheduleAlarms(it.first().toInt())
+//			}
+//
+//		}
+	
+	
+	}
+	
+}
+
+
+// TODO merge this with BillingPeriod because they're the same thing
+@Serializable
+data class NotificationPeriod(
+	val count: Int,
+	val timespan: Timespan
+) : JavaSerializable {
+	
+	companion object {
+		fun BillingPeriod.toNotificationPeriod() =
+			NotificationPeriod(count, timespan)
+	}
+	
+	private val approximateLength: Int
+		get() = this.timespan.approximateMultiplier * this.count
+	
+	operator fun compareTo(other: BillingPeriod): Int {
+		return this.approximateLength - other.toNotificationPeriod().approximateLength
+	}
+	
+	fun toJavaPeriod() =
+		when (timespan) {
+			Timespan.Day -> Period.ofDays(count)
+			Timespan.Week -> Period.ofWeeks(count)
+			Timespan.Month -> Period.ofMonths(count)
+			Timespan.Year -> Period.ofYears(count)
+		}
 	
 }

@@ -127,7 +127,7 @@ class DisplayOptionsSheet(
 	private suspend fun initFilter() {
 		binding.headerFilter.text.text = context.getString(R.string.option_header_filter)
 
-		val payments = SubscriptionsRepo.getSubscriptions().first()
+		val payments = SubscriptionsRepo.getAllSubscriptions().first()
 			.map { it.paymentMethod.trim() }
 			.filter { it.isNotBlank() }
 			.associateBy {

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:context=".SettingsActivity"
+
+	android:background="?attr/background"
+	tools:background="?attr/colorSurfaceDim"
+	>
+
+	<com.google.android.material.appbar.AppBarLayout
+		android:id="@+id/appBarLayout"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+
+		android:fitsSystemWindows="true"
+
+		app:liftOnScroll="true"
+		app:liftOnScrollTargetViewId="@id/scrollView"
+
+		style="@style/Widget.Finite.AppBarLayout.Background"
+
+		tools:visibility="gone"
+		>
+
+		<com.google.android.material.appbar.MaterialToolbar
+			android:id="@+id/toolbar"
+			android:layout_width="match_parent"
+			android:layout_height="?attr/actionBarSize"
+			android:elevation="0dp"
+
+			app:navigationIcon="@drawable/ic_back_24"
+			app:title="Settings"
+			/>
+
+	</com.google.android.material.appbar.AppBarLayout>
+
+
+	<androidx.core.widget.NestedScrollView
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+		>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+
+			android:paddingHorizontal="16dp"
+			android:paddingTop="16dp"
+			>
+
+
+
+			<com.google.android.material.card.MaterialCardView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				app:cardPreventCornerOverlap="false"
+				app:strokeColor="@android:color/transparent"
+				app:shapeAppearance="?attr/shapeAppearanceCornerSmall"
+				>
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="vertical"
+					>
+
+					<include
+						android:id="@+id/rowExport"
+						layout="@layout/preference_action"
+						/>
+					<com.google.android.material.divider.MaterialDivider
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						app:dividerInsetStart="56dp"
+						/>
+
+					<include
+						android:id="@+id/rowImport"
+						layout="@layout/preference_action"
+						/>
+
+
+				</LinearLayout>
+			</com.google.android.material.card.MaterialCardView>
+
+
+		</LinearLayout>
+
+	</androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

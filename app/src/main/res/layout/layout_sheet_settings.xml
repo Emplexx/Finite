@@ -106,6 +106,15 @@
 						android:id="@+id/rowColors"
 						layout="@layout/preference_leading_icon_trailing_text"
 						/>
+					<com.google.android.material.divider.MaterialDivider
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						app:dividerInsetStart="56dp"
+						/>
+					<include
+						android:id="@+id/rowBackup"
+						layout="@layout/preference_leading_icon_trailing_text"
+						/>
 
 				</LinearLayout>
 			</com.google.android.material.card.MaterialCardView>

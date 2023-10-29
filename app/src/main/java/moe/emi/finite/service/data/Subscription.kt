@@ -1,6 +1,7 @@
 package moe.emi.finite.service.data
 
 import moe.emi.finite.service.db.SubscriptionEntity
+import moe.emi.finite.ui.details.NotificationPeriod
 import java.io.Serializable
 import java.time.LocalDate
 import java.time.Period
@@ -47,11 +48,11 @@ data class Subscription(
 	
 	companion object {
 		fun LocalDate.plus(period: BillingPeriod): LocalDate {
-			val r = when (period.unit) {
-				Timespan.Day -> this.plusDays(period.every.toLong())
-				Timespan.Week -> this.plusWeeks(period.every.toLong())
-				Timespan.Month -> this.plusMonths(period.every.toLong())
-				Timespan.Year -> this.plusYears(period.every.toLong())
+			val r = when (period.timespan) {
+				Timespan.Day -> this.plusDays(period.count.toLong())
+				Timespan.Week -> this.plusWeeks(period.count.toLong())
+				Timespan.Month -> this.plusMonths(period.count.toLong())
+				Timespan.Year -> this.plusYears(period.count.toLong())
 			}
 //			Log.d("LocalDate.plus", "local date $this")
 //			Log.d("LocalDate.plus", "period $period")
@@ -59,8 +60,19 @@ data class Subscription(
 			return r
 		}
 		
+		fun LocalDate.minus(period: NotificationPeriod): LocalDate =
+			when (period.timespan) {
+				Timespan.Day -> this.minusDays(period.count.toLong())
+				Timespan.Week -> this.minusWeeks(period.count.toLong())
+				Timespan.Month -> this.minusMonths(period.count.toLong())
+				Timespan.Year -> this.minusYears(period.count.toLong())
+			}
+		
 		tailrec fun LocalDate.findNextPayment(period: BillingPeriod): LocalDate =
 			if (this > LocalDate.now()) this else (this.plus(period)).findNextPayment(period)
+		
+		tailrec fun LocalDate.findNextPaymentInclusive(period: BillingPeriod): LocalDate =
+			if (this >= LocalDate.now()) this else (this.plus(period)).findNextPaymentInclusive(period)
 	
 		val dateComparator = compareBy<Subscription> {
 			it.daysUntilNextPayment

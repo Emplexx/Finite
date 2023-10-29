@@ -12,6 +12,7 @@ import dev.chrisbanes.insetter.applyInsetter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import moe.emi.convenience.drawable
+import moe.emi.finite.BackupActivity
 import moe.emi.finite.R
 import moe.emi.finite.SettingsActivity
 import moe.emi.finite.databinding.LayoutSheetSettingsBinding
@@ -64,6 +65,13 @@ class SettingsSheet(
 			textLabel.text = "Colours"
 			textValue.visible = false
 		}
+		binding.rowBackup.apply {
+			layoutIcon.visible = true
+			icon.setImageDrawable(context.drawable(R.drawable.ic_back_24))
+			backgroundColor.setCardBackgroundColor(context.getColor(R.color.black))
+			textLabel.text = "Backup"
+			textValue.visible = false
+		}
 	}
 	
 	private fun initListeners() {
@@ -103,6 +111,9 @@ class SettingsSheet(
 		
 		binding.rowColors.root.setOnClickListener {
 			context.startActivity(Intent(context, SettingsActivity::class.java))
+		}
+		binding.rowBackup.root.setOnClickListener {
+			context.startActivity(Intent(context, BackupActivity::class.java))
 		}
 	}
 	

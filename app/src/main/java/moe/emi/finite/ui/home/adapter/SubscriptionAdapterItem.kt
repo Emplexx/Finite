@@ -149,8 +149,8 @@ class SubscriptionAdapterItem(
 				?: buildString {
 					
 					append("/ ")
-					if (model.period.every > 1) append(model.period.every)
-					append(when (model.period.unit) {
+					if (model.period.count > 1) append(model.period.count)
+					append(when (model.period.timespan) {
 						Timespan.Day -> "d"
 						Timespan.Week -> "w"
 						Timespan.Month -> "m"

@@ -3,8 +3,9 @@
 	xmlns:tools="http://schemas.android.com/tools">
 
 	<uses-permission android:name="android.permission.INTERNET" />
-	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+	<uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
+	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
 	<application
 		android:name=".FiniteApp"
@@ -19,6 +20,9 @@
 		android:theme="@style/Theme.Finite"
 		android:usesCleartextTraffic="true"
 		tools:targetApi="34">
+		<activity
+			android:name=".BackupActivity"
+			android:exported="false" />
 		<activity
 			android:name=".SettingsActivity"
 			android:exported="false" />
@@ -36,6 +40,15 @@
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
+
+		<receiver android:name=".service.notifications.AlarmReceiver"/>
+		<receiver android:name=".service.notifications.BootReceiver"
+			android:enabled="false"
+			android:exported="true">
+			<intent-filter>
+				<action android:name="android.intent.action.BOOT_COMPLETED"/>
+			</intent-filter>
+		</receiver>
 	</application>
 
 </manifest>
