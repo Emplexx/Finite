@@ -1,1 +1,1 @@
-Pretty subscription managed binge-made in 6 days
+Pretty subscription manager binge-made in 6 days
