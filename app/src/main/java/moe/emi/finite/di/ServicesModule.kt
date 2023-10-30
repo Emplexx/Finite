@@ -16,22 +16,3 @@ object ServicesModule {
 	@Provides
 	fun provideAlarmScheduler(@ApplicationContext c: Context): AlarmScheduler = AlarmScheduler(c)
 }
-//
-//	@Singleton
-//	@Provides
-//	fun provideMoshi(
-//
-//	): Moshi = makeMoshi()
-//
-//	@Singleton
-//	@Provides
-//	fun provideAtpClient(
-//		moshi: Moshi
-//	): ApiClient = makeAtpClient(moshi)
-//
-//	@Singleton
-//	@Provides
-//	fun provideWebService(
-//		@ApplicationContext appContext: Context,
-//		atpClient: AtpClient,
-//	): WebService = WebService(appContext, atpClient)

@@ -2,7 +2,6 @@ package moe.emi.finite.ui.settings
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.Lifecycle
@@ -21,7 +20,7 @@ import moe.emi.finite.service.datastore.storeGeneral
 import kotlin.math.roundToInt
 import kotlin.properties.Delegates.observable
 
-class SettingsActivity : AppCompatActivity() {
+class ColorsActivity : AppCompatActivity() {
 	
 	private lateinit var binding: ActivitySettingsBinding
 	
@@ -40,7 +39,6 @@ class SettingsActivity : AppCompatActivity() {
 		
 		lifecycleScope.launch {
 			
-			
 			repeatOnLifecycle(Lifecycle.State.CREATED) {
 				
 				initLayout()
@@ -56,7 +54,7 @@ class SettingsActivity : AppCompatActivity() {
 		}
 	}
 	
-	fun initLayout() {
+	private fun initLayout() {
 		binding.rowHarmonize.switchView.setText(R.string.setting_harmonize)
 		binding.footerHarmonize.text.setText(R.string.setting_harmonize_description)
 		
@@ -66,7 +64,7 @@ class SettingsActivity : AppCompatActivity() {
 		binding.sliderBrightness.value = 10f - binding.sliderBrightness.value
 	}
 	
-	fun initListeners() {
+	private fun initListeners() {
 		Build.VERSION_CODES.S_V2
 		binding.rowHarmonize.switchView.setOnCheckedChangeListener { _, isChecked ->
 			settings = settings.copy(harmonizeColors = isChecked)
@@ -76,12 +74,6 @@ class SettingsActivity : AppCompatActivity() {
 			settings = settings.copy(normalizeColors = isChecked)
 		}
 		
-//		binding.sliderBrightness.addOnChangeListener { slider, value, fromUser ->
-//			val v =
-//				if (isDarkTheme) value
-//				else 10f - value
-//			if (fromUser) settings = settings.copy(normalizeFactor = v.roundToInt())
-//		}
 		binding.sliderBrightness.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
 			override fun onStartTrackingTouch(slider: Slider) {}
 			
@@ -95,17 +87,15 @@ class SettingsActivity : AppCompatActivity() {
 		})
 	}
 	
-	fun loadOnce(it: AppSettings) {
-		Log.d("TAG", "factor: ${it.normalizeFactor}")
+	private fun loadOnce(it: AppSettings) {
 		binding.sliderBrightness.value =
 			if (isDarkTheme) it.normalizeFactor.toFloat()
 			else 10f - it.normalizeFactor
 	}
 	
-	fun loadData(it: AppSettings) {
+	private fun loadData(it: AppSettings) {
 		
 		binding.rowHarmonize.switchView.isChecked = it.harmonizeColors
-		
 		binding.rowNormalize.switchView.isChecked = it.normalizeColors
 	}
 }

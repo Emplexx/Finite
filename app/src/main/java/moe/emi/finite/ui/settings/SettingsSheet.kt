@@ -54,25 +54,25 @@ class SettingsSheet(
 		}
 	}
 	
-	private suspend fun initLayout() {
+	private fun initLayout() {
 		
 		binding.version.text = BuildConfig.VERSION_NAME
 		
-		binding.rowCurrency.textLabel.text = "Default currency"
-		binding.rowTheme.textLabel.text = "Theme"
+		binding.rowCurrency.textLabel.setText(R.string.setting_default_currency)
+		binding.rowTheme.textLabel.setText(R.string.setting_theme)
 		
 		binding.rowColors.apply {
 			layoutIcon.visible = true
 			icon.setImageDrawable(context.drawable(R.drawable.ic_palette_fill_24))
 			backgroundColor.setCardBackgroundColor(context.getColor(R.color.pink))
-			textLabel.text = "Colours"
+			textLabel.setText(R.string.setting_colors_title)
 			textValue.visible = false
 		}
 		binding.rowBackup.apply {
 			layoutIcon.visible = true
 			icon.setImageDrawable(context.drawable(R.drawable.ic_back_24))
 			backgroundColor.setCardBackgroundColor(context.getColor(R.color.black))
-			textLabel.text = "Backup"
+			textLabel.setText(R.string.setting_backup_title)
 			textValue.visible = false
 		}
 	}
@@ -92,9 +92,9 @@ class SettingsSheet(
 		binding.rowTheme.root.setOnClickListener {
 			PopupMenu(context, binding.rowTheme.root, Gravity.END).apply {
 				menu.also {
-					it.add(0, 0, 0, "Follow system")
-					it.add(0, 1, 0, "Light")
-					it.add(0, 2, 0, "Dark")
+					it.add(0, 0, 0, R.string.setting_theme_follow_system)
+					it.add(0, 1, 0, R.string.setting_theme_light)
+					it.add(0, 2, 0, R.string.setting_theme_dark)
 				}
 				setOnMenuItemClickListener {
 					when (it.itemId) {
@@ -117,20 +117,20 @@ class SettingsSheet(
 		}
 		
 		binding.rowColors.root.setOnClickListener {
-			context.startActivity(Intent(context, SettingsActivity::class.java))
+			context.startActivity(Intent(context, ColorsActivity::class.java))
 		}
 		binding.rowBackup.root.setOnClickListener {
 			context.startActivity(Intent(context, BackupActivity::class.java))
 		}
 	}
 	
-	private suspend fun loadData(it: AppSettings) {
+	private fun loadData(it: AppSettings) {
 		binding.rowCurrency.textValue.text = it.preferredCurrency.iso4217Alpha
 		binding.rowTheme.textValue.text = when (it.appTheme) {
-			AppTheme.Unspecified -> "Follow system"
-			AppTheme.Light -> "Light"
-			AppTheme.Dark -> "Dark"
-		}
+			AppTheme.Unspecified -> R.string.setting_theme_follow_system
+			AppTheme.Light -> R.string.setting_theme_light
+			AppTheme.Dark -> R.string.setting_theme_dark
+		}.let { context.getString(it) }
 		
 	}
 	

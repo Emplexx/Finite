@@ -4,7 +4,7 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	tools:context=".ui.settings.SettingsActivity"
+	tools:context=".ui.settings.ColorsActivity"
 
 	android:background="?attr/background"
 	tools:background="?attr/colorSurfaceDim"
@@ -32,7 +32,7 @@
 			android:elevation="0dp"
 
 			app:navigationIcon="@drawable/ic_back_24"
-			app:title="Settings"
+			app:title="@string/setting_colors_title"
 			/>
 
 	</com.google.android.material.appbar.AppBarLayout>
@@ -123,6 +123,8 @@
 							android:layout_height="24dp"
 							android:src="@drawable/ic_brightness_low_24"
 							app:tint="?attr/colorOnSurfaceVariant"
+
+							android:contentDescription="@string/colors_brightness_lower"
 							/>
 
 						<com.google.android.material.slider.Slider
@@ -142,6 +144,8 @@
 							android:layout_height="24dp"
 							android:src="@drawable/ic_brightness_high_24"
 							app:tint="?attr/colorOnSurfaceVariant"
+
+							android:contentDescription="@string/colors_brightness_higher"
 							/>
 
 					</LinearLayout>
