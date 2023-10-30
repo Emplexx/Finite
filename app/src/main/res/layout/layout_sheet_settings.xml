@@ -54,6 +54,60 @@
 			android:layout_margin="16dp"
 			android:orientation="vertical"
 			>
+			<com.google.android.material.card.MaterialCardView
+				android:id="@+id/rowApp"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+
+				style="@style/Widget.Finite.CardView.Untoned"
+				app:cardBackgroundColor="?attr/colorSheetSurface"
+				>
+				<com.google.android.material.imageview.ShapeableImageView
+					android:layout_width="56dp"
+					android:layout_height="56dp"
+					android:layout_margin="12dp"
+
+					android:src="@drawable/ic_launcher_background"
+					android:foreground="@drawable/ic_launcher_foreground"
+
+					app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Full"
+					/>
+
+				<TextView
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+
+					android:layout_marginStart="84dp"
+
+					android:textAppearance="?attr/textAppearanceTitleMedium"
+					android:textColor="?attr/colorOnSurface"
+					android:firstBaselineToTopHeight="36dp"
+
+					android:text="@string/app_name"
+					/>
+
+				<TextView
+					android:id="@+id/version"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+
+					android:layout_gravity="bottom"
+					android:layout_marginStart="84dp"
+
+					android:textAppearance="?attr/textAppearanceBodySmall"
+					android:textColor="?attr/colorOnSurface"
+					android:alpha="0.54"
+					android:firstBaselineToTopHeight="36dp"
+					android:lastBaselineToBottomHeight="24dp"
+
+					/>
+
+			</com.google.android.material.card.MaterialCardView>
+
+			<Space
+				android:layout_width="match_parent"
+				android:layout_height="16dp"
+				/>
 
 			<com.google.android.material.card.MaterialCardView
 				android:layout_width="match_parent"

@@ -12,9 +12,8 @@ import dev.chrisbanes.insetter.applyInsetter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import moe.emi.convenience.drawable
-import moe.emi.finite.BackupActivity
+import moe.emi.finite.BuildConfig
 import moe.emi.finite.R
-import moe.emi.finite.SettingsActivity
 import moe.emi.finite.databinding.LayoutSheetSettingsBinding
 import moe.emi.finite.dump.visible
 import moe.emi.finite.service.datastore.AppSettings
@@ -23,6 +22,7 @@ import moe.emi.finite.service.datastore.appSettings
 import moe.emi.finite.service.datastore.editSettings
 import moe.emi.finite.service.datastore.set
 import moe.emi.finite.ui.currency.CurrencyPickerSheet
+import moe.emi.finite.ui.settings.backup.BackupActivity
 
 class SettingsSheet(
 	context: Context
@@ -55,6 +55,9 @@ class SettingsSheet(
 	}
 	
 	private suspend fun initLayout() {
+		
+		binding.version.text = BuildConfig.VERSION_NAME
+		
 		binding.rowCurrency.textLabel.text = "Default currency"
 		binding.rowTheme.textLabel.text = "Theme"
 		
@@ -75,6 +78,10 @@ class SettingsSheet(
 	}
 	
 	private fun initListeners() {
+		binding.rowApp.setOnClickListener {
+			context.startActivity(Intent(context, AboutActivity::class.java))
+		}
+		
 		binding.rowCurrency.root.setOnClickListener {
 			CurrencyPickerSheet(context)
 				{ currency ->

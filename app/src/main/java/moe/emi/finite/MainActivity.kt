@@ -2,6 +2,7 @@ package moe.emi.finite
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -11,7 +12,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import com.google.android.material.motion.MotionUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
@@ -19,12 +22,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import moe.emi.finite.databinding.ActivityMainBinding
 import moe.emi.finite.dump.HasSnackbarAnchor
+import moe.emi.finite.dump.invisible
 import moe.emi.finite.dump.snackbar
 import moe.emi.finite.service.datastore.AppTheme
 import moe.emi.finite.service.datastore.appSettings
 import moe.emi.finite.ui.editor.SubscriptionEditorActivity
 import moe.emi.finite.ui.home.DisplayOptionsSheet
 import moe.emi.finite.ui.settings.SettingsSheetFragment
+import com.google.android.material.R as GR
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), HasSnackbarAnchor {
@@ -39,6 +44,7 @@ class MainActivity : AppCompatActivity(), HasSnackbarAnchor {
 		}
 	}
 	
+	private lateinit var navController: NavController
 	
 	override fun onCreate(savedInstanceState: Bundle?) {
 		WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -56,22 +62,38 @@ class MainActivity : AppCompatActivity(), HasSnackbarAnchor {
 		
 		binding = ActivityMainBinding.inflate(layoutInflater)
 		setContentView(binding.root)
+		binding.bottomAppBar.behavior
+		
+		binding.bottomAppBar.addOnScrollStateChangedListener { bottomView, newState ->
+			Log.d("TAG", "bottomView $bottomView, newState $newState")
+			if (newState == 1) { // Hidden
+				MotionUtils.resolveThemeDuration(this, GR.attr.motionDurationMedium4,400).let {
+					lifecycleScope.launch {
+						delay(it.toLong())
+						runOnUiThread { bottomView.invisible = true }
+					}
+				}
+			} else if (newState == 2) {
+				bottomView.invisible = false
+//				MotionUtils.resolveThemeDuration(this, GR.attr.motionDurationLong2, 500)
+			}
+		}
 		
 //		binding.bottomAppBar.performHide(false)
 //		binding.bottomAppBar.fabCradleMargin = 16.fDp
 //		binding.bottomAppBar.cradleVerticalOffset = 0.1f
 		
 		val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
-		val navController = navHostFragment.navController
+		navController = navHostFragment.navController
 		
 		navController
 			.addOnDestinationChangedListener { controller, destination, bundle ->
 				if (destination.id != R.id.FirstFragment) {
-					setBottomBarVisibility(false)
+					binding.bottomAppBar.performHide(true)
 					binding.fab.hide()
 				}
 				else {
-					setBottomBarVisibility(true)
+					binding.bottomAppBar.performShow(true)
 					binding.fab.show()
 				}
 			}
@@ -107,6 +129,7 @@ class MainActivity : AppCompatActivity(), HasSnackbarAnchor {
 	
 	
 	fun setBottomBarVisibility(visible: Boolean) {
+		if (navController.currentDestination?.id != R.id.FirstFragment) return
 		if (visible) binding.bottomAppBar.performShow(true)
 		else binding.bottomAppBar.performHide(true)
 	}

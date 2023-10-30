@@ -76,4 +76,16 @@
         android:fontVariationSettings="'wght' 700, 'opsz' 40"
         />
 
+    <font
+        app:font="@font/dm_sans"
+        app:fontStyle="normal"
+        app:fontWeight="900"
+
+        android:font="@font/dm_sans"
+        android:fontStyle="normal"
+        android:fontWeight="900"
+
+        android:fontVariationSettings="'wght' 900, 'opsz' 40"
+        />
+
 </font-family>

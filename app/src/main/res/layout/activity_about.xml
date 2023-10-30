@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:context=".ui.settings.SettingsActivity"
+
+	android:background="?attr/background"
+	tools:background="?attr/colorSurfaceDim"
+	>
+
+	<com.google.android.material.appbar.AppBarLayout
+		android:id="@+id/appBarLayout"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+
+		android:fitsSystemWindows="true"
+
+		app:liftOnScroll="true"
+		app:liftOnScrollTargetViewId="@id/scrollView"
+
+		style="@style/Widget.Finite.AppBarLayout.Background"
+
+		tools:visibility="gone"
+		>
+
+		<com.google.android.material.appbar.MaterialToolbar
+			android:id="@+id/toolbar"
+			android:layout_width="match_parent"
+			android:layout_height="?attr/actionBarSize"
+			android:elevation="0dp"
+
+			app:navigationIcon="@drawable/ic_back_24"
+			app:title="About"
+			/>
+
+	</com.google.android.material.appbar.AppBarLayout>
+
+
+	<androidx.core.widget.NestedScrollView
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+		>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+
+			>
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+
+				android:paddingHorizontal="16dp"
+				android:layout_marginStart="40dp"
+
+				android:fontFamily="@font/font_dm_opsz40"
+				android:textFontWeight="900"
+				android:textSize="57sp"
+				android:textColor="?attr/colorOnSurface"
+
+				android:firstBaselineToTopHeight="68sp"
+				android:lastBaselineToBottomHeight="16sp"
+
+				android:text="@string/app_name_stylised"
+				/>
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+
+				android:paddingHorizontal="16dp"
+				android:layout_marginStart="40dp"
+				android:layout_marginTop="-8sp"
+
+				android:textAppearance="?attr/textAppearanceBodyLarge"
+				android:textColor="?attr/colorOnSurface"
+				android:alpha="0.54"
+
+				android:firstBaselineToTopHeight="24sp"
+				android:lastBaselineToBottomHeight="8sp"
+
+				android:text="1.0"
+				/>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+
+				android:layout_marginStart="44dp"
+				android:layout_marginEnd="16dp"
+				android:paddingVertical="12dp"
+				>
+
+				<com.google.android.material.button.MaterialButton
+					android:id="@+id/buttonPlayStore"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+
+					android:layout_marginEnd="8dp"
+					android:minWidth="0dp"
+
+					style="@style/Widget.Material3.Button.TextButton"
+
+					android:text="Play Store"
+					/>
+				<com.google.android.material.button.MaterialButton
+					android:id="@+id/buttonUpgrade"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+
+					android:layout_marginEnd="8dp"
+					android:minWidth="0dp"
+
+					style="@style/Widget.Material3.Button.TextButton"
+
+					android:text="Upgrade"
+					/>
+
+			</LinearLayout>
+
+			<com.google.android.material.divider.MaterialDivider
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				app:dividerInsetStart="56dp"
+
+				android:layout_marginTop="16dp"
+				/>
+
+
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+
+				android:paddingHorizontal="16dp"
+				android:layout_marginStart="40dp"
+
+				android:textAppearance="?attr/textAppearanceTitleMedium"
+				android:textColor="?attr/colorOnSurface"
+				android:alpha="0.54"
+
+				android:firstBaselineToTopHeight="52sp"
+				android:lastBaselineToBottomHeight="8sp"
+
+				android:text="Created by"
+				/>
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+
+				android:paddingHorizontal="16dp"
+				android:layout_marginStart="40dp"
+				android:layout_marginTop="-4sp"
+				android:layout_marginBottom="-16sp"
+
+				android:textAppearance="?attr/textAppearanceTitleLarge"
+				android:textColor="?attr/colorOnSurface"
+
+				android:firstBaselineToTopHeight="24sp"
+				android:lastBaselineToBottomHeight="16sp"
+
+				android:text="Emi"
+				/>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+
+				android:layout_marginStart="44dp"
+				android:layout_marginEnd="16dp"
+				android:paddingVertical="12dp"
+				>
+
+				<com.google.android.material.button.MaterialButton
+					android:id="@+id/buttonWebsite"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+
+					android:layout_marginEnd="8dp"
+
+					android:minWidth="0dp"
+
+					style="@style/Widget.Material3.Button.TextButton"
+
+					android:text="Website"
+					/>
+				<com.google.android.material.button.MaterialButton
+					android:id="@+id/buttonTwitter"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+
+					android:layout_marginEnd="8dp"
+					android:minWidth="0dp"
+
+					style="@style/Widget.Material3.Button.TextButton"
+
+					android:text="Twitter"
+					/>
+
+			</LinearLayout>
+
+			<com.google.android.material.divider.MaterialDivider
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				app:dividerInsetStart="56dp"
+				android:layout_marginTop="16dp"
+				/>
+
+
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+
+				android:paddingHorizontal="16dp"
+				android:layout_marginStart="40dp"
+				android:layout_marginBottom="-16sp"
+
+				android:textAppearance="?attr/textAppearanceBodySmall"
+				android:textColor="?attr/colorOnSurface"
+				android:alpha="0.54"
+
+				android:firstBaselineToTopHeight="48sp"
+				android:lastBaselineToBottomHeight="16sp"
+
+				android:text="This app does not collect any data"
+				/>
+
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+
+				android:layout_marginStart="44dp"
+				android:layout_marginEnd="16dp"
+				android:paddingVertical="12dp"
+				>
+
+				<com.google.android.material.button.MaterialButton
+					android:id="@+id/buttonLicenses"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+
+					android:layout_marginEnd="8dp"
+					android:minWidth="0dp"
+
+					style="@style/Widget.Material3.Button.TextButton"
+
+					android:text="Open-Source Licenses"
+					/>
+				<com.google.android.material.button.MaterialButton
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+
+					android:layout_marginEnd="8dp"
+					android:minWidth="0dp"
+
+					style="@style/Widget.Material3.Button.TextButton"
+
+					android:text="Twitter"
+					android:visibility="gone"
+					/>
+
+			</LinearLayout>
+
+		</LinearLayout>
+
+	</androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

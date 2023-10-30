@@ -1,4 +1,4 @@
-package moe.emi.finite
+package moe.emi.finite.ui.settings.backup
 
 import android.content.Context
 import android.net.Uri
@@ -7,6 +7,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
+import moe.emi.finite.FiniteApp
 import moe.emi.finite.service.repo.SubscriptionsRepo
 import java.io.File
 import java.io.FileInputStream

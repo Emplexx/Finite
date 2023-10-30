@@ -1,4 +1,4 @@
-package moe.emi.finite
+package moe.emi.finite.ui.settings
 
 import android.os.Build
 import android.os.Bundle
@@ -11,6 +11,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.slider.Slider
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import moe.emi.finite.R
 import moe.emi.finite.databinding.ActivitySettingsBinding
 import moe.emi.finite.dump.isDarkTheme
 import moe.emi.finite.dump.setStorable

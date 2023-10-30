@@ -43,6 +43,8 @@
 				android:firstBaselineToTopHeight="20sp"
 				android:lastBaselineToBottomHeight="8sp"
 
+				android:maxLines="1"
+
 				tools:text="Porkbun"
 				/>
 
@@ -58,6 +60,8 @@
 				android:textAppearance="?attr/textAppearanceBodySmall"
 				android:firstBaselineToTopHeight="16dp"
 				android:lastBaselineToBottomHeight="8sp"
+
+				android:maxLines="1"
 
 				tools:visibility="visible"
 				tools:text="Domain name"

@@ -1,4 +1,4 @@
-package moe.emi.finite
+package moe.emi.finite.ui.settings.backup
 
 import android.net.Uri
 import android.os.Bundle
@@ -11,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import moe.emi.finite.FiniteApp
 import moe.emi.finite.databinding.ActivityBackupBinding
 import moe.emi.finite.dump.snackbar
 import moe.emi.finite.service.repo.SubscriptionsRepo
