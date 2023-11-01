@@ -40,6 +40,8 @@ import moe.emi.finite.dump.setStatusBarThemeMatchSystem
 import moe.emi.finite.dump.snackbar
 import moe.emi.finite.dump.visible
 import moe.emi.finite.service.data.BillingPeriod
+import moe.emi.finite.service.data.Subscription.Companion.findNextPaymentInclusive
+import moe.emi.finite.service.data.Subscription.Companion.plus
 import moe.emi.finite.service.data.Timespan
 import moe.emi.finite.service.data.convert
 import moe.emi.finite.service.datastore.appSettings
@@ -86,8 +88,10 @@ class SubscriptionDetailsFragment : Fragment() {
 		}
 	} }
 	
-	lateinit var adapter: GroupieAdapter
-	val section by lazy { Section() }
+	lateinit var adapterReminders: GroupieAdapter
+	lateinit var adapterUpcoming: GroupieAdapter
+	val sectionReminders by lazy { Section() }
+	val sectionUpcoming by lazy { Section() }
 	
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -117,9 +121,13 @@ class SubscriptionDetailsFragment : Fragment() {
 			}
 		}
 		
-		adapter = GroupieAdapter()
-		adapter.add(section)
-		binding.recyclerViewReminders.adapter = adapter
+		adapterReminders = GroupieAdapter()
+		adapterReminders.add(sectionReminders)
+		binding.recyclerViewReminders.adapter = adapterReminders
+		adapterUpcoming = GroupieAdapter()
+		adapterUpcoming.add(sectionUpcoming)
+		binding.recyclerViewUpcoming.adapter = adapterUpcoming
+		
 		
 		binding.toolbar.setNavigationOnClickListener {
 			requireActivity().onBackPressedDispatcher.onBackPressed()
@@ -251,6 +259,25 @@ class SubscriptionDetailsFragment : Fragment() {
 						.let(::append)
 				}
 			}
+			
+			binding.textNotes.visible = model.notes.isNotBlank()
+			binding.textNotes.text = model.notes
+			
+			run upcoming@ {
+				model.startedOn ?: return@upcoming
+				
+				val nextPayment = model.startedOn
+					.toLocalDate()
+					.findNextPaymentInclusive(model.period)
+				val list = mutableListOf(nextPayment)
+				repeat(12) {
+					list += list.last().plus(model.period)
+				}
+				
+				list.map {
+					UpcomingPaymentAdapterItem(it, model.period)
+				}.let(sectionUpcoming::update)
+			}
 		}
 		
 		viewModel.reminders.observe(viewLifecycleOwner) { reminders ->
@@ -266,7 +293,7 @@ class SubscriptionDetailsFragment : Fragment() {
 						viewModel.deleteReminder(reminder.id)
 					}
 				)
-			}.let(section::update)
+			}.let(sectionReminders::update)
 		}
 		
 		viewModel.events.observe(viewLifecycleOwner) { it ?: return@observe

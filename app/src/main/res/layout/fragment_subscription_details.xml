@@ -195,281 +195,42 @@
 
 				/>
 
-			<LinearLayout
+			<TextView
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 
-				android:orientation="vertical"
+				android:paddingTop="16dp"
+				android:layout_marginStart="16dp"
+
+				android:textAppearance="?attr/textAppearanceLabelMedium"
+
+				android:text="Upcoming"
+				/>
+
+			<androidx.recyclerview.widget.RecyclerView
+				android:id="@+id/recyclerViewUpcoming"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+
+				app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+				android:orientation="horizontal"
+
 				android:padding="16dp"
-				>
 
-				<com.google.android.material.card.MaterialCardView
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					app:cardPreventCornerOverlap="false"
-					app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Small"
-					app:strokeColor="@android:color/transparent"
-				>
-					<LinearLayout
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:orientation="vertical"
-						>
-
-						<EditText
-							android:id="@+id/fieldName"
-							android:layout_width="match_parent"
-							android:layout_height="56dp"
-
-							android:paddingHorizontal="16dp"
-							android:background="@android:color/transparent"
-							android:textAppearance="?attr/textAppearanceBodyLarge"
-
-							android:inputType="text"
-							android:imeOptions="actionNext"
-							android:maxLength="20"
-
-							android:hint="Name"
-							/>
-
-						<com.google.android.material.divider.MaterialDivider
-							android:layout_width="match_parent"
-							android:layout_height="wrap_content"
-							app:dividerInsetStart="16dp"
-							/>
-
-						<EditText
-							android:id="@+id/fieldDescription"
-							android:layout_width="match_parent"
-							android:layout_height="56dp"
-
-							android:paddingHorizontal="16dp"
-
-							android:background="@android:color/transparent"
-							android:textAppearance="?attr/textAppearanceBodyLarge"
-
-							android:inputType="text"
-							android:imeOptions="actionNext"
-							android:maxLength="50"
-
-
-							android:hint="Short description"
-
-							tools:text="abc"
-							/>
-
-					</LinearLayout>
-				</com.google.android.material.card.MaterialCardView>
-
-				<Space
-					android:layout_width="match_parent"
-					android:layout_height="16dp"
-					/>
-
-				<com.google.android.material.card.MaterialCardView
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					app:cardPreventCornerOverlap="false"
-					app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Small"
-					app:strokeColor="@android:color/transparent"
-					>
-					<LinearLayout
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:orientation="vertical"
-						>
-
-						<LinearLayout
-							android:id="@+id/rowStartedOn"
-							android:layout_width="match_parent"
-							android:layout_height="56dp"
-							android:orientation="horizontal"
-
-							android:gravity="center|start"
-
-							android:background="?attr/selectableItemBackground"
-							>
-
-							<FrameLayout
-								android:layout_width="40dp"
-								android:layout_height="40dp"
-								android:layout_marginHorizontal="8dp"
-								>
-								<com.google.android.material.card.MaterialCardView
-									android:layout_width="28dp"
-									android:layout_height="28dp"
-									app:cardPreventCornerOverlap="false"
-									app:cardCornerRadius="4dp"
-									android:layout_gravity="center"
-									app:cardBackgroundColor="@color/red"
-									app:strokeColor="@android:color/transparent"
-									>
-									<ImageView
-										android:layout_width="20dp"
-										android:layout_height="20dp"
-										android:src="@drawable/ic_calendar_24"
-										app:tint="@color/white"
-										android:layout_gravity="center"
-										/>
-								</com.google.android.material.card.MaterialCardView>
-							</FrameLayout>
-
-							<TextView
-								android:layout_width="0dp"
-								android:layout_height="wrap_content"
-								android:layout_weight="1"
-								android:text="Started on"
-								android:textAppearance="?attr/textAppearanceTitleMedium"
-								android:textColor="?attr/colorOnSurface"
-								/>
-
-							<TextView
-								android:id="@+id/textStartedOn"
-								android:layout_width="wrap_content"
-								android:layout_height="wrap_content"
-								android:layout_marginHorizontal="16dp"
-								android:textAppearance="?attr/textAppearanceTitleMedium"
-								android:textColor="?attr/colorPrimary"
-								tools:text="13 Jul 2024"
-								/>
-
-						</LinearLayout>
-
-						<com.google.android.material.divider.MaterialDivider
-							android:layout_width="match_parent"
-							android:layout_height="wrap_content"
-							app:dividerInsetStart="56dp"
-							/>
-
-						<LinearLayout
-							android:id="@+id/rowFrequency"
-							android:layout_width="match_parent"
-							android:layout_height="56dp"
-							android:orientation="horizontal"
-
-							android:gravity="center|start"
-							android:background="?attr/selectableItemBackground"
-							>
-
-							<FrameLayout
-								android:layout_width="40dp"
-								android:layout_height="40dp"
-								android:layout_marginHorizontal="8dp"
-								>
-								<com.google.android.material.card.MaterialCardView
-									android:layout_width="28dp"
-									android:layout_height="28dp"
-									app:cardPreventCornerOverlap="false"
-									app:cardCornerRadius="4dp"
-									android:layout_gravity="center"
-									app:cardBackgroundColor="@color/mint"
-									app:strokeColor="@android:color/transparent"
-									>
-									<ImageView
-										android:layout_width="20dp"
-										android:layout_height="20dp"
-										android:src="@drawable/ic_refresh_24"
-										app:tint="@color/white"
-										android:layout_gravity="center"
-										/>
-								</com.google.android.material.card.MaterialCardView>
-							</FrameLayout>
-
-							<TextView
-								android:layout_width="0dp"
-								android:layout_height="wrap_content"
-								android:layout_weight="1"
-								android:text="Frequency"
-								android:textAppearance="?attr/textAppearanceTitleMedium"
-								android:textColor="?attr/colorOnSurface"
-								/>
-
-							<TextView
-								android:id="@+id/textFrequency"
-								android:layout_width="wrap_content"
-								android:layout_height="wrap_content"
-								android:layout_marginHorizontal="16dp"
-								android:textAppearance="?attr/textAppearanceTitleMedium"
-								android:textColor="?attr/colorPrimary"
-								tools:text="Monthly"
-								/>
-
-						</LinearLayout>
-
-					</LinearLayout>
-				</com.google.android.material.card.MaterialCardView>
-
-				<Space
-					android:layout_width="match_parent"
-					android:layout_height="16dp"
-					/>
-
-				<com.google.android.material.card.MaterialCardView
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					app:cardPreventCornerOverlap="false"
-					app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Small"
-					app:strokeColor="@android:color/transparent"
-					>
-
-					<EditText
-						android:id="@+id/fieldPaymentMethod"
-						android:layout_width="match_parent"
-						android:layout_height="56dp"
-
-						android:paddingHorizontal="16dp"
-						android:background="@android:color/transparent"
-						android:textAppearance="?attr/textAppearanceBodyLarge"
-
-						android:inputType="text"
-						android:imeOptions="actionNext"
-						android:maxLength="50"
-
-						android:hint="Payment method"
-						/>
-
-				</com.google.android.material.card.MaterialCardView>
-
-				<Space
-					android:layout_width="match_parent"
-					android:layout_height="16dp"
-					/>
-
-				<com.google.android.material.card.MaterialCardView
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					app:cardPreventCornerOverlap="false"
-					app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Small"
-					app:strokeColor="@android:color/transparent"
-					>
-					<EditText
-						android:id="@+id/fieldNotes"
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:minHeight="512dp"
-
-						android:paddingHorizontal="16dp"
-						android:paddingVertical="16dp"
-						android:elegantTextHeight="false"
-
-						android:gravity="top"
-
-						android:background="@android:color/transparent"
-						android:textAppearance="?attr/textAppearanceBodyLarge"
-
-						android:maxLength="50"
-
-
-						android:hint="Notes"
-
-						/>
-
-				</com.google.android.material.card.MaterialCardView>
-
-			</LinearLayout>
+				/>
 
 
 
+			<TextView
+				android:id="@+id/textNotes"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+
+				android:paddingTop="16dp"
+				android:layout_marginStart="16dp"
+
+				android:textAppearance="?attr/textAppearanceBodyMedium"
+				/>
 
 		</LinearLayout>
 	</androidx.core.widget.NestedScrollView>

@@ -64,4 +64,11 @@ data class BillingPeriod(
 			Timespan.Month -> Period.ofMonths(count)
 			Timespan.Year -> Period.ofYears(count)
 		}
+	
+	private val approximateLength: Int
+		get() = this.timespan.approximateMultiplier * this.count
+	
+	operator fun compareTo(other: BillingPeriod): Int {
+		return this.approximateLength - other.approximateLength
+	}
 }

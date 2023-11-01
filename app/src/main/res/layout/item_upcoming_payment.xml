@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+
+	android:layout_width="120dp"
+	android:layout_height="wrap_content"
+	xmlns:tools="http://schemas.android.com/tools"
+
+	>
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		android:paddingHorizontal="16dp"
+		>
+
+		<TextView
+			android:id="@+id/textSmall"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+
+			android:textAppearance="?attr/textAppearanceBodyMedium"
+			android:firstBaselineToTopHeight="24dp"
+			android:lastBaselineToBottomHeight="8dp"
+
+			tools:text="Jul"
+			/>
+		<TextView
+			android:id="@+id/textLarge"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+
+			android:layout_marginTop="-4dp"
+
+			android:textAppearance="?attr/textAppearanceTitleLarge"
+			android:firstBaselineToTopHeight="24dp"
+			android:lastBaselineToBottomHeight="16dp"
+
+			tools:text="31"
+			/>
+		<TextView
+			android:id="@+id/textRelative"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:visibility="gone"
+			/>
+
+	</LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

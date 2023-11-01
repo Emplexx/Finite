@@ -61,6 +61,7 @@
 
 				style="@style/Widget.Finite.CardView.Untoned"
 				app:cardBackgroundColor="?attr/colorSheetSurface"
+
 				>
 				<com.google.android.material.imageview.ShapeableImageView
 					android:layout_width="56dp"
