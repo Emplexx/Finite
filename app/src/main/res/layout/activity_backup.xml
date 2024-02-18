@@ -25,23 +25,46 @@
 		tools:visibility="gone"
 		>
 
-		<com.google.android.material.appbar.MaterialToolbar
-			android:id="@+id/toolbar"
+		<FrameLayout
 			android:layout_width="match_parent"
-			android:layout_height="?attr/actionBarSize"
-			android:elevation="0dp"
+			android:layout_height="wrap_content"
+			>
 
-			app:navigationIcon="@drawable/ic_back_24"
-			app:title="Settings"
-			/>
+			<com.google.android.material.appbar.MaterialToolbar
+				android:id="@+id/toolbar"
+				android:layout_width="match_parent"
+				android:layout_height="?attr/actionBarSize"
+				android:elevation="0dp"
+
+				app:navigationIcon="@drawable/ic_back_24"
+				app:title="@string/setting_backup_title"
+				/>
+
+
+			<com.google.android.material.progressindicator.LinearProgressIndicator
+				android:id="@+id/progressLinear"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_gravity="bottom"
+				android:indeterminate="true"
+				app:showAnimationBehavior="outward"
+				app:hideAnimationBehavior="inward"
+				android:visibility="gone"
+				/>
+
+		</FrameLayout>
 
 	</com.google.android.material.appbar.AppBarLayout>
 
 
 	<androidx.core.widget.NestedScrollView
+		android:id="@+id/scrollView"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+
+		android:clipToPadding="false"
+		android:clipChildren="false"
 		>
 
 		<LinearLayout
@@ -49,11 +72,55 @@
 			android:layout_height="wrap_content"
 			android:orientation="vertical"
 
-			android:paddingHorizontal="16dp"
-			android:paddingTop="16dp"
+			android:padding="16dp"
 			>
 
+			<include
+				android:id="@+id/headerCloud"
+				layout="@layout/preference_header"
+				/>
 
+			<com.google.android.material.card.MaterialCardView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				app:cardPreventCornerOverlap="false"
+				app:strokeColor="@android:color/transparent"
+				app:shapeAppearance="?attr/shapeAppearanceCornerSmall"
+				>
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="vertical"
+					>
+
+					<include
+						android:id="@+id/rowCloudCreate"
+						layout="@layout/preference_action"
+						/>
+					<com.google.android.material.divider.MaterialDivider
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						app:dividerInsetStart="56dp"
+						/>
+
+					<include
+						android:id="@+id/rowCloudRestore"
+						layout="@layout/preference_action"
+						/>
+
+
+				</LinearLayout>
+			</com.google.android.material.card.MaterialCardView>
+
+			<Space
+				android:layout_width="match_parent"
+				android:layout_height="16dp"
+				/>
+
+			<include
+				android:id="@+id/headerManual"
+				layout="@layout/preference_header"
+				/>
 
 			<com.google.android.material.card.MaterialCardView
 				android:layout_width="match_parent"

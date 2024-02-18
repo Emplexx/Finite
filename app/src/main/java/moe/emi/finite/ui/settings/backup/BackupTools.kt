@@ -2,112 +2,108 @@ package moe.emi.finite.ui.settings.backup
 
 import android.content.Context
 import android.net.Uri
-import androidx.sqlite.db.SimpleSQLiteQuery
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
+import moe.emi.finite.BuildConfig
 import moe.emi.finite.FiniteApp
-import moe.emi.finite.service.repo.SubscriptionsRepo
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.InputStream
-import java.io.OutputStream
+import moe.emi.finite.service.data.Reminder
+import moe.emi.finite.service.data.Subscription
+import moe.emi.finite.service.db.NotificationEntity
+import moe.emi.finite.service.db.SubscriptionEntity
 
-private suspend fun Context.prepareAndGetDbInputStream(): FileInputStream {
-	return withContext(Dispatchers.IO) {
-		FiniteApp.db.subscriptionDao()
-			.checkpoint(SimpleSQLiteQuery("pragma wal_checkpoint(full)"))
-		
-		FileInputStream(getDatabasePath("finite"))
-	}
+val jsonBackup = Json {
+	ignoreUnknownKeys = true
+	prettyPrint = true
 }
 
-private val Context.tempBackupFile: File
-	get() {
-		val dir = File(filesDir, "backup").also { if (!it.exists()) it.mkdirs() }
-		val file = File(dir.path + File.separator + "temp_backup")
-		return file
-	}
-
-private fun OutputStream.writeFrom(inputStream: InputStream) {
-	val bufferSize = 8 * 1024
-	val buffer = ByteArray(bufferSize)
-	var bytesRead: Int
-	while (inputStream.read(buffer, 0, bufferSize).also { bytesRead = it } > 0) {
-		this.write(buffer, 0, bytesRead)
-	}
-	this.flush()
-	inputStream.close()
-	this.close()
-}
-
-private fun FileInputStream.copyTo(outputStream: FileOutputStream) {
-	val fromChannel = this.channel
-	val toChannel   = outputStream.channel
-	fromChannel.transferTo(0, fromChannel.size(), toChannel)
-	fromChannel.close()
-	toChannel.close()
-}
-
-//
-
-private suspend fun Context.backupDb() {
-	withContext(Dispatchers.IO) {
-		val input = prepareAndGetDbInputStream()
-		val output = FileOutputStream(tempBackupFile)
-		if (tempBackupFile.createNewFile()) {
-			output.writeFrom(input)
-		}
-	}
-}
-
-//
-
-fun Context.writeDbToFile(uri: Uri) = flow<Int> {
-	emit(1)
-	withContext(Dispatchers.IO) {
-		val input = prepareAndGetDbInputStream()
-		val output = contentResolver.openOutputStream(uri)!! // TODO return error Int
-		
-		output.writeFrom(input)
-		
-	}
-	emit(0)
-}
-
-fun Context.readDbFromFile(uri: Uri) = flow<Int> {
-	emit(1)
-	FiniteApp.db.close()
+suspend fun createAppBackup(): AppBackup {
+	val subscriptions = FiniteApp.db.subscriptionDao()
+		.getAllObservable()
+		.first()
+		.map { Subscription(it) }
+		.map { SubscriptionBackup.from(it) }
+	val reminders = FiniteApp.db.notificationDao()
+		.getAll()
+		.first()
+		.map { Reminder(it) }
+		.map { ReminderBackup.from(it) }
 	
-	backupDb()
+	return AppBackup(
+		BuildConfig.VERSION_CODE,
+		System.currentTimeMillis(),
+		subscriptions,
+		reminders
+	)
+}
+
+suspend fun restoreAppBackup(backup: AppBackup) = runCatching {
+	val subscriptionDao = FiniteApp.db.subscriptionDao()
+	val reminderDao = FiniteApp.db.notificationDao()
 	
-	withContext(Dispatchers.IO) {
-		val input = contentResolver.openInputStream(uri) as FileInputStream
-		val output = FileOutputStream(getDatabasePath("finite"))
-		input.copyTo(output)
-		
-		input.close()
-		output.close()
-	}
+	subscriptionDao.clearAll()
+	reminderDao.clearAll()
 	
-	FiniteApp.instance.destroyDb()
-	FiniteApp.instance.initDb()
+	backup.subscriptions
+		.map { Subscription.from(it) }
+		.map { SubscriptionEntity(it) }
+		.let { subscriptionDao.insertAll(*it.toTypedArray()) }
 	
-	SubscriptionsRepo.getAllSubscriptions().first()
-		.also {
-			if (it.isEmpty()) {
-				val input = FileInputStream(tempBackupFile)
-				val output = FileOutputStream(getDatabasePath("finite"))
-				input.copyTo(output)
-				
-				
-				emit(2)
-			}
-			else {
-				tempBackupFile.also { if (it.exists()) it.delete() }
-				emit(1)
+	backup.reminders
+		.map { Reminder.from(it) }
+		.map { NotificationEntity(it) }
+		.let { reminderDao.insertAll(*it.toTypedArray()) }
+	
+	Unit
+}
+
+
+fun Context.writeBackupToFileV2(fileUri: Uri) = flow {
+	emit(Status.Loading)
+	val result = withContext(Dispatchers.IO) {
+		runCatching {
+			
+			val input = createAppBackup().serialize().byteInputStream()
+			val output = contentResolver.openOutputStream(fileUri) ?: error("Content resolver crashed.")
+			
+			input.use { i ->
+				output.use { o ->
+					i.copyTo(o)
+				}
 			}
 		}
+	}
+	result
+		.onFailure {
+			it.printStackTrace()
+			emit(Status.Error)
+		}
+		.onSuccess {
+			emit(Status.Success)
+		}
+}
+
+
+fun Context.readDbFromFileV2(fileUri: Uri) = flow {
+	emit(Status.Loading)
+	
+	val result = withContext(Dispatchers.IO) {
+		runCatching {
+			val input = contentResolver.openInputStream(fileUri) ?: error("Content resolver crashed.")
+//			val reader = BufferedReader(input.bufferedReader())
+//				.use {  }
+//			val s = StringBuilder()
+			
+			val string = input.use { it.bufferedReader().use { reader -> reader.readText() } }
+			val backup = jsonBackup.decodeFromString(AppBackup.serializer(), string)
+			
+			restoreAppBackup(backup).getOrThrow()
+		}
+	}
+	
+	result
+		.onFailure { it.printStackTrace(); emit(Status.Error) }
+		.onSuccess { emit(Status.Success) }
 }

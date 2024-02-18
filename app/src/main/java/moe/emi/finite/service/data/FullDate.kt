@@ -1,5 +1,6 @@
 package moe.emi.finite.service.data
 
+import kotlinx.serialization.SerialName
 import java.io.Serializable
 import java.time.LocalDate
 import java.time.ZoneOffset.UTC
@@ -9,17 +10,13 @@ import java.util.TimeZone
 
 @kotlinx.serialization.Serializable
 data class FullDate(
-	/**
-	 * Numeric Year (2017)
-	 */
+	@SerialName("year")
 	val year: Int,
-	/**
-	 * Numeric Month (3)
-	 */
+	
+	@SerialName("month")
 	val month: Int,
-	/**
-	 * Numeric Day (24)
-	 */
+	
+	@SerialName("day")
 	val day: Int,
 ) : Serializable, Comparable<FullDate> {
 	
@@ -65,7 +62,7 @@ data class FullDate(
 		return calendar.timeInMillis
 	}
 	
-	fun toLocalDate() = LocalDate.of(this.year, this.month, this.day)
+	fun toLocalDate(): LocalDate = LocalDate.of(this.year, this.month, this.day)
 	
 	override fun compareTo(other: FullDate): Int {
 		

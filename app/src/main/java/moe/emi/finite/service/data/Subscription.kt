@@ -1,14 +1,18 @@
 package moe.emi.finite.service.data
 
+import kotlinx.serialization.Serializable
 import moe.emi.finite.service.db.SubscriptionEntity
 import moe.emi.finite.ui.details.NotificationPeriod
-import java.io.Serializable
+import moe.emi.finite.ui.settings.backup.SubscriptionBackup
 import java.time.LocalDate
 import java.time.Period
 import java.time.temporal.ChronoUnit
+import java.io.Serializable as IOSerializable
 
-@kotlinx.serialization.Serializable
+@Serializable
 data class Subscription(
+	
+	val id: Int = 0,
 	
 	val name: String = "",
 	val description: String = "",
@@ -26,8 +30,7 @@ data class Subscription(
 	
 	val active: Boolean = true,
 	
-	val id: Int = 0,
-) : Serializable {
+) : IOSerializable {
 	
 	constructor(entity: SubscriptionEntity) : this(
 		id = entity.id,
@@ -82,6 +85,15 @@ data class Subscription(
 		}
 		fun priceComparator(from: (Currency) -> Rate, to: Rate) = compareBy<Subscription> {
 			convert(it.price, from(it.currency), to)
+		}
+		
+		
+		fun from(it: SubscriptionBackup) = it.run {
+			Subscription(
+				id, name, description, color, price, currency, startedOn,
+				BillingPeriod(period.length, period.unit),
+				paymentMethod, notes, active
+			)
 		}
 	}
 	
