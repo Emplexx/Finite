@@ -1,14 +1,16 @@
 package moe.emi.finite.service.data
 
+import kotlinx.serialization.Serializable
 import moe.emi.finite.R
-import java.io.Serializable
 import java.time.Period
+import java.io.Serializable as IOSerializable
 
-@kotlinx.serialization.Serializable
+@Serializable
+@Deprecated("Use [Period] instead")
 data class BillingPeriod(
 	val count: Int,
 	val timespan: Timespan
-) : Serializable {
+) : IOSerializable {
 	val stringId: Int? =
 		when (timespan) {
 			Timespan.Week ->
@@ -64,6 +66,8 @@ data class BillingPeriod(
 			Timespan.Month -> Period.ofMonths(count)
 			Timespan.Year -> Period.ofYears(count)
 		}
+	
+	fun toPeriod() = moe.emi.finite.ui.settings.backup.Period(count, timespan)
 	
 	private val approximateLength: Int
 		get() = this.timespan.approximateMultiplier * this.count

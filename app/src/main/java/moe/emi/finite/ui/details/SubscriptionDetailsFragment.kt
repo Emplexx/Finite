@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import moe.emi.convenience.materialColor
-import moe.emi.finite.JavaSerializable
+import moe.emi.finite.IOSerializable
 import moe.emi.finite.MainActivity
 import moe.emi.finite.MainViewModel
 import moe.emi.finite.R
@@ -368,10 +368,11 @@ class SubscriptionDetailsFragment : Fragment() {
 
 // TODO merge this with BillingPeriod because they're the same thing
 @Serializable
+@Deprecated("Use [Period] instead")
 data class NotificationPeriod(
 	val count: Int,
 	val timespan: Timespan
-) : JavaSerializable {
+) : IOSerializable {
 	
 	companion object {
 		fun BillingPeriod.toNotificationPeriod() =
@@ -384,6 +385,8 @@ data class NotificationPeriod(
 	operator fun compareTo(other: BillingPeriod): Int {
 		return this.approximateLength - other.toNotificationPeriod().approximateLength
 	}
+	
+	fun toPeriod() = moe.emi.finite.ui.settings.backup.Period(count, timespan)
 	
 	fun toJavaPeriod() =
 		when (timespan) {
