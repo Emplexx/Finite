@@ -15,7 +15,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.motion.MotionUtils
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -31,7 +30,6 @@ import moe.emi.finite.ui.home.DisplayOptionsSheet
 import moe.emi.finite.ui.settings.SettingsSheetFragment
 import com.google.android.material.R as GR
 
-@AndroidEntryPoint
 class MainActivity : AppCompatActivity(), HasSnackbarAnchor {
 	
 	private val viewModel by viewModels<MainViewModel>()

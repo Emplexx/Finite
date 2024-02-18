@@ -14,7 +14,6 @@ import codes.side.andcolorpicker.converter.toColorInt
 import codes.side.andcolorpicker.model.IntegerHSLColor
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import moe.emi.convenience.materialColor
 import moe.emi.finite.R
@@ -35,7 +34,6 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
-@AndroidEntryPoint
 class SubscriptionEditorActivity : AppCompatActivity(), HasSnackbarAnchor {
 	
 	private val viewModel by viewModels<SubscriptionEditorViewModel>()

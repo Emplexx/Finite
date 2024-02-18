@@ -3,7 +3,6 @@ package moe.emi.finite.ui.editor
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -15,7 +14,6 @@ import moe.emi.finite.service.datastore.getDraft
 import moe.emi.finite.service.db.SubscriptionEntity
 import javax.inject.Inject
 
-@HiltViewModel
 class SubscriptionEditorViewModel @Inject constructor(
 	savedState: SavedStateHandle,
 ) : ViewModel() {

@@ -45,7 +45,6 @@ import moe.emi.finite.service.data.Subscription.Companion.plus
 import moe.emi.finite.service.data.Timespan
 import moe.emi.finite.service.data.convert
 import moe.emi.finite.service.datastore.appSettings
-import moe.emi.finite.service.notifications.AlarmScheduler
 import moe.emi.finite.ui.colors.ItemColors
 import moe.emi.finite.ui.colors.PaletteTone
 import moe.emi.finite.ui.colors.makeItemColors
@@ -61,8 +60,6 @@ class SubscriptionDetailsFragment : Fragment() {
 	private val mainViewModel by activityViewModels<MainViewModel>()
 	private val viewModel by viewModels<SubscriptionDetailsViewModel>()
 	lateinit var binding: FragmentSubscriptionDetailsBinding
-	
-	val alarmScheduler by lazy { AlarmScheduler(requireContext()) }
 	
 	private val activity: MainActivity
 		get() = requireActivity() as MainActivity
