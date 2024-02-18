@@ -157,3 +157,6 @@ fun colorAnimator(
 	this.addUpdateListener(onUpdate)
 	this.doOnEnd { onEnd() }
 }
+
+fun sysTimeMillis() = System.currentTimeMillis()
+fun sysTimeSeconds() = System.currentTimeMillis() / 1_000

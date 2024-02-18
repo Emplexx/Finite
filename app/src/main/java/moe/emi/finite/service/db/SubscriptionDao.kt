@@ -26,6 +26,9 @@ interface SubscriptionDao {
 	@Query("SELECT * FROM subscriptions WHERE id = :id")
 	fun getObservable(id: Int): Flow<SubscriptionEntity?>
 	
+	@Query("DELETE FROM subscriptions")
+	fun clearAll()
+	
 	@RawQuery
 	suspend fun checkpoint(query: SimpleSQLiteQuery): Int
 	

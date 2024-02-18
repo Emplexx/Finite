@@ -4,6 +4,9 @@
 
 	<string name="action_settings">Settings</string>
 
+	<string name="action_restore">Restore</string>
+	<string name="action_cancel">Cancel</string>
+
 	<string name="editor_action_save">Save subscription</string>
 
 	<string name="editor_name">Name</string>
@@ -45,7 +48,23 @@
 	<string name="colors_brightness_higher">Higher brightness</string>
 
 	<string name="setting_backup_title">Backup</string>
+	<string name="setting_backup_cloud_title">Cloud backup</string>
+	<string name="setting_create_backup_cloud">Backup now</string>
+	<string name="setting_restore_backup_cloud">Restore</string>
+	<string name="setting_backup_local_title">Manual backup</string>
+	<string name="setting_create_backup_local">Create</string>
+	<string name="setting_restore_backup_local">Restore</string>
+	<string name="dialog_restore_title">Restore backup?</string>
+	<string name="dialog_restore_created_on">Created on %1$s</string>
+	<string name="dialog_restore_replace_subscriptions">Replace my subscriptions</string>
 
+	<string name="snackbar_invalid_file">The selected file is an invalid backup file</string>
+
+	<string name="snackbar_backup_failure">Couldn\'t create backup: %1$s</string>
+	<string name="snackbar_backup_success">Backup created successfully</string>
+
+	<string name="snackbar_restore_failure">Couldn\'t restore backup: %1$s</string>
+	<string name="snackbar_restore_success">Backup restored successfully</string>
 
 	<string name="lorem_ipsum">
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris

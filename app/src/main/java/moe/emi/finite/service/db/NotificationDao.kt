@@ -33,4 +33,7 @@ interface NotificationDao {
 	suspend fun getTest(vararg ids: Int): Map<NotificationEntity, SubscriptionEntity>
 	
 	
+	@Query("DELETE FROM notifications")
+	fun clearAll()
+	
 }

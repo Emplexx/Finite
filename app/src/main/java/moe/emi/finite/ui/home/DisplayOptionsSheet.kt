@@ -20,6 +20,7 @@ import moe.emi.finite.dump.FastOutExtraSlowInInterpolator
 import moe.emi.finite.dump.textRes
 import moe.emi.finite.dump.visible
 import moe.emi.finite.service.datastore.appSettings
+import moe.emi.finite.service.datastore.editSettings
 import moe.emi.finite.service.datastore.set
 import moe.emi.finite.service.repo.SubscriptionsRepo
 import moe.emi.finite.ui.home.enums.Sort
@@ -143,15 +144,11 @@ class DisplayOptionsSheet(
 				text = string
 				isChecked = string.lowercase() in selectedPayments.map { it.lowercase() }
 				setOnCheckedChangeListener { _, isChecked ->
-					lifecycleScope.launch {
-						
-						context.appSettings.first().let {
-							it.copy(
-								selectedPaymentMethods = if (isChecked) it.selectedPaymentMethods + string.lowercase()
-								else it.selectedPaymentMethods - string.lowercase()
-							)
-						}.set()
-						
+					editSettings {
+						it.copy(
+							selectedPaymentMethods = if (isChecked) it.selectedPaymentMethods + string.lowercase()
+							else it.selectedPaymentMethods - string.lowercase()
+						)
 					}
 				}
 			}

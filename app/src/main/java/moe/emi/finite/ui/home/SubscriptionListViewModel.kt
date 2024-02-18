@@ -14,6 +14,7 @@ import moe.emi.finite.Constant
 import moe.emi.finite.FiniteApp
 import moe.emi.finite.dump.DataStoreExt.read
 import moe.emi.finite.dump.Response
+import moe.emi.finite.dump.sysTimeSeconds
 import moe.emi.finite.service.data.Rate
 import moe.emi.finite.service.data.Subscription
 import moe.emi.finite.service.datastore.AppSettings
@@ -68,13 +69,12 @@ class SubscriptionListViewModel @Inject constructor(
 			
 			if (rates.isEmpty()) {
 				// If local rates db is empty, refresh it quietly
-				launch { RatesRepo. refreshRates() }
+				launch { RatesRepo.refreshRates() }
 				emptyList<Subscription>()
 			} else {
 				
 				// If local rates db is outdated, refresh it informing the user
-				if (lastUpdated < System.currentTimeMillis() / 1000 - Constant.RatesUpdateInterval)
-					updateRates()
+				if (lastUpdated < sysTimeSeconds() - Constant.RatesUpdateInterval) updateRates()
 				
 				this@SubscriptionListViewModel.rates = rates
 				this@SubscriptionListViewModel.settings = appSettings

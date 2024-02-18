@@ -38,8 +38,7 @@ object RatesRepo {
 			.ifSuccess { data ->
 				FiniteApp.instance.storeGeneral.write(Keys.RatesLastUpdated, data.timestamp)
 				dao.insertAll(
-					*
-					data.listRates
+					rates = data.listRates
 						.map { RateEntity(it.code, it.rate) }
 						.toTypedArray()
 				)
@@ -56,6 +55,7 @@ object RatesRepo {
 	}
 	
 	@Deprecated("Keeping it for keepsake purposes")
+	// NO LONGER USED!
 	suspend fun updateRates(): Response<Rates> {
 		
 		// Get local rates from DB and last updated timestamp
@@ -69,7 +69,6 @@ object RatesRepo {
 		var response: Response<Rates> = Response.Success(Rates(rates = rates, lastUpdated = Date(lastUpdated * 1000L)))
 		
 		// If no rates in DB, get them from the api
-		// TODO also add check if the lastUpdated was longer than week/month/etc ago
 		if (rates.isEmpty()) {
 			response = apiClient.getLatestRates()
 				.also { Log.d("TAG", "$it")

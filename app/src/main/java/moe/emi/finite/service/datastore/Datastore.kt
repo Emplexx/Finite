@@ -19,7 +19,7 @@ import moe.emi.finite.service.data.Subscription
 val Context.storeGeneral: DataStore<Preferences> by preferencesDataStore("General")
 
 object Keys {
-	// App stuff
+	// Last time rates were updated, in unix epoch seconds
 	val RatesLastUpdated = longPreferencesKey("ratesLastUpdated")
 	
 	val Draft = stringPreferencesKey("draft")

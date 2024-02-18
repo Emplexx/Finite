@@ -1,13 +1,10 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-
-    id 'kotlin-kapt'
     id 'com.google.dagger.hilt.android'
-
     id 'androidx.navigation.safeargs.kotlin'
-
     id 'org.jetbrains.kotlin.plugin.serialization' version '1.9.0'
+    id 'com.google.devtools.ksp'
 }
 
 def localPropertiesFile = rootProject.file("local.properties")
@@ -25,10 +22,14 @@ android {
         versionCode 1
         versionName "0.0"
 
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
-            }
+//        javaCompileOptions {
+//            annotationProcessorOptions {
+//                arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
+//            }
+//        }
+
+        ksp {
+            arg("room.schemaLocation", "$projectDir/schemas")
         }
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -37,7 +38,11 @@ android {
     }
 
     buildTypes {
+        debug {
+//            applicationIdSuffix ".debug"
+        }
         release {
+            applicationIdSuffix ".preview"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -92,13 +97,13 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:4.11.0'
 
     // Hilt
-    implementation 'com.google.dagger:hilt-android:2.46.1'
-    kapt 'com.google.dagger:hilt-compiler:2.46.1'
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    ksp "com.google.dagger:hilt-compiler:$hilt_version"
 
     def room_version = "2.6.0"
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
-    kapt "androidx.room:room-compiler:$room_version"
+    ksp "androidx.room:room-compiler:$room_version"
 
     // Data store
     implementation "androidx.datastore:datastore-preferences:1.0.0"
