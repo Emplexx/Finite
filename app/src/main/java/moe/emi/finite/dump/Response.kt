@@ -1,11 +1,6 @@
 package moe.emi.finite.dump
 
-import androidx.datastore.preferences.protobuf.Api
 import com.slack.eithernet.ApiResult
-import moe.emi.finite.service.api.ApiError
-import kotlin.contracts.ExperimentalContracts
-import kotlin.contracts.InvocationKind
-import kotlin.contracts.contract
 
 sealed class Response<out T> {
 	
@@ -51,7 +46,7 @@ sealed class Response<out T> {
 		return this
 	}
 	
-	fun ifFailure(block: (Exception) -> Unit): Response<T> {
+	inline fun ifFailure(block: (Exception) -> Unit): Response<T> {
 		if (this is Failure) block((this).e)
 		return this
 	}

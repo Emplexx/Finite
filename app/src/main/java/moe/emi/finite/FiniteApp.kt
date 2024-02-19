@@ -84,13 +84,13 @@ class FiniteApp : Application() {
 		
 		dbInstance = Room
 			.databaseBuilder(this, FiniteDB::class.java, "finite")
+			
+			// TODO REMOVE THIS IN PROD
 			.fallbackToDestructiveMigration()
+			
 			.setJournalMode(RoomDatabase.JournalMode.TRUNCATE)
 			.build()
 	}
-	
-	// TODO does't fix the issue of having to restart the app so fix it
-	fun destroyDb() { dbInstance = null }
 	
 	@OptIn(DelicateCoroutinesApi::class)
 	fun setupNotifications() {
