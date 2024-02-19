@@ -22,7 +22,7 @@ class MainViewModel @Inject constructor(
 	val ratesUpdateState = MutableStateFlow<Status?>(null)
 	
 	fun tryUpdateRates() = viewModelScope.launch {
-//		RatesRepo.shouldRefreshRates().also { if (!it) return@launch }
+		RatesRepo.shouldRefreshRates().also { if (!it) return@launch }
 		
 		ratesUpdateState.emit(Status.Loading)
 		
