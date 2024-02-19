@@ -1,6 +1,5 @@
 package moe.emi.finite.ui.home
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -25,18 +24,10 @@ class SubscriptionListViewModel @Inject constructor(
 ) : ViewModel() {
 	
 	// TODO Save this in data store
-	val totalViewFlow = savedState.getStateFlow("Total", TotalView.Monthly)
+	private val totalViewFlow = savedState.getStateFlow("Total", TotalView.Monthly)
 	var totalView: TotalView
 		get() = savedState["Total"] ?: TotalView.Monthly
 		set(value) { savedState["Total"] = value }
-	
-	
-	private val _subscriptions by lazy { MutableLiveData<
-			List<Subscription>
-			>() }
-//	val subscriptions: LiveData<
-//			List<Subscription>
-//			> get() = _subscriptions
 	
 	
 	private val localRatesFlow = RatesRepo.getLocalRates()
