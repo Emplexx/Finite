@@ -21,7 +21,7 @@ class SubscriptionDetailsViewModel @Inject constructor(
 	private val alarmScheduler: AlarmScheduler
 ) : ViewModel() {
 	
-	val entityId = savedState.get<Int>("ID")!!
+	val entityId: Int = requireNotNull(savedState["ID"])
 	val subscription = SubscriptionsRepo.getSubscription(entityId).asLiveData()
 	val reminders = NotificationRepo.dao.getBySubscriptionId(entityId).map {
 		it.map { Reminder(it) }
@@ -63,5 +63,14 @@ class SubscriptionDetailsViewModel @Inject constructor(
 			if (it.isSuccess) alarmScheduler.removeAlarms(id)
 		}
 	}
+
+//	companion object {
+//		val Factory: ViewModelProvider.Factory = viewModelFactory {
+//			initializer {
+//				val ssh = createSavedStateHandle()
+//				val myRepository = this[APPLICATION_KEY]
+//			}
+//		}
+//	}
 	
 }

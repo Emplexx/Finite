@@ -1,7 +1,6 @@
-package moe.emi.finite.service.api
+package moe.emi.finite.service.api.old
 
 import com.squareup.moshi.JsonClass
-import moe.emi.finite.service.data.Currency
 import java.util.AbstractMap
 
 // http://api.exchangeratesapi.io/v1/latest
@@ -30,13 +29,3 @@ object Latest {
 	
 }
 
-data class ExchangeRates(
-	val base: Currency,
-	val timestamp: Long,
-	val rates: List<Rate>
-)
-
-data class Rate(
-	val currency: Currency,
-	val value: Double,
-)

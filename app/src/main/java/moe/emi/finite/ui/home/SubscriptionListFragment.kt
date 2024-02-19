@@ -74,7 +74,7 @@ class SubscriptionListFragment : Fragment() {
 		binding = FragmentSubscriptionsListBinding.inflate(inflater, container, false)
 		return binding.root
 	}
-	
+
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		
@@ -100,12 +100,12 @@ class SubscriptionListFragment : Fragment() {
 	}
 	
 	private fun initViews() {
-		adapter = GroupieAdapter()
 		
-		adapter.add(sectionHeader)
-		adapter.add(sectionActive)
-//		sectionInactive.setHeader(expandableHeader)
-//		adapter.add(sectionInactive)
+		if (::adapter.isInitialized.not()) adapter = GroupieAdapter().also { adapter ->
+			adapter.add(sectionHeader)
+			adapter.add(sectionActive)
+		}
+		
 		binding.recyclerView.adapter = adapter
 		binding.recyclerView.addItemDecoration(
 			AutoLayoutDecoration(
@@ -135,8 +135,10 @@ class SubscriptionListFragment : Fragment() {
 			
 			val (active, inactive) = subscriptions.partition { it.model.active }
 			
-			sectionActive.update(active.map(newItemMapper))
-			sectionInactive.update(inactive.map(newItemMapper))
+			sectionActive.update(active.map(newItemMapper), false)
+			sectionInactive.update(inactive.map(newItemMapper), false)
+			
+			
 			
 			if (inactive.isEmpty()) {
 				adapter.getAdapterPosition(sectionInactive).let { if (it != -1) adapter.remove(sectionInactive) }

@@ -4,6 +4,8 @@ import android.animation.Animator
 import android.content.res.ColorStateList
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.transition.ChangeBounds
 import androidx.transition.Fade
 import androidx.transition.TransitionManager
@@ -14,7 +16,6 @@ import com.xwray.groupie.viewbinding.BindableItem
 import moe.emi.finite.R
 import moe.emi.finite.databinding.ItemSubscriptionBinding
 import moe.emi.finite.dump.FastOutExtraSlowInInterpolator
-import moe.emi.finite.dump.gone
 import moe.emi.finite.dump.visible
 import moe.emi.finite.service.data.Currency
 import moe.emi.finite.service.data.Subscription
@@ -143,9 +144,9 @@ class SubscriptionAdapterItem(
 		
 		if (!animate) {
 			if (convertedAmount.amountMatchedToTimeframe != convertedAmount.amountOriginal) {
-				binding.textPriceSubtitle.visible = true
+				binding.textPriceSubtitle.isVisible = true
 			} else {
-				binding.textPriceSubtitle.gone = true
+				binding.textPriceSubtitle.isGone = true
 			}
 		}
 		
@@ -221,7 +222,7 @@ class SubscriptionAdapterItem(
 //					override fun onAnimationCancel(animation: Animator) = Unit
 //					override fun onAnimationRepeat(animation: Animator) = Unit
 //				})
-			binding.textPriceSubtitle.gone = true
+			binding.textPriceSubtitle.isGone = true
 		}
 		
 //		if (convertedAmount.amountMatchedToTimeframe != convertedAmount.amountOriginal

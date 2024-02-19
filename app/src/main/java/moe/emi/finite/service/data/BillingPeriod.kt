@@ -11,6 +11,7 @@ data class BillingPeriod(
 	val count: Int,
 	val timespan: Timespan
 ) : IOSerializable {
+	
 	val stringId: Int? =
 		when (timespan) {
 			Timespan.Week ->

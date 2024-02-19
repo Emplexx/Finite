@@ -83,6 +83,45 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
+    def arrow_version = "1.2.0"
+    implementation("io.arrow-kt:arrow-core:$arrow_version")
+    implementation("io.arrow-kt:arrow-fx-coroutines:$arrow_version")
+
+    def fuel_version = '3.0.0-alpha1'
+    implementation("com.github.kittinunf.fuel:fuel:$fuel_version")
+    implementation("com.github.kittinunf.fuel:fuel-kotlinx-serialization:$fuel_version")
+
+    def room_version = "2.6.0"
+    implementation "androidx.room:room-runtime:$room_version"
+    implementation "androidx.room:room-ktx:$room_version"
+    ksp "androidx.room:room-compiler:$room_version"
+
+    // Hilt
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    ksp "com.google.dagger:hilt-compiler:$hilt_version"
+
+    // Data store
+    implementation "androidx.datastore:datastore-preferences:1.0.0"
+    implementation "me.msoul:datastoreext:1.0.0"
+
+    // Groupie
+    def groupie_version = '2.10.1'
+    implementation("com.github.lisawray.groupie:groupie:$groupie_version")
+    implementation("com.github.lisawray.groupie:groupie-viewbinding:$groupie_version")
+
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0"
+
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.9.10"
+
+    implementation("androidx.palette:palette:1.0.0")
+    implementation 'com.robinhood.ticker:ticker:2.0.4'
+    implementation "dev.chrisbanes.insetter:insetter:0.6.1"
+    implementation "codes.side:andcolorpicker:0.6.2"
+
+
+
+
+
     // Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'
@@ -96,42 +135,4 @@ dependencies {
     // OkHttp
     implementation 'com.squareup.okhttp3:logging-interceptor:4.11.0'
 
-    // Hilt
-    implementation "com.google.dagger:hilt-android:$hilt_version"
-    ksp "com.google.dagger:hilt-compiler:$hilt_version"
-
-    def room_version = "2.6.0"
-    implementation "androidx.room:room-runtime:$room_version"
-    implementation "androidx.room:room-ktx:$room_version"
-    ksp "androidx.room:room-compiler:$room_version"
-
-    // Data store
-    implementation "androidx.datastore:datastore-preferences:1.0.0"
-    implementation "me.msoul:datastoreext:1.0.0"
-
-    // Groupie
-    def groupie_version = '2.10.1'
-    implementation("com.github.lisawray.groupie:groupie:$groupie_version")
-    implementation("com.github.lisawray.groupie:groupie-viewbinding:$groupie_version")
-
-    // Palette API
-    implementation("androidx.palette:palette:1.0.0")
-
-    // Cool TextView
-    implementation 'com.robinhood.ticker:ticker:2.0.4'
-
-
-    implementation "dev.chrisbanes.insetter:insetter:0.6.1"
-
-    implementation "codes.side:andcolorpicker:0.6.2"
-
-    implementation "org.jetbrains.kotlin:kotlin-reflect:1.9.10"
-    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0"
-
-    implementation("io.arrow-kt:arrow-core:1.2.0")
-    implementation("io.arrow-kt:arrow-fx-coroutines:1.2.0")
-
-    def fuel_version = '3.0.0-alpha1'
-    implementation("com.github.kittinunf.fuel:fuel:$fuel_version")
-    implementation("com.github.kittinunf.fuel:fuel-kotlinx-serialization:$fuel_version")
 }

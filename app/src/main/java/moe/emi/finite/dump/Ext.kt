@@ -30,13 +30,13 @@ var View.visible: Boolean
 	get() = this.visibility == View.VISIBLE
 	set(value) { this.visibility = if (value) View.VISIBLE else View.GONE }
 
-var View.gone: Boolean
-	get() = this.visibility == View.GONE
-	set(value) { this.visibility = if (value) View.GONE else View.VISIBLE }
+//var View.gone: Boolean
+//	get() = this.visibility == View.GONE
+//	set(value) { this.visibility = if (value) View.GONE else View.VISIBLE }
 
-var View.invisible: Boolean
-	get() = this.visibility == View.INVISIBLE
-	set(value) { this.visibility = if (value) View.INVISIBLE else View.VISIBLE }
+//var View.invisible: Boolean
+//	get() = this.visibility == View.INVISIBLE
+//	set(value) { this.visibility = if (value) View.INVISIBLE else View.VISIBLE }
 
 @get:CheckResult("Set-only property. Getting this property is an error and will throw")
 var <T : TextView> T.textRes: Int
@@ -157,6 +157,3 @@ fun colorAnimator(
 	this.addUpdateListener(onUpdate)
 	this.doOnEnd { onEnd() }
 }
-
-fun sysTimeMillis() = System.currentTimeMillis()
-fun sysTimeSeconds() = System.currentTimeMillis() / 1_000

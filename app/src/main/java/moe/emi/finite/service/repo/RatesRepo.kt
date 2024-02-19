@@ -11,7 +11,7 @@ import moe.emi.finite.dump.DataStoreExt.read
 import moe.emi.finite.dump.DataStoreExt.write
 import moe.emi.finite.dump.Response
 import moe.emi.finite.dump.Response.Companion.toResponse
-import moe.emi.finite.service.api.apiClient
+import moe.emi.finite.service.api.old.apiClient
 import moe.emi.finite.service.data.Rate
 import moe.emi.finite.service.data.Rates
 import moe.emi.finite.service.datastore.Keys

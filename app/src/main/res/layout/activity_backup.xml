@@ -81,6 +81,7 @@
 				/>
 
 			<com.google.android.material.card.MaterialCardView
+				android:id="@+id/cardCloud"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				app:cardPreventCornerOverlap="false"
@@ -113,6 +114,7 @@
 			</com.google.android.material.card.MaterialCardView>
 
 			<Space
+				android:id="@+id/spacerCloud"
 				android:layout_width="match_parent"
 				android:layout_height="16dp"
 				/>

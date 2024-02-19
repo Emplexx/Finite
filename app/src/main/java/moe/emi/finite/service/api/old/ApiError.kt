@@ -1,4 +1,4 @@
-package moe.emi.finite.service.api
+package moe.emi.finite.service.api.old
 
 import com.squareup.moshi.JsonClass
 

@@ -9,6 +9,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.WindowCompat
+import androidx.core.view.isInvisible
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -23,7 +24,6 @@ import moe.emi.finite.databinding.ActivityMainBinding
 import moe.emi.finite.dump.HasSnackbarAnchor
 import moe.emi.finite.dump.Length
 import moe.emi.finite.dump.collectOn
-import moe.emi.finite.dump.invisible
 import moe.emi.finite.dump.snackbar
 import moe.emi.finite.service.datastore.AppTheme
 import moe.emi.finite.service.datastore.appSettings
@@ -72,11 +72,11 @@ class MainActivity : AppCompatActivity(), HasSnackbarAnchor {
 				MotionUtils.resolveThemeDuration(this, GR.attr.motionDurationMedium4,400).let {
 					lifecycleScope.launch {
 						delay(it.toLong())
-						runOnUiThread { bottomView.invisible = true }
+						runOnUiThread { bottomView.isInvisible = true }
 					}
 				}
 			} else if (newState == 2) {
-				bottomView.invisible = false
+				bottomView.isInvisible = false
 //				MotionUtils.resolveThemeDuration(this, GR.attr.motionDurationLong2, 500)
 			}
 		}

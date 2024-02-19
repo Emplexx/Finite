@@ -53,6 +53,8 @@ class BackupActivity : AppCompatActivity() {
 	private fun initLayout() {
 		
 		// Hide cloud backup stuff because it's not implemented yet
+		binding.cardCloud.isGone = true
+		binding.spacerCloud.isGone = true
 		listOf(
 			binding.headerCloud,
 			binding.rowCloudCreate,

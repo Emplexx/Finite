@@ -1,24 +1,20 @@
-package moe.emi.finite.service.api
+package moe.emi.finite.service.api.old
 
 import com.slack.eithernet.ApiResult
 import com.slack.eithernet.ApiResultCallAdapterFactory
 import com.slack.eithernet.ApiResultConverterFactory
 import com.slack.eithernet.DecodeErrorBody
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.Types
 import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import moe.emi.finite.BuildConfig
 import okhttp3.OkHttpClient
-import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
 import retrofit2.http.GET
 import retrofit2.http.Query
-import java.lang.reflect.Type
 import java.util.Date
 
 const val baseUrl = "http://api.exchangeratesapi.io/v1/"

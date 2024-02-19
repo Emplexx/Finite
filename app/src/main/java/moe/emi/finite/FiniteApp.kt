@@ -71,6 +71,7 @@ class FiniteApp : Application() {
 			R.color.red,
 			R.color.mint,
 			R.color.pink,
+			R.color.blue
 		).toIntArray()
 		
 		val harmonyOptions = HarmonizedColorsOptions.Builder()

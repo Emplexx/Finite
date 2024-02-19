@@ -70,8 +70,8 @@ class SettingsSheet(
 		}
 		binding.rowBackup.apply {
 			layoutIcon.visible = true
-			icon.setImageDrawable(context.drawable(R.drawable.ic_back_24))
-			backgroundColor.setCardBackgroundColor(context.getColor(R.color.black))
+			icon.setImageDrawable(context.drawable(R.drawable.ic_backup_restore_24))
+			backgroundColor.setCardBackgroundColor(context.getColor(R.color.blue))
 			textLabel.setText(R.string.setting_backup_title)
 			textValue.visible = false
 		}
