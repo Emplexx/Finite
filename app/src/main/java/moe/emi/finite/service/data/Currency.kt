@@ -204,4 +204,8 @@ enum class Currency(
 		return this.any { it.directionality == CharDirectionality.RIGHT_TO_LEFT_ARABIC }
 	}
 	
+	companion object {
+		fun ofIsoA3Code(code: String) = entries.find { it.iso4217Alpha == code }
+	}
+	
 }

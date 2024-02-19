@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import moe.emi.finite.FiniteApp
+import moe.emi.finite.di.NetworkModule
 import moe.emi.finite.dump.DataStoreExt.read
 import moe.emi.finite.dump.DataStoreExt.write
 import moe.emi.finite.dump.Response
@@ -22,11 +23,26 @@ object RatesRepo {
 	
 	private const val TAG = "RatesRepo"
 	private val dao by lazy { FiniteApp.db.rateDao() }
+	private val ratesApi by lazy { NetworkModule.getRatesApi() }
 	
-	/**
-	 * Makes a request to the API, refreshes the rates in the local DB if successful
-	 */
+	
+	// Makes a request to the API, refreshes the rates in the local DB if successful
 	suspend fun refreshRates(): Response<Nothing?> =
+		ratesApi.getRates()
+			.onRight { data ->
+				FiniteApp.instance.storeGeneral.write(Keys.RatesLastUpdated, data.timestamp)
+				dao.insertAll(
+					rates = data.rates
+						.map { RateEntity(it.currency.iso4217Alpha, it.value) }
+						.toTypedArray()
+				)
+			}
+			.fold(
+				{ Response.Failure(Exception("$it")) },
+				{ Response.Success(null) }
+			)
+	
+	suspend fun _refreshRates(): Response<Nothing?> =
 		apiClient.getLatestRates()
 			.also {
 				Log.d(TAG, "$it")
@@ -53,6 +69,16 @@ object RatesRepo {
 				list.map { Rate(it.code, it.rate) }
 			}
 	}
+	
+	
+	suspend fun shouldRefreshRates(): Boolean {
+		if (getLocalRates().first().isEmpty()) return true
+		return FiniteApp.instance.storeGeneral
+			.read(Keys.RatesLastUpdated, 0L).first()
+			.let { ratesApi.shouldRefresh(it) }
+//			.let { if (!it) return@launch }
+	}
+	
 	
 	@Deprecated("Keeping it for keepsake purposes")
 	// NO LONGER USED!

@@ -10,11 +10,8 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
-import moe.emi.finite.Constant
 import moe.emi.finite.FiniteApp
 import moe.emi.finite.dump.DataStoreExt.read
-import moe.emi.finite.dump.Response
-import moe.emi.finite.dump.sysTimeSeconds
 import moe.emi.finite.service.data.Rate
 import moe.emi.finite.service.data.Subscription
 import moe.emi.finite.service.datastore.AppSettings
@@ -67,14 +64,8 @@ class SubscriptionListViewModel @Inject constructor(
 			FiniteApp.instance.appSettings,
 		) { subscriptions, rates, lastUpdated, appSettings ->
 			
-			if (rates.isEmpty()) {
-				// If local rates db is empty, refresh it quietly
-				launch { RatesRepo.refreshRates() }
-				emptyList<Subscription>()
-			} else {
-				
-				// If local rates db is outdated, refresh it informing the user
-				if (lastUpdated < sysTimeSeconds() - Constant.RatesUpdateInterval) updateRates()
+			if (rates.isEmpty()) { emptyList<Subscription>() }
+			else {
 				
 				this@SubscriptionListViewModel.rates = rates
 				this@SubscriptionListViewModel.settings = appSettings
@@ -101,16 +92,5 @@ class SubscriptionListViewModel @Inject constructor(
 				_subscriptions.postValue(it)
 			}
 	}
-	
-	
-	private val _ratesUpdateState by lazy { MutableLiveData<Response<Nothing?>>() }
-	val ratesUpdateState: LiveData<Response<Nothing?>> get() = _ratesUpdateState
-	
-	private fun updateRates() = viewModelScope.launch {
-		_ratesUpdateState.postValue(Response.Loading)
-		RatesRepo.refreshRates().also { _ratesUpdateState.postValue(it) }
-	}
-	
-	
 	
 }

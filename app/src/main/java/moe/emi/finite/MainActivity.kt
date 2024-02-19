@@ -3,8 +3,6 @@ package moe.emi.finite
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -15,12 +13,16 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.motion.MotionUtils
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import moe.emi.finite.databinding.ActivityMainBinding
 import moe.emi.finite.dump.HasSnackbarAnchor
+import moe.emi.finite.dump.Length
+import moe.emi.finite.dump.collectOn
 import moe.emi.finite.dump.invisible
 import moe.emi.finite.dump.snackbar
 import moe.emi.finite.service.datastore.AppTheme
@@ -28,8 +30,10 @@ import moe.emi.finite.service.datastore.appSettings
 import moe.emi.finite.ui.editor.SubscriptionEditorActivity
 import moe.emi.finite.ui.home.DisplayOptionsSheet
 import moe.emi.finite.ui.settings.SettingsSheetFragment
+import moe.emi.finite.ui.settings.backup.Status
 import com.google.android.material.R as GR
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity(), HasSnackbarAnchor {
 	
 	private val viewModel by viewModels<MainViewModel>()
@@ -117,10 +121,28 @@ class MainActivity : AppCompatActivity(), HasSnackbarAnchor {
 			}
 		}
 		
+		
+		
+		viewModel.tryUpdateRates()
+		
 		viewModel.messages.observe(this) { it ?: return@observe
 			if (!it.consumed) when (it.key) {
 				"Delete" -> lifecycleScope.launch { delay(500)
 					binding.root.snackbar("Subscription deleted") }
+			}
+		}
+		
+		viewModel.ratesUpdateState.filterNotNull().collectOn(this) {
+			when (it) {
+				Status.Loading -> binding.root.snackbar("Updating currency rates...")
+				
+				Status.Error -> binding.root.snackbar(
+					"Error updating currency rates",
+					"Retry",
+					Length.Indefinite
+				) { viewModel.tryUpdateRates() }
+				
+				Status.Success -> Unit
 			}
 		}
 	}
@@ -132,21 +154,21 @@ class MainActivity : AppCompatActivity(), HasSnackbarAnchor {
 		else binding.bottomAppBar.performHide(true)
 	}
 	
-	override fun onCreateOptionsMenu(menu: Menu): Boolean {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		menuInflater.inflate(R.menu.menu_main, menu)
-		return true
-	}
-	
-	override fun onOptionsItemSelected(item: MenuItem): Boolean {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		return when (item.itemId) {
-			R.id.action_settings -> true
-			else -> super.onOptionsItemSelected(item)
-		}
-	}
+//	override fun onCreateOptionsMenu(menu: Menu): Boolean {
+//		// Inflate the menu; this adds items to the action bar if it is present.
+//		menuInflater.inflate(R.menu.menu_main, menu)
+//		return true
+//	}
+//
+//	override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//		// Handle action bar item clicks here. The action bar will
+//		// automatically handle clicks on the Home/Up button, so long
+//		// as you specify a parent activity in AndroidManifest.xml.
+//		return when (item.itemId) {
+//			R.id.action_settings -> true
+//			else -> super.onOptionsItemSelected(item)
+//		}
+//	}
 	
 	override val snackbarAnchor: View
 		get() = binding.fab

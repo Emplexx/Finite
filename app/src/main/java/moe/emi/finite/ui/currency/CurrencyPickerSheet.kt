@@ -7,11 +7,17 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.xwray.groupie.GroupieAdapter
 import com.xwray.groupie.Section
 import dev.chrisbanes.insetter.applyInsetter
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.update
 import moe.emi.finite.databinding.LayoutSheetCurrencyBinding
 import moe.emi.finite.dump.AlphaOnLiftListener
+import moe.emi.finite.dump.collectOn
 import moe.emi.finite.dump.deco.tableViewDecor
+import moe.emi.finite.dump.requestDisplayDimensions
 import moe.emi.finite.dump.setLiftOnScrollListener
 import moe.emi.finite.service.data.Currency
+import moe.emi.finite.service.repo.RatesRepo
 
 class CurrencyPickerSheet(
 	context: Context,
@@ -25,8 +31,24 @@ class CurrencyPickerSheet(
 	private val adapter by lazy { GroupieAdapter() }
 	private val section by lazy { Section() }
 	
-	private val list = Currency.values().toList()
-	private var filteredList = list
+//  private val list = Currency.values().toList()
+	private val availableRates = RatesRepo.getLocalRates()
+//	private val list = RatesRepo.getLocalRates()
+	
+	private val searchQuery = MutableStateFlow("")
+	
+	private val listState = availableRates
+		.combine(searchQuery) { rates, query ->
+			val available = rates.mapNotNull { Currency.ofIsoA3Code(it.code) }.sorted()
+			
+			if (query.isBlank()) available
+			else available.filter {
+				it.iso4217Alpha.lowercase().contains(query.lowercase())
+						|| it.fullName(context).lowercase().contains(query.lowercase())
+			}
+		}
+	
+//	private var filteredList = list
 	
 	override fun onStart() {
 		super.onStart()
@@ -44,6 +66,11 @@ class CurrencyPickerSheet(
 		}
 		behavior.state = BottomSheetBehavior.STATE_EXPANDED
 		behavior.skipCollapsed = true
+		window?.let {
+			val (_, height) = requestDisplayDimensions(it)
+			behavior.peekHeight = height
+			binding.root.minimumHeight = height
+		}
 		
 		adapter.add(section)
 		
@@ -51,26 +78,38 @@ class CurrencyPickerSheet(
 		binding.recyclerView.addItemDecoration(decorator)
 		
 		binding.recyclerView.adapter = adapter
-		updateRecycler()
+//		updateRecycler()
 		
 		binding.searchBar.field.doAfterTextChanged { editable ->
-			filteredList =
-				if (editable.isNullOrBlank()) list
-				else list.filter {
-					it.iso4217Alpha.lowercase().contains(editable.toString().lowercase())
-							|| it.fullName(context).lowercase().contains(editable.toString().lowercase())
-				}
-			updateRecycler()
+//			filteredList =
+//				if (editable.isNullOrBlank()) list
+//				else list.filter {
+//					it.iso4217Alpha.lowercase().contains(editable.toString().lowercase())
+//							|| it.fullName(context).lowercase().contains(editable.toString().lowercase())
+//				}
+//			updateRecycler()
+			searchQuery.update { editable?.toString() ?: "" }
 		}
+		
+		listState.collectOn(this) { list ->
+			list
+				.map {
+					CurrencyAdapterItem(it) {
+						selectAndDismiss(it)
+					}
+				}
+				.let(section::update)
+		}
+		
 	}
 	
-	private fun updateRecycler() {
-		section.update(filteredList.map {
-			CurrencyAdapterItem(it) {
-				selectAndDismiss(it)
-			}
-		})
-	}
+//	private fun updateRecycler() {
+//		section.update(filteredList.map {
+//			CurrencyAdapterItem(it) {
+//				selectAndDismiss(it)
+//			}
+//		})
+//	}
 	
 	private fun selectAndDismiss(currency: Currency) {
 		onSelect(currency)

@@ -127,4 +127,11 @@ dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-reflect:1.9.10"
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0"
+
+    implementation("io.arrow-kt:arrow-core:1.2.0")
+    implementation("io.arrow-kt:arrow-fx-coroutines:1.2.0")
+
+    def fuel_version = '3.0.0-alpha1'
+    implementation("com.github.kittinunf.fuel:fuel:$fuel_version")
+    implementation("com.github.kittinunf.fuel:fuel-kotlinx-serialization:$fuel_version")
 }

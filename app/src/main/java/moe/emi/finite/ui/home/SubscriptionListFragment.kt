@@ -19,7 +19,6 @@ import dev.chrisbanes.insetter.applyInsetter
 import moe.emi.finite.MainActivity
 import moe.emi.finite.R
 import moe.emi.finite.databinding.FragmentSubscriptionsListBinding
-import moe.emi.finite.dump.Response
 import moe.emi.finite.dump.forEvery
 import moe.emi.finite.dump.iDp
 import moe.emi.finite.dump.snackbar
@@ -178,14 +177,6 @@ class SubscriptionListFragment : Fragment() {
 			}
 			sectionInactive.forEvery<SubscriptionAdapterItem> {
 				it.updateShowTimeLeft(bool)
-			}
-		}
-		
-		viewModel.ratesUpdateState.observe(viewLifecycleOwner) { response ->
-			when (response) {
-				Response.Loading -> binding.root.snackbar("Updating currency rates...")
-				is Response.Failure -> binding.root.snackbar("Error updating currency rates")
-				is Response.Success -> Unit
 			}
 		}
 	}
