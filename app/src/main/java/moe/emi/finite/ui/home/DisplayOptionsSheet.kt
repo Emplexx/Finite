@@ -23,7 +23,7 @@ import moe.emi.finite.service.datastore.appSettings
 import moe.emi.finite.service.datastore.editSettings
 import moe.emi.finite.service.datastore.set
 import moe.emi.finite.service.repo.SubscriptionsRepo
-import moe.emi.finite.ui.home.enums.Sort
+import moe.emi.finite.ui.home.model.Sort
 
 class DisplayOptionsSheet(
 	context: Context

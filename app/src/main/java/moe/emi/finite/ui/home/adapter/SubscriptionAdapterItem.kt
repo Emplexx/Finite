@@ -20,7 +20,7 @@ import moe.emi.finite.service.data.Currency
 import moe.emi.finite.service.data.Subscription
 import moe.emi.finite.service.data.Timespan
 import moe.emi.finite.ui.colors.ItemColors
-import moe.emi.finite.ui.home.SubscriptionListFragment
+import moe.emi.finite.ui.home.model.ConvertedAmount
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
@@ -28,7 +28,7 @@ class SubscriptionAdapterItem(
 	val model: Subscription,
 	private var preferredCurrency: Currency,
 	
-	private var convertedAmount: SubscriptionListFragment.ConvertedAmount,
+	private var convertedAmount: ConvertedAmount,
 	private var showUpcomingTime: Boolean,
 	var palette: ItemColors,
 	
@@ -36,43 +36,24 @@ class SubscriptionAdapterItem(
 	val onLongClick: () -> Unit,
 ) : BindableItem<ItemSubscriptionBinding>() {
 	
-	fun updateShowTimeLeft(boolean: Boolean) {
-		showUpcomingTime = boolean
-		notifyChanged("TimeLeft")
-	}
-	
-	fun updateAmount(amount: SubscriptionListFragment.ConvertedAmount) {
-		convertedAmount = amount
-		notifyChanged("Amount")
-	}
-	
-	fun updateCurrency(preferredCurrency: Currency) {
-		this.preferredCurrency = preferredCurrency
-		notifyChanged("Amount")
-	}
-	
-	fun updatePalette(palette: ItemColors) {
-		this.palette = palette
-		notifyChanged("Palette")
-	}
-	
 	override fun bind(binding: ItemSubscriptionBinding, position: Int) {
-		binding.root.transitionName = "card_${model.id}"
-		
+		bindView(binding)
 		bindPalette(binding)
-		
+		bindAmount(binding, false)
+		bindTimeLeft(binding)
+	}
+	
+	private fun bindView(binding: ItemSubscriptionBinding) {
+		binding.root.transitionName = "card_${model.id}"
 		binding.textName.text = model.name
 		binding.textDescription.visible = model.description.isNotBlank()
 		binding.textDescription.text = model.description
-
+		
 		binding.textCurrencySign.text = preferredCurrency.symbol
 		binding.textPrice.setCharacterLists("0123456789.")
 		binding.textPrice.animationInterpolator = FastOutExtraSlowInInterpolator()
 		val font = ResourcesCompat.getFont(binding.root.context, R.font.font_dm_ticker_small)
 		binding.textPrice.typeface = font
-		bindAmount(binding, false)
-		
-		bindTimeLeft(binding)
 		
 		binding.root.setOnClickListener {
 			onClick(binding.root)
@@ -269,34 +250,42 @@ class SubscriptionAdapterItem(
 		position: Int,
 		payloads: MutableList<Any>
 	) {
-		for (i in payloads) {
-			when (i) {
-				"TimeLeft" -> bindTimeLeft(viewBinding)
-				"Amount" -> bindAmount(viewBinding)
-				"Palette" -> bindPalette(viewBinding)
-			}
-		}
-		if (payloads.isEmpty()) super.bind(viewBinding, position, payloads)
+		val changes = payloads.find { it is List<*> }
+			.let { it as? List<*> }
+			?.filterIsInstance<String>()
+			?: return super.bind(viewBinding, position, payloads)
+		
+		bindView(viewBinding)
+		if (changes.contains("Amount")) bindAmount(viewBinding)
+		if (changes.contains("TimeLeft")) bindTimeLeft(viewBinding)
+		if (changes.contains("Palette")) bindPalette(viewBinding)
 	}
 	
-	override fun isSameAs(other: Item<*>): Boolean =
-		when (other) {
-			is SubscriptionAdapterItem -> model.id == other.model.id
-			else -> super.isSameAs(other)
+	
+	override fun getChangePayload(new: Item<*>): Any? {
+		if (new !is SubscriptionAdapterItem) return super.getChangePayload(new)
+		
+		return buildList {
+			if (convertedAmount != new.convertedAmount
+				|| preferredCurrency != new.preferredCurrency) add("Amount")
+			if (showUpcomingTime != new.showUpcomingTime) add("TimeLeft")
+			if (palette != new.palette) add("Palette")
 		}
+	}
 	
 	override fun hasSameContentAs(other: Item<*>): Boolean =
-		when (other) {
-			is SubscriptionAdapterItem -> model == other.model
-//					&& convertedAmount == other.convertedAmount
-//					&& showUpcomingTime != other.showUpcomingTime
-			else -> super.isSameAs(other)
-		}
+		other is SubscriptionAdapterItem && model == other.model
+				&& preferredCurrency == other.preferredCurrency
+				&& convertedAmount == other.convertedAmount
+				&& showUpcomingTime == other.showUpcomingTime
+				&& palette == other.palette
+	
+	override fun isSameAs(other: Item<*>): Boolean =
+		other is SubscriptionAdapterItem && model.id == other.model.id
+	
 	
 	override fun getExtras(): MutableMap<String, Any> =
-		mutableMapOf(
-			"CurrencyItem" to 0
-		)
+		mutableMapOf("CurrencyItem" to 0)
 	
 	override fun getLayout() = R.layout.item_subscription
 	override fun initializeViewBinding(view: View) = ItemSubscriptionBinding.bind(view)

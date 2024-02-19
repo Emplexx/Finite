@@ -7,7 +7,7 @@ import moe.emi.finite.R
 import moe.emi.finite.databinding.ItemHomeHeaderBinding
 import moe.emi.finite.dump.FastOutExtraSlowInInterpolator
 import moe.emi.finite.service.data.Currency
-import moe.emi.finite.ui.home.enums.TotalView
+import moe.emi.finite.ui.home.model.TotalView
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
