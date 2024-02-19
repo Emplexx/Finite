@@ -1,4 +1,4 @@
-package moe.emi.finite.ui.home.enums
+package moe.emi.finite.ui.home.model
 
 enum class Sort {
 	Alphabetical, Price, Date

@@ -9,6 +9,8 @@ import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import moe.emi.finite.FiniteApp
 import moe.emi.finite.service.data.Rate
@@ -18,7 +20,8 @@ import moe.emi.finite.service.datastore.appSettings
 import moe.emi.finite.service.datastore.set
 import moe.emi.finite.service.repo.RatesRepo
 import moe.emi.finite.service.repo.SubscriptionsRepo
-import moe.emi.finite.ui.home.enums.TotalView
+import moe.emi.finite.ui.home.model.SubscriptionUiModel
+import moe.emi.finite.ui.home.model.TotalView
 import javax.inject.Inject
 
 @HiltViewModel
@@ -56,8 +59,9 @@ class SubscriptionListViewModel @Inject constructor(
 	
 	
 	
-	val localRatesFlow = RatesRepo.getLocalRates()
-	val filteredSubscriptionsFlow = SubscriptionsRepo.getAllSubscriptions()
+	private val localRatesFlow = RatesRepo.getLocalRates()
+	
+	private val filteredSubscriptionsFlow = SubscriptionsRepo.getAllSubscriptions()
 		.combine(FiniteApp.instance.appSettings) { subscriptions, appSettings ->
 			subscriptions
 				.filter {
@@ -75,26 +79,58 @@ class SubscriptionListViewModel @Inject constructor(
 				}
 		}
 	
+	private val settingDefaultCurrency = FiniteApp.instance.appSettings.map { it.preferredCurrency }.distinctUntilChanged()
+	
 	val totalSpentFlow =
-		combine(localRatesFlow, filteredSubscriptionsFlow, totalViewFlow, FiniteApp.instance.appSettings) {
-			rates, subscriptions, totalView, settings ->
+		combine(localRatesFlow, filteredSubscriptionsFlow, totalViewFlow, settingDefaultCurrency) {
+			rates, subscriptions, totalView, defCurrency ->
 			
 			val sum = subscriptions
 				.filter { it.active }
 				.sumOf { subscription ->
 					val rate = rates.find { it.code == subscription.currency.iso4217Alpha } ?: return@sumOf 0.0
-					val prefererredRate = rates.find { it.code == settings.preferredCurrency.iso4217Alpha } ?: return@sumOf 0.0
+					val preferredRate = rates.find { it.code == defCurrency.iso4217Alpha } ?: return@sumOf 0.0
 					
 					SubscriptionListFragment.convert(
 						subscription.price,
-						rate, prefererredRate,
+						rate, preferredRate,
 						totalView,
 						subscription.period
 					).amountMatchedToTimeframe
 				}
 			
-			Triple(totalView, sum, settings.preferredCurrency)
+			Triple(totalView, sum, defCurrency)
 		}
+	
+	private val settingShowTimeLeft = FiniteApp.instance.appSettings.map { it.showTimeLeft }.distinctUntilChanged()
+	
+	val subscriptionsFlow =
+		combine(
+			filteredSubscriptionsFlow, localRatesFlow, settingDefaultCurrency, totalViewFlow
+//			settingDefaultCurrency, settingShowTimeLeft
+		) { subscriptions, rates, defCurrency, totalView -> //, defCurrency, showTimeLeft ->
+			
+			// TODO allow passing null converted amount to support unsupported currencies
+			subscriptions.mapNotNull { subscription ->
+				
+				val rate = rates.find { it.code == subscription.currency.iso4217Alpha }
+				val preferredRate = rates.find { it.code == defCurrency.iso4217Alpha }
+				val convertedAmount = rate?.let {
+					preferredRate?.let {
+						SubscriptionListFragment.convert(subscription.price, rate, preferredRate, totalView, subscription.period)
+					}
+				}
+				
+				convertedAmount?.let {
+					subscription to it
+				}
+			}
+		}
+			.combine(FiniteApp.instance.appSettings) { list, settings ->
+				list.map { (subscription, amount) ->
+					SubscriptionUiModel(subscription, settings.preferredCurrency, amount, settings.showTimeLeft)
+				}
+			}
 	
 	
 	

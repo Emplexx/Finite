@@ -20,7 +20,6 @@ import moe.emi.finite.MainActivity
 import moe.emi.finite.R
 import moe.emi.finite.databinding.FragmentSubscriptionsListBinding
 import moe.emi.finite.dump.collectOn
-import moe.emi.finite.dump.forEvery
 import moe.emi.finite.dump.iDp
 import moe.emi.finite.dump.snackbar
 import moe.emi.finite.service.data.BillingPeriod
@@ -34,25 +33,23 @@ import moe.emi.finite.ui.home.adapter.HomeHeaderAdapterItem
 import moe.emi.finite.ui.home.adapter.SubscriptionAdapterItem
 import moe.emi.finite.ui.home.adapter.java.ExpandableHeaderItem
 import moe.emi.finite.ui.home.adapter.java.ExpandableSection
-import moe.emi.finite.ui.home.enums.TotalView
+import moe.emi.finite.ui.home.model.ConvertedAmount
+import moe.emi.finite.ui.home.model.SubscriptionUiModel
+import moe.emi.finite.ui.home.model.TotalView
 
 class SubscriptionListFragment : Fragment() {
 	
-//	private val mainViewModel by activityViewModels<MainViewModel>()
 	private val viewModel by viewModels<SubscriptionListViewModel>()
 	
 	private lateinit var binding: FragmentSubscriptionsListBinding
 	
 	private val activity: MainActivity get() = requireActivity() as MainActivity
 	
-	private val defCurrency: Currency
-		get() = viewModel.settings.preferredCurrency
-	
 	private lateinit var adapter: GroupieAdapter
 	private val header: HomeHeaderAdapterItem by lazy {
 		HomeHeaderAdapterItem(
 			viewModel.totalView,
-			preferredCurrency = defCurrency,
+			preferredCurrency = Currency.EUR,
 			amount = 0.0,
 			onClick = {
 				viewModel.totalView = when (viewModel.totalView) {
@@ -60,7 +57,6 @@ class SubscriptionListFragment : Fragment() {
 					TotalView.Monthly -> TotalView.Yearly
 					TotalView.Weekly -> TotalView.Monthly
 				}
-				updateTotal()
 			}
 		)
 	}
@@ -100,7 +96,7 @@ class SubscriptionListFragment : Fragment() {
 		initViews()
 		
 		viewModel.getSubscriptions()
-		observe()
+		collectFlow()
 	}
 	
 	private fun initViews() {
@@ -121,9 +117,14 @@ class SubscriptionListFragment : Fragment() {
 		)
 	}
 	
-	private fun observe() {
-		viewModel.subscriptions.observe(viewLifecycleOwner) { subscriptions ->
-			
+	private fun collectFlow() {
+		
+		viewModel.totalSpentFlow.collectOn(viewLifecycleOwner) {
+				(view, amount, currency) ->
+			header.updateTotal(view, amount, currency)
+		}
+		
+		viewModel.subscriptionsFlow.collectOn(viewLifecycleOwner) { subscriptions ->
 			if (subscriptions.isEmpty()) {
 				sectionHeader.clear()
 				activity.setBottomBarVisibility(false)
@@ -132,109 +133,37 @@ class SubscriptionListFragment : Fragment() {
 				sectionHeader.update(listOf(header))
 			}
 			
-			val (active, inactive) = subscriptions.partition { it.active }
+			val (active, inactive) = subscriptions.partition { it.model.active }
 			
-			sectionActive.update(active.map(itemMapper))
-			sectionInactive.update(inactive.map(itemMapper))
+			sectionActive.update(active.map(newItemMapper))
+			sectionInactive.update(inactive.map(newItemMapper))
+			
 			if (inactive.isEmpty()) {
 				adapter.getAdapterPosition(sectionInactive).let { if (it != -1) adapter.remove(sectionInactive) }
 			} else {
 				adapter.getAdapterPosition(sectionInactive).let { if (it == -1) adapter.add(sectionInactive) }
 			}
-			
-			updateTotal()
 		}
 		
-		viewModel.totalViewLiveData.observe(viewLifecycleOwner) { totalView ->
-			
-			val action: (SubscriptionAdapterItem) -> Unit = { group ->
-				val subscription = group.model
-				val rate = viewModel.rates.find { it.code == subscription.currency.iso4217Alpha } ?: Rate.EUR
-				val preferredRate = viewModel.rates.find { it.code == defCurrency.iso4217Alpha } ?: Rate.EUR
-				
-				group.updateAmount(
-					convert(subscription.price, rate, preferredRate, totalView, subscription.period)
-				)
-			}
-			sectionActive.forEvery(action)
-			sectionInactive.forEvery(action)
-		}
-		
-		viewModel.settingsFlow.observe(viewLifecycleOwner) { settings ->
-
-			sectionActive.forEvery<SubscriptionAdapterItem> { group ->
-				group.updateCurrency(settings.preferredCurrency)
-				group.updatePalette(requireContext().makeItemColors(group.model.color))
-			}
-			sectionInactive.forEvery<SubscriptionAdapterItem> { group ->
-				group.updateCurrency(settings.preferredCurrency)
-				group.updatePalette(requireContext().makeItemColors(group.model.color))
-			}
-		}
-		
-		viewModel.showTimeLeftFlow.observe(viewLifecycleOwner) { bool ->
-			sectionActive.forEvery<SubscriptionAdapterItem> {
-				it.updateShowTimeLeft(bool)
-			}
-			sectionInactive.forEvery<SubscriptionAdapterItem> {
-				it.updateShowTimeLeft(bool)
-			}
-		}
-		
-		viewModel.totalSpentFlow.collectOn(viewLifecycleOwner) {
-			(view, amount, currency) ->
-			header.updateTotal(view, amount, currency)
-		}
 	}
 	
-	private val itemMapper: (Subscription) -> SubscriptionAdapterItem =
-		{ subscription ->
-			
-			val rate = viewModel.rates.find { it.code == subscription.currency.iso4217Alpha } ?: Rate.EUR
-			val preferredRate = viewModel.rates.find { it.code == defCurrency.iso4217Alpha } ?: Rate.EUR
-			
+	private val newItemMapper: (SubscriptionUiModel) -> SubscriptionAdapterItem =
+		{ (model, currency, amount, showTimeLeft) ->
 			SubscriptionAdapterItem(
-				subscription,
-				defCurrency,
-				convert(subscription.price, rate, preferredRate, viewModel.totalView, subscription.period),
-				viewModel.showTimeLeftFlow .value ?: false,
-				palette = requireContext().makeItemColors(subscription.color),
+				model,
+				currency,
+				amount,
+				showTimeLeft,
+				palette = requireContext().makeItemColors(model.color),
 				onClick = { cardView ->
-					navigateToDetail(subscription, cardView)
+					navigateToDetail(model, cardView)
 				},
 				onLongClick = {
 					startActivity(Intent(requireActivity(), SubscriptionEditorActivity::class.java)
-						.putExtra("Subscription", subscription))
+						.putExtra("Subscription", model))
 				}
 			)
-			
 		}
-	
-	private fun updateTotal() {
-		return
-		
-		val rates = viewModel.rates
-		
-		header.updateTotal(
-			viewModel.totalView,
-			viewModel.subscriptions.value.orEmpty().filter { it.active }.sumOf { subscription ->
-				
-				val rate = rates.find { it.code == subscription.currency.iso4217Alpha } ?: Rate.EUR
-				val preferredRate = rates.find { it.code == defCurrency.iso4217Alpha } ?: Rate.EUR
-				
-				convert(subscription.price, rate, preferredRate,
-					viewModel.totalView, subscription.period)
-					.amountMatchedToTimeframe
-				
-//				when (viewModel.totalView) {
-//					TotalView.Yearly -> it.priceEveryYear
-//					TotalView.Monthly -> it.priceEveryMonth
-//					TotalView.Weekly -> it.priceEveryWeek
-//				}
-			},
-			defCurrency
-		)
-	}
 	
 	private fun navigateToDetail(model: Subscription, cardView: MaterialCardView) {
 		
@@ -253,14 +182,6 @@ class SubscriptionListFragment : Fragment() {
 		)
 	}
 	
-	
-	data class ConvertedAmount(
-		val timeframe: TotalView,
-		val amountMatchedToTimeframe: Double,
-		val amountOriginal: Double,
-		val from: Rate,
-		val to: Rate
-	)
 	
 	companion object {
 		

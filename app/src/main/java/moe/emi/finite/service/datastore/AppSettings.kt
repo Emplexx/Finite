@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 import moe.emi.finite.dump.Storable
 import moe.emi.finite.dump.storableKey
 import moe.emi.finite.service.data.Currency
-import moe.emi.finite.ui.home.enums.Sort
+import moe.emi.finite.ui.home.model.Sort
 
 @Serializable
 data class AppSettings(
