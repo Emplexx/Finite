@@ -19,6 +19,7 @@ import dev.chrisbanes.insetter.applyInsetter
 import moe.emi.finite.MainActivity
 import moe.emi.finite.R
 import moe.emi.finite.databinding.FragmentSubscriptionsListBinding
+import moe.emi.finite.dump.collectOn
 import moe.emi.finite.dump.forEvery
 import moe.emi.finite.dump.iDp
 import moe.emi.finite.dump.snackbar
@@ -39,10 +40,10 @@ class SubscriptionListFragment : Fragment() {
 	
 //	private val mainViewModel by activityViewModels<MainViewModel>()
 	private val viewModel by viewModels<SubscriptionListViewModel>()
+	
 	private lateinit var binding: FragmentSubscriptionsListBinding
 	
-	private val activity: MainActivity
-		get() = requireActivity() as MainActivity
+	private val activity: MainActivity get() = requireActivity() as MainActivity
 	
 	private val defCurrency: Currency
 		get() = viewModel.settings.preferredCurrency
@@ -144,7 +145,7 @@ class SubscriptionListFragment : Fragment() {
 			updateTotal()
 		}
 		
-		viewModel.totalViewFlow.observe(viewLifecycleOwner) { totalView ->
+		viewModel.totalViewLiveData.observe(viewLifecycleOwner) { totalView ->
 			
 			val action: (SubscriptionAdapterItem) -> Unit = { group ->
 				val subscription = group.model
@@ -179,6 +180,11 @@ class SubscriptionListFragment : Fragment() {
 				it.updateShowTimeLeft(bool)
 			}
 		}
+		
+		viewModel.totalSpentFlow.collectOn(viewLifecycleOwner) {
+			(view, amount, currency) ->
+			header.updateTotal(view, amount, currency)
+		}
 	}
 	
 	private val itemMapper: (Subscription) -> SubscriptionAdapterItem =
@@ -205,6 +211,7 @@ class SubscriptionListFragment : Fragment() {
 		}
 	
 	private fun updateTotal() {
+		return
 		
 		val rates = viewModel.rates
 		
@@ -244,11 +251,6 @@ class SubscriptionListFragment : Fragment() {
 			null,
 			extras
 		)
-
-//		findNavController().navigate(
-//			SubscriptionsListFragmentDirections.actionFirstFragmentToSecondFragment(),
-//			extras
-//		)
 	}
 	
 	
@@ -260,21 +262,26 @@ class SubscriptionListFragment : Fragment() {
 		val to: Rate
 	)
 	
-	private fun convert(
-		amount: Double,
-		from: Rate, to: Rate,
-		timeframe: TotalView, period: BillingPeriod,
-	): ConvertedAmount {
-		val converted = amount / from.rate * to.rate
-		return ConvertedAmount(
-			timeframe,
-			when (timeframe) {
-				TotalView.Yearly -> period.priceEveryYear(converted)
-				TotalView.Monthly -> period.priceEveryMonth(converted)
-				TotalView.Weekly -> period.priceEveryWeek(converted)
-			},
-			converted,
-			from, to
-		)
+	companion object {
+		
+		
+		fun convert(
+			amount: Double,
+			from: Rate, to: Rate,
+			timeframe: TotalView, period: BillingPeriod,
+		): ConvertedAmount {
+			val converted = amount / from.rate * to.rate
+			return ConvertedAmount(
+				timeframe,
+				when (timeframe) {
+					TotalView.Yearly -> period.priceEveryYear(converted)
+					TotalView.Monthly -> period.priceEveryMonth(converted)
+					TotalView.Weekly -> period.priceEveryWeek(converted)
+				},
+				converted,
+				from, to
+			)
+		}
+		
 	}
 }

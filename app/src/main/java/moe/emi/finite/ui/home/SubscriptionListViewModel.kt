@@ -11,14 +11,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import moe.emi.finite.FiniteApp
-import moe.emi.finite.dump.DataStoreExt.read
 import moe.emi.finite.service.data.Rate
 import moe.emi.finite.service.data.Subscription
 import moe.emi.finite.service.datastore.AppSettings
-import moe.emi.finite.service.datastore.Keys
 import moe.emi.finite.service.datastore.appSettings
 import moe.emi.finite.service.datastore.set
-import moe.emi.finite.service.datastore.storeGeneral
 import moe.emi.finite.service.repo.RatesRepo
 import moe.emi.finite.service.repo.SubscriptionsRepo
 import moe.emi.finite.ui.home.enums.TotalView
@@ -29,7 +26,9 @@ class SubscriptionListViewModel @Inject constructor(
 	val savedState: SavedStateHandle
 ) : ViewModel() {
 	
-	val totalViewFlow = savedState.getStateFlow("Total", TotalView.Monthly).asLiveData()
+	val totalViewFlow = savedState.getStateFlow("Total", TotalView.Monthly)
+	// TODO Save this in data store
+	val totalViewLiveData = totalViewFlow.asLiveData()
 	var totalView: TotalView
 		get() = savedState["Total"] ?: TotalView.Monthly
 		set(value) { savedState["Total"] = value }
@@ -55,14 +54,57 @@ class SubscriptionListViewModel @Inject constructor(
 			> get() = _subscriptions
 	
 	
+	
+	
+	val localRatesFlow = RatesRepo.getLocalRates()
+	val filteredSubscriptionsFlow = SubscriptionsRepo.getAllSubscriptions()
+		.combine(FiniteApp.instance.appSettings) { subscriptions, appSettings ->
+			subscriptions
+				.filter {
+					appSettings.selectedPaymentMethods.isEmpty()
+							|| it.paymentMethod.trim().lowercase() in appSettings.selectedPaymentMethods
+						.map { it.trim().lowercase() }
+				}
+				.also {
+					// if the final returned list is empty and there are selected filters,
+					// there is a chance that one of those selected filters was removed from
+					// any item, so essentially it's broken and we clear filters manually
+					if (it.isEmpty() && appSettings.selectedPaymentMethods.isNotEmpty()) {
+						appSettings.copy(selectedPaymentMethods = emptySet()).set()
+					}
+				}
+		}
+	
+	val totalSpentFlow =
+		combine(localRatesFlow, filteredSubscriptionsFlow, totalViewFlow, FiniteApp.instance.appSettings) {
+			rates, subscriptions, totalView, settings ->
+			
+			val sum = subscriptions
+				.filter { it.active }
+				.sumOf { subscription ->
+					val rate = rates.find { it.code == subscription.currency.iso4217Alpha } ?: return@sumOf 0.0
+					val prefererredRate = rates.find { it.code == settings.preferredCurrency.iso4217Alpha } ?: return@sumOf 0.0
+					
+					SubscriptionListFragment.convert(
+						subscription.price,
+						rate, prefererredRate,
+						totalView,
+						subscription.period
+					).amountMatchedToTimeframe
+				}
+			
+			Triple(totalView, sum, settings.preferredCurrency)
+		}
+	
+	
+	
 	fun getSubscriptions() = viewModelScope.launch {
 		
 		combine(
 			SubscriptionsRepo.getAllSubscriptions(),
 			RatesRepo.getLocalRates(),
-			FiniteApp.instance.storeGeneral.read(Keys.RatesLastUpdated, 0L),
 			FiniteApp.instance.appSettings,
-		) { subscriptions, rates, lastUpdated, appSettings ->
+		) { subscriptions, rates, appSettings ->
 			
 			if (rates.isEmpty()) { emptyList<Subscription>() }
 			else {

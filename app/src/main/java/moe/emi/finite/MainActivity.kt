@@ -132,6 +132,7 @@ class MainActivity : AppCompatActivity(), HasSnackbarAnchor {
 			}
 		}
 		
+		// TODO move to message bus
 		viewModel.ratesUpdateState.filterNotNull().collectOn(this) {
 			when (it) {
 				Status.Loading -> binding.root.snackbar("Updating currency rates...")
