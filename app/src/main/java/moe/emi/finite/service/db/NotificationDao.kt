@@ -24,6 +24,10 @@ interface NotificationDao {
 	@Query("DELETE FROM notifications WHERE id = :id")
 	suspend fun delete(id: Int): Int
 	
+	@Query("DELETE FROM notifications WHERE subscriptionId = :subscriptionId")
+	suspend fun deleteBySubscriptionId(subscriptionId: Int): Int
+	
+	
 	@Query("SELECT * FROM subscriptions JOIN notifications ON subscriptions.id = notifications.subscriptionId")
 	suspend fun getSubcriptionsWithReminders(): Map<SubscriptionEntity, List<NotificationEntity>>
 	
