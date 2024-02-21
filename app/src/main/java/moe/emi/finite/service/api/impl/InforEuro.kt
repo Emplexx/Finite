@@ -46,7 +46,7 @@ class InforEuro : ApiProvider.Impl {
 			}
 		
 		ExchangeRates(baseCurrency, timestamp, body)
-			.also { Log.i("InforEuro", "<-- 200 | $it") }
+			.also { Log.i(name, "<-- 200 | $it") }
 	}
 	
 	override fun shouldRefresh(lastRefreshed: Long): Boolean {

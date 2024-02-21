@@ -11,8 +11,11 @@ import com.google.android.material.color.DynamicColorsOptions
 import com.google.android.material.color.HarmonizedColors
 import com.google.android.material.color.HarmonizedColorsOptions
 import dagger.hilt.android.HiltAndroidApp
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import moe.emi.finite.service.db.FiniteDB
 import moe.emi.finite.service.notifications.AlarmScheduler
@@ -32,6 +35,8 @@ class FiniteApp : Application() {
 		private var dbInstance: FiniteDB? = null
 		val db: FiniteDB
 			get() = dbInstance!!
+		
+		val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 	}
 	
 	override fun onCreate() {

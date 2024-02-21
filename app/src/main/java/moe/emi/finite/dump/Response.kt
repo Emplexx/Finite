@@ -1,7 +1,5 @@
 package moe.emi.finite.dump
 
-import com.slack.eithernet.ApiResult
-
 sealed class Response<out T> {
 	
 	object Loading : Response<Nothing>()
@@ -72,16 +70,16 @@ sealed class Response<out T> {
 	
 	companion object {
 		
-		class ApiException(result: ApiResult<Any, Any>) : Exception()
-		
-		fun <T : Any, E : Any> ApiResult<T, E>.toResponse(): Response<T> {
-			
-			return when (this) {
-				is ApiResult.Success -> Response.Success(this.value)
-				// TODO better handling of Exceptions (who cares)
-				else -> Response.Failure(ApiException(this))
-			}
-		}
+//		class ApiException(result: ApiResult<Any, Any>) : Exception()
+//
+//		fun <T : Any, E : Any> ApiResult<T, E>.toResponse(): Response<T> {
+//
+//			return when (this) {
+//				is ApiResult.Success -> Response.Success(this.value)
+//				// TODO better handling of Exceptions (who cares)
+//				else -> Response.Failure(ApiException(this))
+//			}
+//		}
 	}
 	
 	fun <R> mapCatching(transform: (T) -> R): Response<R> {
