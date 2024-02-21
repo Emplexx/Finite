@@ -4,7 +4,8 @@ import moe.emi.finite.service.api.ApiProvider
 
 object NetworkModule {
 	
-	val selectedApi = ApiProvider.InforEuro
+	val selectedApi = ApiProvider.ExchangeRatesApi
+	
 	private val def by lazy {
 		selectedApi.createClient()
 	}

@@ -13,10 +13,9 @@ import kotlinx.coroutines.launch
 import moe.emi.finite.R
 import moe.emi.finite.databinding.ActivitySettingsBinding
 import moe.emi.finite.dump.isDarkTheme
-import moe.emi.finite.dump.setStorable
 import moe.emi.finite.service.datastore.AppSettings
 import moe.emi.finite.service.datastore.appSettings
-import moe.emi.finite.service.datastore.storeGeneral
+import moe.emi.finite.service.datastore.editSettings
 import kotlin.math.roundToInt
 import kotlin.properties.Delegates.observable
 
@@ -25,9 +24,7 @@ class ColorsActivity : AppCompatActivity() {
 	private lateinit var binding: ActivitySettingsBinding
 	
 	private var settings: AppSettings by observable(AppSettings()) { _, old, new ->
-		if (old != new) lifecycleScope.launch {
-			storeGeneral.setStorable(new)
-		}
+		if (old != new) editSettings { new }
 	}
 	
 	override fun onCreate(savedInstanceState: Bundle?) {

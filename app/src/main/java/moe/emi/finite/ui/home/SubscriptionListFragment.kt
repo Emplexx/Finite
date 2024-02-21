@@ -196,8 +196,8 @@ class SubscriptionListFragment : Fragment() {
 			
 			val (active, inactive) = subscriptions.partition { it.model.active }
 			
-			sectionActive.update(active.map(newItemMapper), false)
-			sectionInactive.update(inactive.map(newItemMapper), false)
+			sectionActive.update(active.map(newItemMapper))
+			sectionInactive.update(inactive.map(newItemMapper))
 			
 			
 			

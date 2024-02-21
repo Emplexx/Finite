@@ -1,46 +1,37 @@
 package moe.emi.finite.service.datastore
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.dataStore
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import moe.emi.finite.FiniteApp
-import moe.emi.finite.dump.getStorable
-import moe.emi.finite.dump.setStorable
+import moe.emi.finite.dump.jsonSerializer
+
+
+val Context.storedSettings: DataStore<AppSettings> by dataStore("settings.json", jsonSerializer(AppSettings()))
 
 /**
  * Get a flow of AppSettings
  */
-val Context.appSettings: Flow<AppSettings>
-	get() = this.storeGeneral.getStorable()
+val Context.appSettings: Flow<AppSettings> get() = storedSettings.data
 
 /**
  * Get a flow of AppSettings. Shorthand for fragments
  */
-val Fragment.appSettings: Flow<AppSettings>
-	get() = requireContext().appSettings
-
-/**
- * Shorthand for getting the latest state of settings through the global context.
- * Async
- */
-suspend fun getSettings() = FiniteApp.instance.appSettings.first()
+val Fragment.appSettings: Flow<AppSettings> get() = requireContext().appSettings
 
 /**
  * Writes the settings object to DataStore through the global context. Async
  */
-suspend fun AppSettings.set() {
-	FiniteApp.instance.storeGeneral.setStorable(this)
-}
-
-context(LifecycleOwner)
-fun AppSettings.setAsync() {
-	lifecycleScope.launch(Dispatchers.IO) { FiniteApp.instance.storeGeneral.setStorable(this@setAsync) }
+fun AppSettings.set() {
+	FiniteApp.scope.launch {
+		FiniteApp.instance.storedSettings.updateData { this@set }
+	}
 }
 
 /**
@@ -51,11 +42,3 @@ fun AppSettings.setAsync() {
 fun LifecycleOwner.editSettings(block: (AppSettings) -> AppSettings) {
 	lifecycleScope.launch { block(FiniteApp.instance.appSettings.first()).set() }
 }
-
-/**
- * Shorthand for getting the latest state of settings through the global context.
- * Sync (Note: See deprecation reason)
- */
-@Deprecated("Results in fairly noticeable app hang")
-val settingsSync: AppSettings
-	get() = runBlocking { FiniteApp.instance.appSettings.first() }

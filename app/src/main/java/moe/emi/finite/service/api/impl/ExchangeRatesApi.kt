@@ -35,6 +35,7 @@ class ExchangeRatesApi : ApiProvider.Impl {
 	
 	override suspend fun getRates(): Either<Failure, FetchedRates> = either {
 		
+		val timestamp = systemTimeMillis
 		val response = fuelGet("$baseUrl/latest?access_key=$accessKey").bind()
 		
 		if (response.statusCode != 200) jsonApi
@@ -44,7 +45,7 @@ class ExchangeRatesApi : ApiProvider.Impl {
 		val body = jsonApi.decode(Output.serializer(), response.body)
 		val rates = body.listRates.bind()
 		
-		FetchedRates(baseCurrency, body.timestamp, rates)
+		FetchedRates(baseCurrency, timestamp, rates)
 			.also {
 				Log.i(name, "<-- 200 | Got rates for ${it.rates.size} currencies from $name")
 				Log.i(name, "$it")

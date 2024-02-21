@@ -21,7 +21,6 @@ import moe.emi.finite.dump.textRes
 import moe.emi.finite.dump.visible
 import moe.emi.finite.service.datastore.appSettings
 import moe.emi.finite.service.datastore.editSettings
-import moe.emi.finite.service.datastore.set
 import moe.emi.finite.service.repo.SubscriptionsRepo
 import moe.emi.finite.ui.home.model.Sort
 
@@ -31,7 +30,6 @@ class DisplayOptionsSheet(
 	
 	private lateinit var binding: LayoutSheetDisplayBinding
 	private var selectedRow: LayoutSortRowBinding? = null
-	private var isAscending = true
 	
 	override fun onStart() {
 		super.onStart()
@@ -64,14 +62,10 @@ class DisplayOptionsSheet(
 		binding.rowRoughlySign.switchView.textRes = R.string.option_show_roughly_sign
 		
 		binding.rowShowTimeLeft.switchView.setOnCheckedChangeListener { _, isChecked ->
-			lifecycleScope.launch {
-				context.appSettings.first().copy(showTimeLeft = isChecked).set()
-			}
+			editSettings { it.copy(showTimeLeft = isChecked) }
 		}
 		binding.rowRoughlySign.switchView.setOnCheckedChangeListener { _, isChecked ->
-			lifecycleScope.launch {
-				context.appSettings.first().copy(showRoughlySign = isChecked).set()
-			}
+			editSettings { it.copy(showRoughlySign = isChecked) }
 		}
 	}
 	
@@ -87,37 +81,31 @@ class DisplayOptionsSheet(
 			Sort.Date -> binding.rowDate
 		}
 		selectedRow?.select()
-		isAscending = context.appSettings.first().sortIsAscending
 		
 		listOf(
 			binding.rowName,
 			binding.rowPrice,
-			binding.rowDate,
-		).forEach {
-			it.root.setOnClickListener { _ ->
+			binding.rowDate
+		).forEach { row ->
+			row.root.setOnClickListener { _ ->
 				
-				if (selectedRow == it) {
+				if (selectedRow == row) {
 					selectedRow?.toggle()
-					
-					lifecycleScope.launch {
-						val ascending = isAscending
-						context.appSettings.first().copy(sortIsAscending = !ascending).set()
-						isAscending = !ascending
-					}
+					editSettings { it.copy(sortIsAscending = !it.sortIsAscending) }
 				}
 				else {
 					selectedRow?.unselect()
-					selectedRow = it
+					selectedRow = row
 					selectedRow?.select()
 					
-					when (it) {
+					val sort = when (row) {
 						binding.rowName -> Sort.Alphabetical
 						binding.rowPrice -> Sort.Price
 						binding.rowDate -> Sort.Date
 						else -> null
-					}?.let { lifecycleScope.launch {
-						context.appSettings.first().copy(sort = it).set()
-					} }
+					}
+					
+					editSettings { it.copy(sort = sort ?: it.sort) }
 				}
 				
 				
@@ -131,18 +119,16 @@ class DisplayOptionsSheet(
 		val payments = SubscriptionsRepo.getAllSubscriptions().first()
 			.map { it.paymentMethod.trim() }
 			.filter { it.isNotBlank() }
-			.associateBy {
-				it.lowercase()
-			}
+			.associateBy { it.lowercase() }
 			.values
 			.toSet()
-		val selectedPayments = context.appSettings.first().selectedPaymentMethods
+		val selectedPayments = context.appSettings.first().selectedPaymentMethods.map { it.lowercase() }
 		
 		payments.forEach { string ->
 			val chip = ViewChipFilterBinding.inflate(layoutInflater).root
 			chip.apply {
 				text = string
-				isChecked = string.lowercase() in selectedPayments.map { it.lowercase() }
+				isChecked = string.lowercase() in selectedPayments
 				setOnCheckedChangeListener { _, isChecked ->
 					editSettings {
 						it.copy(

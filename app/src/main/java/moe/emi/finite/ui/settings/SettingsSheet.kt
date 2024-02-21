@@ -11,7 +11,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dev.chrisbanes.insetter.applyInsetter
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import moe.emi.convenience.drawable
 import moe.emi.finite.BuildConfig
@@ -22,7 +21,6 @@ import moe.emi.finite.service.datastore.AppSettings
 import moe.emi.finite.service.datastore.AppTheme
 import moe.emi.finite.service.datastore.appSettings
 import moe.emi.finite.service.datastore.editSettings
-import moe.emi.finite.service.datastore.set
 import moe.emi.finite.service.repo.RatesRepo
 import moe.emi.finite.ui.currency.CurrencyPickerSheet
 import moe.emi.finite.ui.settings.backup.BackupActivity
@@ -154,9 +152,9 @@ class SettingsSheet(
 	}
 	
 	private fun setTheme(theme: AppTheme) {
-		lifecycleScope.launch {
-			context.appSettings.first().copy(appTheme = theme).set()
-		}
+		
+		editSettings { it.copy(appTheme = theme) }
+		
 		when (theme) {
 			AppTheme.Unspecified ->
 				AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
