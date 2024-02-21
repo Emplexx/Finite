@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 
 @Database(
-	entities = [RateEntity::class, SubscriptionEntity::class, NotificationEntity::class],
+	entities = [SubscriptionEntity::class, NotificationEntity::class],
 	version = 7,
 	exportSchema = true,
 	autoMigrations = [
@@ -14,8 +14,6 @@ import androidx.room.RoomDatabase
 	]
 )
 abstract class FiniteDB : RoomDatabase() {
-	
-	abstract fun rateDao(): RateDao
 	abstract fun subscriptionDao(): SubscriptionDao
 	abstract fun notificationDao(): NotificationDao
 }
