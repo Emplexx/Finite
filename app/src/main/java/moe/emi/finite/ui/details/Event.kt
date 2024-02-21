@@ -7,7 +7,7 @@ data class Event(
 	fun consume() { consumed = true }
 	
 	companion object {
-		const val Delete = "Delete"
+		const val Deleted = "Delete"
 		const val Error = "Error"
 	}
 }

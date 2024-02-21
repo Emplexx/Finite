@@ -7,7 +7,7 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 
-	android:background="?attr/background"
+	android:background="?android:colorBackground"
 	>
 
 	<!--<com.google.android.material.appbar.AppBarLayout
@@ -42,6 +42,34 @@
 		app:layout_anchor="@id/bottomAppBar"
 		/>
 
+	<FrameLayout
+		android:id="@+id/cardContainer"
+		android:layout_width="match_parent"
+		android:layout_height="112dp"
+
+		android:layout_gravity="bottom"
+		android:translationY="112dp"
+		tools:translationY="0dp"
+	>
+
+		<com.google.android.material.card.MaterialCardView
+			android:layout_width="match_parent"
+			android:layout_height="112dp"
+
+			app:cardCornerRadius="0dp"
+			style="@style/Widget.Material3.CardView.Elevated"
+			app:cardElevation="3dp"
+
+			android:backgroundTint="?attr/colorSurfaceContainer"
+
+			android:outlineAmbientShadowColor="@color/black"
+			android:outlineSpotShadowColor="@color/black"
+			/>
+
+	</FrameLayout>
+
+
+
 	<com.google.android.material.bottomappbar.BottomAppBar
 		android:id="@+id/bottomAppBar"
 		android:layout_width="match_parent"
@@ -65,6 +93,7 @@
 		app:fabCradleVerticalOffset="0dp"
 
 		android:backgroundTint="?attr/colorSurfaceContainerHigh"
+
 
 		/>
 

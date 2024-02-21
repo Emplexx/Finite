@@ -5,7 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.doOnPreDraw
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
@@ -19,6 +23,7 @@ import dev.chrisbanes.insetter.applyInsetter
 import moe.emi.finite.MainActivity
 import moe.emi.finite.R
 import moe.emi.finite.databinding.FragmentSubscriptionsListBinding
+import moe.emi.finite.dump.FastOutExtraSlowInInterpolator
 import moe.emi.finite.dump.collectOn
 import moe.emi.finite.dump.iDp
 import moe.emi.finite.dump.snackbar
@@ -36,6 +41,8 @@ import moe.emi.finite.ui.home.adapter.java.ExpandableSection
 import moe.emi.finite.ui.home.model.ConvertedAmount
 import moe.emi.finite.ui.home.model.SubscriptionUiModel
 import moe.emi.finite.ui.home.model.TotalView
+import java.math.RoundingMode
+import java.text.DecimalFormat
 
 class SubscriptionListFragment : Fragment() {
 	
@@ -87,9 +94,29 @@ class SubscriptionListFragment : Fragment() {
 			}
 		}
 		
+//		binding.center.applyInsetter {
+//			type(statusBars = true) {
+//				margin(top = true)
+//			}
+//		}
+		if (false) ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+			
+			val bars = insets.getInsets(WindowInsetsCompat.Type.statusBars())
+			binding.appBarLayout.updatePadding(top = bars.top)
+//			binding.rectangles.updateLayoutParams<MarginLayoutParams> {
+//				topMargin = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+//			}
+			
+			insets
+		}
+//		binding.rectangles.applyInsetter {
+//			type(statusBars = true) {
+//				margin(top = true)
+//			}
+//		}
 		binding.recyclerView.applyInsetter {
-			type(statusBars = true, navigationBars = true) {
-				padding(top = true, bottom = true)
+			type(/*statusBars = true, */navigationBars = true) {
+				padding(/*top = true, */bottom = true)
 			}
 		}
 		
@@ -102,7 +129,7 @@ class SubscriptionListFragment : Fragment() {
 	private fun initViews() {
 		
 		if (::adapter.isInitialized.not()) adapter = GroupieAdapter().also { adapter ->
-			adapter.add(sectionHeader)
+//			adapter.add(sectionHeader)
 			adapter.add(sectionActive)
 		}
 		
@@ -115,6 +142,24 @@ class SubscriptionListFragment : Fragment() {
 				right = 8.iDp
 			)
 		)
+		
+		binding.header.apply {
+			textTotal.setCharacterLists("0123456789")
+			textTotal.animationInterpolator = FastOutExtraSlowInInterpolator()
+			val font = ResourcesCompat.getFont(binding.root.context, R.font.font_dm_ticker_large)
+			textTotal.typeface = font
+			root.setOnClickListener {
+				viewModel.totalView = when (viewModel.totalView) {
+					TotalView.Yearly -> TotalView.Weekly
+					TotalView.Monthly -> TotalView.Yearly
+					TotalView.Weekly -> TotalView.Monthly
+				}
+			}
+		}
+		
+		binding.buttonTest.setOnClickListener {
+			activity.setFabShifted(activity.isShifted.not())
+		}
 	}
 	
 	private fun collectFlow() {
@@ -122,6 +167,22 @@ class SubscriptionListFragment : Fragment() {
 		viewModel.totalSpentFlow.collectOn(viewLifecycleOwner) {
 				(view, amount, currency) ->
 			header.updateTotal(view, amount, currency)
+			
+			binding.header.apply {
+				
+				textCurrencySign.text = currency.symbol ?: currency.iso4217Alpha
+				textView.text = when (view) {
+					TotalView.Yearly -> R.string.period_yearly
+					TotalView.Monthly -> R.string.period_monthly
+					TotalView.Weekly -> R.string.period_weekly
+				}.let { getString(it) }
+				
+				textTotal.text =  DecimalFormat("0.00")
+					.apply { roundingMode = RoundingMode.CEILING }
+					.format(amount)
+			}
+			
+			
 		}
 		
 		viewModel.subscriptionsFlow.collectOn(viewLifecycleOwner) { subscriptions ->

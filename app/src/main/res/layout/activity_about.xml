@@ -6,8 +6,7 @@
 	android:layout_height="match_parent"
 	tools:context=".ui.settings.ColorsActivity"
 
-	android:background="?attr/background"
-	tools:background="?attr/colorSurfaceDim"
+	android:background="?android:colorBackground"
 	>
 
 	<com.google.android.material.appbar.AppBarLayout

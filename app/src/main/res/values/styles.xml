@@ -8,7 +8,7 @@
 	</style>
 
 	<style name="ThemeOverlay.Finite.AppBarLayout.OnBackground" parent="">
-		<item name="colorSurface">?attr/background</item>
+		<item name="colorSurface">?android:colorBackground</item>
 		<item name="colorOnSurface">?attr/colorOnBackground</item>
 	</style>
 

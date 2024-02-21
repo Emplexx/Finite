@@ -1,5 +1,6 @@
 package moe.emi.finite
 
+import android.animation.ValueAnimator
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -15,15 +16,18 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.motion.MotionUtils
 import dagger.hilt.android.AndroidEntryPoint
+import dev.chrisbanes.insetter.applyInsetter
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import moe.emi.finite.databinding.ActivityMainBinding
+import moe.emi.finite.dump.FastOutExtraSlowInInterpolator
 import moe.emi.finite.dump.HasSnackbarAnchor
 import moe.emi.finite.dump.Length
 import moe.emi.finite.dump.collectOn
+import moe.emi.finite.dump.fDp
 import moe.emi.finite.dump.snackbar
 import moe.emi.finite.service.datastore.AppTheme
 import moe.emi.finite.service.datastore.appSettings
@@ -65,6 +69,14 @@ class MainActivity : AppCompatActivity(), HasSnackbarAnchor {
 		binding = ActivityMainBinding.inflate(layoutInflater)
 		setContentView(binding.root)
 		binding.bottomAppBar.behavior
+		
+		binding.cardContainer.applyInsetter {
+			type(navigationBars = true) {
+				margin(bottom = true)
+			}
+		}
+		
+		binding.bottomAppBar.bringToFront()
 		
 		binding.bottomAppBar.addOnScrollStateChangedListener { bottomView, newState ->
 			Log.d("TAG", "bottomView $bottomView, newState $newState")
@@ -153,6 +165,38 @@ class MainActivity : AppCompatActivity(), HasSnackbarAnchor {
 		if (navController.currentDestination?.id != R.id.FirstFragment) return
 		if (visible) binding.bottomAppBar.performShow(true)
 		else binding.bottomAppBar.performHide(true)
+	}
+	
+	
+	var isShifted = false
+	val normalOffset by lazy { binding.bottomAppBar.cradleVerticalOffset }
+	fun setFabShifted(shifted: Boolean) {
+		isShifted = shifted
+		
+		val animator = if (isShifted) ValueAnimator.ofFloat(0f, 100.fDp)
+		else  ValueAnimator.ofFloat(100.fDp, 0f)
+		
+		animator.apply {
+			
+			duration = 700
+			interpolator = FastOutExtraSlowInInterpolator()
+			
+			addUpdateListener {
+				val offset = it.animatedValue as Float
+				val t = it.animatedFraction
+				
+				
+				val raw = 3.fDp
+				val elevation = if (!shifted) raw * t else raw - raw * t
+				binding.bottomAppBar.cradleVerticalOffset = offset
+				binding.bottomAppBar.elevation = elevation
+				
+				val height = binding.cardContainer.measuredHeight
+				val trans = if (!shifted) height * t else height - height * t
+				binding.cardContainer.translationY = trans
+			}
+			start()
+		}
 	}
 	
 //	override fun onCreateOptionsMenu(menu: Menu): Boolean {

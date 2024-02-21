@@ -5,6 +5,9 @@
 		<!-- <item name="colorPrimary">@color/my_light_primary</item> -->
 		<item name="colorThemeInverse">@color/black</item>
 		<item name="colorDivider">@color/black</item>
+
+		<item name="android:colorBackground">@color/m3_ref_palette_neutral95</item>
+
 	</style>
 
 	<style name="Theme.Finite" parent="Base.Theme.Finite">
@@ -32,7 +35,7 @@
 	<style name="ThemeOverlay.Finite.OutlineFix" parent="ThemeOverlay.Material3.DynamicColors.Light">
 		<item name="colorOutline">@color/material_dynamic_neutral_variant90</item>
 
-		<item name="background">@color/material_dynamic_neutral95</item>
+		<item name="android:colorBackground">@color/material_dynamic_neutral95</item>
 
 		<item name="colorSheetBackground">@color/material_dynamic_neutral95</item>
 		<item name="colorSheetSurface">?attr/colorSurface</item>

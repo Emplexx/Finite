@@ -1,15 +1,14 @@
 package moe.emi.finite.ui.details
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import moe.emi.finite.service.data.Reminder
 import moe.emi.finite.service.notifications.AlarmScheduler
 import moe.emi.finite.service.repo.NotificationRepo
 import moe.emi.finite.service.repo.SubscriptionsRepo
@@ -22,46 +21,44 @@ class SubscriptionDetailsViewModel @Inject constructor(
 ) : ViewModel() {
 	
 	val entityId: Int = requireNotNull(savedState["ID"])
-	val subscription = SubscriptionsRepo.getSubscription(entityId).asLiveData()
-	val reminders = NotificationRepo.dao.getBySubscriptionId(entityId).map {
-		it.map { Reminder(it) }
-	}.asLiveData()
+	
+	val subscription = SubscriptionsRepo
+		.getSubscription(entityId)
+		.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+	val reminders = NotificationRepo.getBySubscriptionId(entityId)
 
-	val events = MutableLiveData<Event>(null)
+	
+	val events = MutableStateFlow<Event?>(null)
+	
 	
 	fun pauseSubscription() = viewModelScope.launch {
-		SubscriptionsRepo.getSubscription(entityId).first()?.let { s ->
-			SubscriptionsRepo.pauseSubscription(s.id, s.active)
-			
-			if (s.active) {
-				alarmScheduler.removeAlarmsForSubscription(entityId)
-			} else {
-				alarmScheduler.scheduleAlarmsForSubscription(entityId)
-			}
-			
-			events.postValue(
-				Event(key = if (s.active) "Paused" else "Resumed")
-			)
-		}
+		
+		val subscription = subscription.value ?: return@launch
+		
+		SubscriptionsRepo.pauseSubscription(subscription.id, subscription.active)
+		
+		if (subscription.active)
+			alarmScheduler.removeAlarmsForSubscription(entityId)
+		else
+			alarmScheduler.scheduleAlarmsForSubscription(entityId)
+		
+		events.update { Event(key = if (subscription.active) "Paused" else "Resumed") }
 	}
 	
 	fun deleteSubscription() = viewModelScope.launch {
-		SubscriptionsRepo.deleteSubscription(entityId)
-			.let { result ->
-				if (result.isSuccess) {
-					alarmScheduler.removeAlarmsForSubscription(entityId)
-				}
-				
-				events.postValue(
-					Event(if (result.isSuccess) Event.Delete else Event.Error)
-				)
+		
+		val result = SubscriptionsRepo.deleteSubscription(entityId)
+			.onSuccess {
+				alarmScheduler.removeAlarmsForSubscription(entityId)
+				NotificationRepo.dao.deleteBySubscriptionId(entityId)
 			}
+		
+		events.update { Event(if (result.isSuccess) Event.Deleted else Event.Error) }
 	}
 	
 	fun deleteReminder(id: Int) = viewModelScope.launch {
-		NotificationRepo.delete(id).also {
-			if (it.isSuccess) alarmScheduler.removeAlarms(id)
-		}
+		NotificationRepo.delete(id)
+			.onSuccess { alarmScheduler.removeAlarms(id) }
 	}
 
 //	companion object {

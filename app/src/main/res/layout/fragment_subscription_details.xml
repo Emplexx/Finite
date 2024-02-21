@@ -7,8 +7,7 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 
-	android:background="?attr/background"
-	tools:background="?attr/colorSurfaceDim"
+	android:background="?android:colorBackground"
 
 	android:fitsSystemWindows="true"
 
@@ -26,13 +25,11 @@
 		app:liftOnScroll="true"
 		app:liftOnScrollTargetViewId="@id/scrollView"
 
-		tools:visibility="gone"
 		>
 
 		<com.google.android.material.appbar.CollapsingToolbarLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-
 
 			app:layout_scrollFlags="scroll|exitUntilCollapsed"
 			android:fitsSystemWindows="true"

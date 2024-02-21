@@ -26,6 +26,8 @@ import com.xwray.groupie.GroupieAdapter
 import com.xwray.groupie.Section
 import dagger.hilt.android.AndroidEntryPoint
 import dev.chrisbanes.insetter.applyInsetter
+import kotlinx.coroutines.flow.filterNot
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
@@ -35,6 +37,7 @@ import moe.emi.finite.MainActivity
 import moe.emi.finite.MainViewModel
 import moe.emi.finite.R
 import moe.emi.finite.databinding.FragmentSubscriptionDetailsBinding
+import moe.emi.finite.dump.collectOn
 import moe.emi.finite.dump.isStatusBarLightTheme
 import moe.emi.finite.dump.setStatusBarThemeMatchSystem
 import moe.emi.finite.dump.snackbar
@@ -125,7 +128,6 @@ class SubscriptionDetailsFragment : Fragment() {
 		adapterUpcoming.add(sectionUpcoming)
 		binding.recyclerViewUpcoming.adapter = adapterUpcoming
 		
-		
 		binding.toolbar.setNavigationOnClickListener {
 			requireActivity().onBackPressedDispatcher.onBackPressed()
 		}
@@ -158,8 +160,10 @@ class SubscriptionDetailsFragment : Fragment() {
 				}
 				R.id.action_edit -> {
 					viewModel.subscription.value?.let {
-						startActivity(Intent(requireActivity(), SubscriptionEditorActivity::class.java)
-								.putExtra("Subscription", it))
+						startActivity(
+							Intent(requireActivity(), SubscriptionEditorActivity::class.java)
+								.putExtra("Subscription", it)
+						)
 					}
 					true
 				}
@@ -198,7 +202,7 @@ class SubscriptionDetailsFragment : Fragment() {
 	}
 	
 	private fun collect() {
-		viewModel.subscription.observe(viewLifecycleOwner) { model -> model ?: return@observe
+		viewModel.subscription.filterNotNull().collectOn(viewLifecycleOwner) { model ->
 			
 			requireContext().makeItemColors(model.color).let {
 				
@@ -277,42 +281,47 @@ class SubscriptionDetailsFragment : Fragment() {
 			}
 		}
 		
-		viewModel.reminders.observe(viewLifecycleOwner) { reminders ->
+		viewModel.reminders.collectOn(viewLifecycleOwner) { reminders ->
 			
-			reminders.map { reminder ->
-				ReminderAdapterItem(
-					reminder,
-					onEdit = {
-						ReminderEditorSheet.newInstance(viewModel.entityId, reminder)
-							.show(parentFragmentManager, null)
-					},
-					onRemove = {
-						viewModel.deleteReminder(reminder.id)
-					}
-				)
-			}.let(sectionReminders::update)
+			reminders
+				.map { reminder ->
+					ReminderAdapterItem(
+						reminder,
+						onEdit = {
+							ReminderEditorSheet.newInstance(viewModel.entityId, reminder)
+								.show(parentFragmentManager, null)
+						},
+						onRemove = {
+							viewModel.deleteReminder(reminder.id)
+						}
+					)
+				}
+				.let(sectionReminders::update)
 		}
 		
-		viewModel.events.observe(viewLifecycleOwner) { it ?: return@observe
-			if (!it.consumed) when (it.key) {
-				Event.Error -> binding.root.snackbar("Something went wrong")
-				"Paused" -> binding.root.snackbar("Subscription paused")
-				"Resumed" -> binding.root.snackbar("Subscription resumed")
-				Event.Delete -> {
-					
-					sharedElementEnterTransition = null
-					returnTransition = Slide().apply {
-						interpolator = MotionUtils.resolveThemeInterpolator(requireContext(),
-							GR.attr.motionEasingStandardAccelerateInterpolator, LinearInterpolator())
-						duration = 250
+		viewModel.events
+			.filterNotNull()
+			.filterNot { it.consumed }
+			.collectOn(viewLifecycleOwner) {
+				when (it.key) {
+					Event.Error -> binding.root.snackbar("Something went wrong")
+					"Paused" -> binding.root.snackbar("Subscription paused")
+					"Resumed" -> binding.root.snackbar("Subscription resumed")
+					Event.Deleted -> {
+						
+						sharedElementEnterTransition = null
+						returnTransition = Slide().apply {
+							interpolator = MotionUtils.resolveThemeInterpolator(requireContext(),
+								GR.attr.motionEasingStandardAccelerateInterpolator, LinearInterpolator())
+							duration = 250
+						}
+						
+						activity.onBackPressedDispatcher.onBackPressed()
+						mainViewModel.messages.postValue(Event(Event.Deleted))
 					}
-					
-					activity.onBackPressedDispatcher.onBackPressed()
-					mainViewModel.messages.postValue(Event(Event.Delete))
 				}
+				it.consume()
 			}
-			it.consume()
-		}
 	}
 	
 	fun setMatchingStatusBarColor(tone: PaletteTone) {
