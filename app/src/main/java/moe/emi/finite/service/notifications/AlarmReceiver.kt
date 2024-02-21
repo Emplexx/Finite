@@ -18,8 +18,8 @@ import moe.emi.finite.FiniteApp
 import moe.emi.finite.R
 import moe.emi.finite.service.data.Reminder
 import moe.emi.finite.service.data.Subscription.Companion.findNextPaymentInclusive
-import moe.emi.finite.service.data.convert
 import moe.emi.finite.service.datastore.appSettings
+import moe.emi.finite.service.repo.RatesRepo
 import moe.emi.finite.service.repo.SubscriptionsRepo
 import java.time.LocalDate
 import java.time.ZoneId
@@ -36,8 +36,7 @@ class AlarmReceiver : BroadcastReceiver() {
 	lateinit var alarmScheduler: AlarmScheduler
 	
 	override fun onReceive(context: Context?, intent: Intent?) {
-		val id = intent?.getIntExtra("ID", -1) ?: return
-		if (id == -1) return
+		val id = intent?.getIntExtra("ID", -1)?.takeIf { it > -1 } ?: return
 		context ?: return
 		
 		goAsync {
@@ -55,23 +54,26 @@ class AlarmReceiver : BroadcastReceiver() {
 			val channelId = "Reminders"
 			val notificationManager = context.getSystemService<NotificationManager>()!!
 			val settings = context.appSettings.first()
-			val convertedAmount = convert(model.price, model.currency, settings.preferredCurrency)
+			val convertedAmount = RatesRepo.fetchedRates.value
+				?.convert(model.price, model.currency, settings.preferredCurrency)
 			
 			notificationManager.notify(id, NotificationCompat.Builder(context, channelId).apply {
 				model.color?.let { color = it }
+				
 				setSmallIcon(R.drawable.ic_expand_more_24)
-				setContentTitle("${model.name.trim()}")
+				setContentTitle(model.name.trim())
+				
 				setContentText(buildString {
-					convertedAmount?.let {
-//						if (model.currency != settings.preferredCurrency) append("≈ ")
-						append(settings.preferredCurrency.symbol ?: settings.preferredCurrency.iso4217Alpha)
-						append(" ")
-						append(it)
-					} ?: run {
-						append(model.currency.symbol ?: model.currency.iso4217Alpha)
-						append(" ")
-						append(model.price)
-					}
+					
+					val (currency, price) = convertedAmount
+						?.let { settings.preferredCurrency to it }
+						?: (model.currency to model.price)
+					
+					append(currency.symbol ?: currency.iso4217Alpha)
+					append(" ")
+					// TODO format price decimal
+					append(price)
+					
 					append(" due ")
 					append(
 						DateUtils.getRelativeTimeSpanString(
@@ -107,11 +109,8 @@ class AlarmReceiver : BroadcastReceiver() {
 			val pendingResult = goAsync()
 			@OptIn(DelicateCoroutinesApi::class) // Must run globally; there's no teardown callback.
 			GlobalScope.launch(context) {
-				try {
-					block()
-				} finally {
-					pendingResult.finish()
-				}
+				try { block() }
+				finally { pendingResult.finish() }
 			}
 		}
 		

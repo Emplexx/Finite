@@ -1,6 +1,7 @@
 package moe.emi.finite.service.data
 
 import kotlinx.serialization.Serializable
+import moe.emi.finite.service.api.FetchedRates
 import moe.emi.finite.service.db.SubscriptionEntity
 import moe.emi.finite.ui.details.NotificationPeriod
 import moe.emi.finite.ui.settings.backup.SubscriptionBackup
@@ -83,8 +84,8 @@ data class Subscription(
 		val alphabeticalComparator = compareBy<Subscription> {
 			it.name.lowercase()
 		}
-		fun priceComparator(from: (Currency) -> Rate, to: Rate) = compareBy<Subscription> {
-			convert(it.price, from(it.currency), to)
+		fun priceComparator(source: FetchedRates?, preferredCurrency: Currency) = compareBy<Subscription> {
+			source?.convert(it.price, it.currency, preferredCurrency)
 		}
 		
 		

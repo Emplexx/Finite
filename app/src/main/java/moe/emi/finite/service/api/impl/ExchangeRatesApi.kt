@@ -15,8 +15,8 @@ import moe.emi.finite.dump.systemTimeMillis
 import moe.emi.finite.jsonApi
 import moe.emi.finite.service.api.ApiProvider
 import moe.emi.finite.service.api.Deserialization
-import moe.emi.finite.service.api.ExchangeRates
 import moe.emi.finite.service.api.Failure
+import moe.emi.finite.service.api.FetchedRates
 import moe.emi.finite.service.api.Rate
 import moe.emi.finite.service.api.Unknown
 import moe.emi.finite.service.api.decode
@@ -33,7 +33,7 @@ class ExchangeRatesApi : ApiProvider.Impl {
 	
 	override val name: String = "exchangerates"
 	
-	override suspend fun getRates(): Either<Failure, ExchangeRates> = either {
+	override suspend fun getRates(): Either<Failure, FetchedRates> = either {
 		
 		val response = fuelGet("$baseUrl/latest?access_key=$accessKey").bind()
 		
@@ -44,8 +44,11 @@ class ExchangeRatesApi : ApiProvider.Impl {
 		val body = jsonApi.decode(Output.serializer(), response.body)
 		val rates = body.listRates.bind()
 		
-		ExchangeRates(baseCurrency, body.timestamp, rates)
-			.also { Log.i(name, "<-- 200 | $it") }
+		FetchedRates(baseCurrency, body.timestamp, rates)
+			.also {
+				Log.i(name, "<-- 200 | Got rates for ${it.rates.size} currencies from $name")
+				Log.i(name, "$it")
+			}
 	}
 	
 	override fun shouldRefresh(lastRefreshed: Long): Boolean {

@@ -1,6 +1,6 @@
 package moe.emi.finite.ui.home.model
 
-import moe.emi.finite.service.data.Rate
+import moe.emi.finite.service.api.Rate
 
 data class ConvertedAmount(
 	val timeframe: TotalView,

@@ -5,9 +5,11 @@ import android.content.Intent
 import android.view.Gravity
 import android.widget.PopupMenu
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dev.chrisbanes.insetter.applyInsetter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -21,6 +23,7 @@ import moe.emi.finite.service.datastore.AppTheme
 import moe.emi.finite.service.datastore.appSettings
 import moe.emi.finite.service.datastore.editSettings
 import moe.emi.finite.service.datastore.set
+import moe.emi.finite.service.repo.RatesRepo
 import moe.emi.finite.ui.currency.CurrencyPickerSheet
 import moe.emi.finite.ui.settings.backup.BackupActivity
 
@@ -75,6 +78,12 @@ class SettingsSheet(
 			textLabel.setText(R.string.setting_backup_title)
 			textValue.visible = false
 		}
+		
+		binding.cardDev.isVisible = BuildConfig.DEBUG
+		binding.rowDev.apply {
+			textLabel.text = "Dev options"
+			textValue.visible = false
+		}
 	}
 	
 	private fun initListeners() {
@@ -121,6 +130,16 @@ class SettingsSheet(
 		}
 		binding.rowBackup.root.setOnClickListener {
 			context.startActivity(Intent(context, BackupActivity::class.java))
+		}
+		
+		binding.rowDev.root.setOnClickListener {
+			MaterialAlertDialogBuilder(context)
+				.setItems(arrayOf("Clear rates")) { _, id ->
+					when (id) {
+						0 -> lifecycleScope.launch { RatesRepo.clearRates() }
+					}
+				}
+				.show()
 		}
 	}
 	

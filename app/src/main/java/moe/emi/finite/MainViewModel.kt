@@ -24,8 +24,8 @@ class MainViewModel @Inject constructor(
 		ratesUpdateState.emit(Status.Loading)
 		
 		RatesRepo.refreshRates()
-			.ifSuccess { ratesUpdateState.emit(Status.Success) }
-			.ifFailure { ratesUpdateState.emit(Status.Error) }
+			.onRight { ratesUpdateState.emit(Status.Success) }
+			.onLeft { ratesUpdateState.emit(Status.Error) }
 	}
 	
 }

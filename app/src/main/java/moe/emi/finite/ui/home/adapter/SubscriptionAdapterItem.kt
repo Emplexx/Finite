@@ -105,7 +105,7 @@ class SubscriptionAdapterItem(
 		
 		binding.textPrice.setText(buildString {
 			
-			if (convertedAmount.from.code != convertedAmount.to.code) {
+			if (convertedAmount.from.currency != convertedAmount.to.currency) {
 				append("≈ ")
 			}
 			

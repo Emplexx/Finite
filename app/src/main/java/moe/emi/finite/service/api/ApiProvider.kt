@@ -7,8 +7,10 @@ import moe.emi.finite.service.api.impl.InforEuro
 enum class ApiProvider(
 	val key: Int
 ) {
-	InforEuro(0),
-	ExchangeRatesApi(1);
+	InforEuro(0), // 151 currencies, updates at the end of each month
+	ExchangeRatesApi(1), // 168 currencies, updates at most 100 times per month
+	
+	;
 	
 	fun createClient() = when (this) {
 		InforEuro -> InforEuro()
@@ -17,7 +19,7 @@ enum class ApiProvider(
 	
 	interface Impl {
 		val name: String
-		suspend fun getRates(): Either<Failure, ExchangeRates>
+		suspend fun getRates(): Either<Failure, FetchedRates>
 		fun shouldRefresh(lastRefreshed: Long): Boolean
 	}
 

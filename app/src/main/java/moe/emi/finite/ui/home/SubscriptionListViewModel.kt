@@ -9,12 +9,11 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import moe.emi.finite.FiniteApp
-import moe.emi.finite.service.data.Subscription
 import moe.emi.finite.service.datastore.appSettings
 import moe.emi.finite.service.datastore.set
 import moe.emi.finite.service.repo.RatesRepo
 import moe.emi.finite.service.repo.SubscriptionsRepo
-import moe.emi.finite.ui.home.model.SubscriptionUiModel
+import moe.emi.finite.ui.home.model.SubscriptionListUiModel
 import moe.emi.finite.ui.home.model.TotalView
 import javax.inject.Inject
 
@@ -30,7 +29,7 @@ class SubscriptionListViewModel @Inject constructor(
 		set(value) { savedState["Total"] = value }
 	
 	
-	private val localRatesFlow = RatesRepo.getLocalRates()
+	private val localRatesFlow = RatesRepo.fetchedRates.map { it?.rates ?: emptyList() }
 	
 	private val filteredSubscriptionsFlow = SubscriptionsRepo.getAllSubscriptions()
 		.combine(FiniteApp.instance.appSettings) { subscriptions, appSettings ->
@@ -61,8 +60,8 @@ class SubscriptionListViewModel @Inject constructor(
 				.sumOf { subscription ->
 					
 					// TODO this has the same code as line 90ish
-					val rate = rates.find { it.code == subscription.currency.iso4217Alpha } ?: return@sumOf 0.0
-					val preferredRate = rates.find { it.code == defCurrency.iso4217Alpha } ?: return@sumOf 0.0
+					val rate = rates.find { it.currency == subscription.currency } ?: return@sumOf 0.0
+					val preferredRate = rates.find { it.currency == defCurrency } ?: return@sumOf 0.0
 					
 					SubscriptionListFragment.convert(
 						subscription.price,
@@ -85,8 +84,8 @@ class SubscriptionListViewModel @Inject constructor(
 			subscriptions.mapNotNull { subscription ->
 				
 				// TODO this has the same code as line 70ish
-				val rate = rates.find { it.code == subscription.currency.iso4217Alpha }
-				val preferredRate = rates.find { it.code == defCurrency.iso4217Alpha }
+				val rate = rates.find { it.currency == subscription.currency }
+				val preferredRate = rates.find { it.currency == defCurrency }
 				val convertedAmount = rate?.let {
 					preferredRate?.let {
 						SubscriptionListFragment.convert(subscription.price, rate, preferredRate, totalView, subscription.period)
@@ -100,7 +99,7 @@ class SubscriptionListViewModel @Inject constructor(
 		}
 			.combine(FiniteApp.instance.appSettings) { list, settings ->
 				list.map { (subscription, amount) ->
-					SubscriptionUiModel(subscription, settings.preferredCurrency, amount, settings.showTimeLeft)
+					SubscriptionListUiModel(subscription, settings.preferredCurrency, amount, settings.showTimeLeft)
 				}
 			}
 	
@@ -108,32 +107,32 @@ class SubscriptionListViewModel @Inject constructor(
 	
 	fun getSubscriptions() = viewModelScope.launch {
 		
-		combine(
-			SubscriptionsRepo.getAllSubscriptions(),
-			RatesRepo.getLocalRates(),
-			FiniteApp.instance.appSettings,
-		) { subscriptions, rates, appSettings ->
-			
-			if (rates.isEmpty()) { emptyList<Subscription>() }
-			else {
-				
-				
-				subscriptions
-					.filter {
-						appSettings.selectedPaymentMethods.isEmpty()
-								|| it.paymentMethod.trim().lowercase() in appSettings.selectedPaymentMethods
-							.map { it.trim().lowercase() }
-					}
-					.also {
-						// if the final returned list is empty and there are selected filters,
-						// there is a chance that one of those selected filters was removed from
-						// any item, so essentially it's broken and we clear filters manually
-						if (it.isEmpty() && appSettings.selectedPaymentMethods.isNotEmpty()) {
-							appSettings.copy(selectedPaymentMethods = emptySet()).set()
-						}
-					}
-			}
-		}
+//		combine(
+//			SubscriptionsRepo.getAllSubscriptions(),
+//			RatesRepo._getLocalRates(),
+//			FiniteApp.instance.appSettings,
+//		) { subscriptions, rates, appSettings ->
+//
+//			if (rates.isEmpty()) { emptyList<Subscription>() }
+//			else {
+//
+//
+//				subscriptions
+//					.filter {
+//						appSettings.selectedPaymentMethods.isEmpty()
+//								|| it.paymentMethod.trim().lowercase() in appSettings.selectedPaymentMethods
+//							.map { it.trim().lowercase() }
+//					}
+//					.also {
+//						// if the final returned list is empty and there are selected filters,
+//						// there is a chance that one of those selected filters was removed from
+//						// any item, so essentially it's broken and we clear filters manually
+//						if (it.isEmpty() && appSettings.selectedPaymentMethods.isNotEmpty()) {
+//							appSettings.copy(selectedPaymentMethods = emptySet()).set()
+//						}
+//					}
+//			}
+//		}
 //			.zip(savedState.getStateFlow("Total", TotalView.Monthly)) { it, _ -> it }
 //			.zip(savedState.getStateFlow("Sort", Sort.Date)) { it, _ -> it }
 //			.collect {

@@ -9,6 +9,7 @@ import com.xwray.groupie.Section
 import dev.chrisbanes.insetter.applyInsetter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import moe.emi.finite.databinding.LayoutSheetCurrencyBinding
 import moe.emi.finite.dump.AlphaOnLiftListener
@@ -32,14 +33,14 @@ class CurrencyPickerSheet(
 	private val section by lazy { Section() }
 	
 //  private val list = Currency.values().toList()
-	private val availableRates = RatesRepo.getLocalRates()
+	private val availableRates = RatesRepo.fetchedRates.map { it?.rates ?: emptyList() }
 //	private val list = RatesRepo.getLocalRates()
 	
 	private val searchQuery = MutableStateFlow("")
 	
 	private val listState = availableRates
 		.combine(searchQuery) { rates, query ->
-			val available = rates.mapNotNull { Currency.ofIsoA3Code(it.code) }.sorted()
+			val available = rates.map { it.currency }.sorted()
 			
 			if (query.isBlank()) available
 			else available.filter {

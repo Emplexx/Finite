@@ -27,9 +27,9 @@ import moe.emi.finite.dump.FastOutExtraSlowInInterpolator
 import moe.emi.finite.dump.collectOn
 import moe.emi.finite.dump.iDp
 import moe.emi.finite.dump.snackbar
+import moe.emi.finite.service.api.Rate
 import moe.emi.finite.service.data.BillingPeriod
 import moe.emi.finite.service.data.Currency
-import moe.emi.finite.service.data.Rate
 import moe.emi.finite.service.data.Subscription
 import moe.emi.finite.ui.colors.makeItemColors
 import moe.emi.finite.ui.editor.SubscriptionEditorActivity
@@ -39,7 +39,7 @@ import moe.emi.finite.ui.home.adapter.SubscriptionAdapterItem
 import moe.emi.finite.ui.home.adapter.java.ExpandableHeaderItem
 import moe.emi.finite.ui.home.adapter.java.ExpandableSection
 import moe.emi.finite.ui.home.model.ConvertedAmount
-import moe.emi.finite.ui.home.model.SubscriptionUiModel
+import moe.emi.finite.ui.home.model.SubscriptionListUiModel
 import moe.emi.finite.ui.home.model.TotalView
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -122,7 +122,7 @@ class SubscriptionListFragment : Fragment() {
 		
 		initViews()
 		
-		viewModel.getSubscriptions()
+//		viewModel.getSubscriptions()
 		collectFlow()
 	}
 	
@@ -210,7 +210,7 @@ class SubscriptionListFragment : Fragment() {
 		
 	}
 	
-	private val newItemMapper: (SubscriptionUiModel) -> SubscriptionAdapterItem =
+	private val newItemMapper: (SubscriptionListUiModel) -> SubscriptionAdapterItem =
 		{ (model, currency, amount, showTimeLeft) ->
 			SubscriptionAdapterItem(
 				model,
@@ -254,7 +254,7 @@ class SubscriptionListFragment : Fragment() {
 			from: Rate, to: Rate,
 			timeframe: TotalView, period: BillingPeriod,
 		): ConvertedAmount {
-			val converted = amount / from.rate * to.rate
+			val converted = amount / from.value * to.value
 			return ConvertedAmount(
 				timeframe,
 				when (timeframe) {

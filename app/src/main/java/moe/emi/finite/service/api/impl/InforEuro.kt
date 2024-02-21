@@ -10,8 +10,8 @@ import kotlinx.serialization.builtins.ListSerializer
 import moe.emi.finite.dump.systemTimeMillis
 import moe.emi.finite.jsonApi
 import moe.emi.finite.service.api.ApiProvider
-import moe.emi.finite.service.api.ExchangeRates
 import moe.emi.finite.service.api.Failure
+import moe.emi.finite.service.api.FetchedRates
 import moe.emi.finite.service.api.Rate
 import moe.emi.finite.service.api.Unknown
 import moe.emi.finite.service.api.decode
@@ -29,7 +29,7 @@ class InforEuro : ApiProvider.Impl {
 	
 	override val name: String = "InforEuro"
 	
-	override suspend fun getRates(): Either<Failure, ExchangeRates> = either {
+	override suspend fun getRates(): Either<Failure, FetchedRates> = either {
 		
 		val timestamp = systemTimeMillis
 		val response = fuelGet("$baseUrl/monthly-rates").bind()
@@ -45,8 +45,11 @@ class InforEuro : ApiProvider.Impl {
 				}
 			}
 		
-		ExchangeRates(baseCurrency, timestamp, body)
-			.also { Log.i(name, "<-- 200 | $it") }
+		FetchedRates(baseCurrency, timestamp, body)
+			.also {
+				Log.i(name, "<-- 200 | Got rates for ${it.rates.size} currencies from $name")
+				Log.i(name, "$it")
+			}
 	}
 	
 	override fun shouldRefresh(lastRefreshed: Long): Boolean {
