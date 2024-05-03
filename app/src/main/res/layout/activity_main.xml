@@ -52,7 +52,9 @@
 		tools:translationY="0dp"
 	>
 
+
 		<com.google.android.material.card.MaterialCardView
+			android:id="@+id/card"
 			android:layout_width="match_parent"
 			android:layout_height="112dp"
 
@@ -60,11 +62,28 @@
 			style="@style/Widget.Material3.CardView.Elevated"
 			app:cardElevation="3dp"
 
-			android:backgroundTint="?attr/colorSurfaceContainer"
+			app:cardBackgroundColor="?attr/colorSurfaceContainer"
 
 			android:outlineAmbientShadowColor="@color/black"
 			android:outlineSpotShadowColor="@color/black"
-			/>
+			>
+
+			<androidx.recyclerview.widget.RecyclerView
+				android:id="@+id/listFilters"
+				android:layout_width="match_parent"
+				android:layout_height="56dp"
+
+				app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+				android:orientation="horizontal"
+
+				android:paddingHorizontal="16dp"
+				android:paddingVertical="4dp"
+				android:clipToPadding="false"
+				android:clipChildren="false"
+
+				/>
+
+		</com.google.android.material.card.MaterialCardView>
 
 	</FrameLayout>
 

@@ -16,7 +16,7 @@ import moe.emi.finite.service.api.Rate
 import moe.emi.finite.service.api.Unknown
 import moe.emi.finite.service.api.decode
 import moe.emi.finite.service.api.fuelGet
-import moe.emi.finite.service.data.Currency
+import moe.emi.finite.service.model.Currency
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId

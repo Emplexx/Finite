@@ -1,7 +1,7 @@
 package moe.emi.finite.ui.home.model
 
-import moe.emi.finite.service.data.Currency
-import moe.emi.finite.service.data.Subscription
+import moe.emi.finite.service.model.Currency
+import moe.emi.finite.service.model.Subscription
 
 data class SubscriptionListUiModel(
 	val model: Subscription,

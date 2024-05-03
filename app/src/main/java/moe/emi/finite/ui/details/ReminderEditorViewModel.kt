@@ -3,30 +3,44 @@ package moe.emi.finite.ui.details
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import moe.emi.finite.service.data.Reminder
-import moe.emi.finite.service.data.Subscription
-import moe.emi.finite.service.data.Timespan
+import moe.emi.finite.di.VMFactory
+import moe.emi.finite.di.container
+import moe.emi.finite.di.singleViewModel
+import moe.emi.finite.di.ssh
+import moe.emi.finite.dump.invoke
+import moe.emi.finite.service.model.Reminder
+import moe.emi.finite.service.model.Timespan
 import moe.emi.finite.service.notifications.AlarmScheduler
-import moe.emi.finite.service.repo.NotificationRepo
+import moe.emi.finite.service.repo.ReminderRepo
 import moe.emi.finite.service.repo.SubscriptionsRepo
 import java.util.Calendar
-import javax.inject.Inject
 
-@HiltViewModel
-class ReminderEditorViewModel @Inject constructor(
-	savedState: SavedStateHandle,
+class ReminderEditorViewModel(
+	private val savedState: SavedStateHandle,
 	private val alarmScheduler: AlarmScheduler
 ) : ViewModel() {
 	
-	private val entityId: Int = savedState["ID"]!!
-	var reminder = savedState["Reminder"]
-		?: Reminder(0, entityId, NotificationPeriod(1, Timespan.Day), 0, 0)
+	private val subscriptionId: Int = savedState["ID"]!!
 	
-	var period = reminder.period ?: NotificationPeriod(1, Timespan.Day)
+	var reminder by savedState(Reminder.empty(subscriptionId))
+	val reminderFlow = savedState.getStateFlow("reminder", reminder)
 	
-	private lateinit var subscription: Subscription
+	var sameDay: Boolean by savedState(reminder.period == null)
+	val sameDayFlow = savedState.getStateFlow("sameDay", sameDay)
+	
+	var period by savedState(reminder.period ?: NotificationPeriod(1, Timespan.Day))
+	val periodFlow = savedState.getStateFlow("period", period)
+	
+	val parentSubscription = SubscriptionsRepo.getSubscription(subscriptionId).filterNotNull()
+	
+	val isPeriodValid = combine(parentSubscription, periodFlow) {
+		subscription, period ->
+		period < subscription.period
+	}
 	
 	init {
 		if (reminder.id == 0) {
@@ -35,20 +49,21 @@ class ReminderEditorViewModel @Inject constructor(
 			}
 			reminder = reminder.copy(hours = hour, minutes = minute)
 		}
-		viewModelScope.launch {
-			SubscriptionsRepo.getSubscription(entityId).collect {
-				it?.let { subscription = it }
-			}
-		}
 	}
 
 	fun saveReminder(callback: () -> Unit) = viewModelScope.launch {
-		NotificationRepo.insertAll(reminder).also {
-			if (subscription.active && it.size == 1) alarmScheduler.scheduleAlarms(it.first().toInt())
+		
+		val reminder = reminder.copy(
+			period = if (sameDay) null else period
+		)
+		val result = ReminderRepo.insertAll(reminder)
+		val isSuccess = result.size == 1
+		
+		if (isSuccess && parentSubscription.first().active) {
+			alarmScheduler.scheduleAlarms(result.first().toInt())
+			callback()
 		}
-		callback()
 	}
 	
-	val isPeriodValid: Boolean
-		get() = period < subscription.period
+	companion object : VMFactory by singleViewModel({ ReminderEditorViewModel(ssh, container.alarmScheduler) })
 }

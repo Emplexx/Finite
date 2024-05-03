@@ -23,7 +23,6 @@ import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialSharedAxis
 import com.xwray.groupie.GroupieAdapter
 import com.xwray.groupie.Section
-import dagger.hilt.android.AndroidEntryPoint
 import dev.chrisbanes.insetter.applyInsetter
 import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.filterNotNull
@@ -39,10 +38,10 @@ import moe.emi.finite.dump.isStatusBarLightTheme
 import moe.emi.finite.dump.setStatusBarThemeMatchSystem
 import moe.emi.finite.dump.snackbar
 import moe.emi.finite.dump.visible
-import moe.emi.finite.service.data.BillingPeriod
-import moe.emi.finite.service.data.Subscription.Companion.findNextPaymentInclusive
-import moe.emi.finite.service.data.Subscription.Companion.plus
-import moe.emi.finite.service.data.Timespan
+import moe.emi.finite.service.model.BillingPeriod
+import moe.emi.finite.service.model.Subscription.Companion.findNextPaymentInclusive
+import moe.emi.finite.service.model.Subscription.Companion.plus
+import moe.emi.finite.service.model.Timespan
 import moe.emi.finite.ui.colors.ItemColors
 import moe.emi.finite.ui.colors.PaletteTone
 import moe.emi.finite.ui.colors.makeItemColors
@@ -52,15 +51,13 @@ import java.text.DecimalFormat
 import java.time.Period
 import com.google.android.material.R as GR
 
-@AndroidEntryPoint
 class SubscriptionDetailsFragment : Fragment() {
 	
 	private val mainViewModel by activityViewModels<MainViewModel>()
-	private val viewModel by viewModels<SubscriptionDetailsViewModel>()
+	private val viewModel by viewModels<SubscriptionDetailsViewModel> { SubscriptionDetailsViewModel }
 	lateinit var binding: FragmentSubscriptionDetailsBinding
 	
-	private val activity: MainActivity
-		get() = requireActivity() as MainActivity
+	private val activity: MainActivity get() = requireActivity() as MainActivity
 	
 	private lateinit var colors: ItemColors
 	private val appBarListener by lazy { object : AppBarChangeColorListener(binding.toolbar) {

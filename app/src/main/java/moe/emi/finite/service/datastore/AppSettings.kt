@@ -1,7 +1,7 @@
 package moe.emi.finite.service.datastore
 
 import kotlinx.serialization.Serializable
-import moe.emi.finite.service.data.Currency
+import moe.emi.finite.service.model.Currency
 import moe.emi.finite.ui.home.model.Sort
 
 @Serializable

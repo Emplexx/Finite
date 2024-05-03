@@ -4,8 +4,8 @@ import android.view.View
 import com.xwray.groupie.viewbinding.BindableItem
 import moe.emi.finite.R
 import moe.emi.finite.databinding.ItemUpcomingPaymentBinding
-import moe.emi.finite.service.data.BillingPeriod
-import moe.emi.finite.service.data.Timespan
+import moe.emi.finite.service.model.BillingPeriod
+import moe.emi.finite.service.model.Timespan
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 

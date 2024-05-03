@@ -25,6 +25,7 @@
 		app:liftOnScroll="true"
 		app:liftOnScrollTargetViewId="@id/scrollView"
 
+		tools:visibility="gone"
 		>
 
 		<com.google.android.material.appbar.CollapsingToolbarLayout

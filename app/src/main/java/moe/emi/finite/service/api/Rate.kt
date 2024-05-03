@@ -1,7 +1,7 @@
 package moe.emi.finite.service.api
 
 import kotlinx.serialization.Serializable
-import moe.emi.finite.service.data.Currency
+import moe.emi.finite.service.model.Currency
 
 @Serializable
 data class Rate(

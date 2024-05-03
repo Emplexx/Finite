@@ -1,4 +1,4 @@
-package moe.emi.finite.service.data
+package moe.emi.finite.service.model
 
 enum class Timespan {
 	Day, Week, Month, Year;

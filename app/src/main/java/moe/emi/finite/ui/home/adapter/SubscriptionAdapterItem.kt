@@ -16,10 +16,9 @@ import com.xwray.groupie.viewbinding.BindableItem
 import moe.emi.finite.R
 import moe.emi.finite.databinding.ItemSubscriptionBinding
 import moe.emi.finite.dump.FastOutExtraSlowInInterpolator
-import moe.emi.finite.dump.visible
-import moe.emi.finite.service.data.Currency
-import moe.emi.finite.service.data.Subscription
-import moe.emi.finite.service.data.Timespan
+import moe.emi.finite.service.model.Currency
+import moe.emi.finite.service.model.Subscription
+import moe.emi.finite.service.model.Timespan
 import moe.emi.finite.ui.colors.ItemColors
 import moe.emi.finite.ui.home.model.ConvertedAmount
 import java.math.RoundingMode
@@ -47,7 +46,7 @@ class SubscriptionAdapterItem(
 	private fun bindView(binding: ItemSubscriptionBinding) {
 		binding.root.transitionName = "card_${model.id}"
 		binding.textName.text = model.name
-		binding.textDescription.visible = model.description.isNotBlank()
+		binding.textDescription.isVisible = model.description.isNotBlank()
 		binding.textDescription.text = model.description
 		
 		binding.textCurrencySign.text = preferredCurrency.symbol
@@ -161,7 +160,7 @@ class SubscriptionAdapterItem(
 		}
 		
 		if (convertedAmount.amountMatchedToTimeframe != convertedAmount.amountOriginal) {
-			if (binding.textPriceSubtitle.visible) return
+			if (binding.textPriceSubtitle.isVisible) return
 			val set = TransitionSet().apply {
 				addTransition(changeBounds)
 //				addTransition(changeClipBounds)
@@ -171,14 +170,14 @@ class SubscriptionAdapterItem(
 			TransitionManager.beginDelayedTransition(binding.root, set)
 			
 			
-			binding.textPriceSubtitle.visible = true
+			binding.textPriceSubtitle.isVisible = true
 			binding.textPriceSubtitle.alpha = 0f
 			binding.textPriceSubtitle.animate()
 				.alpha(1f)
 				.setListener(object : Animator.AnimatorListener {
 					
 					override fun onAnimationEnd(animation: Animator) {
-						binding.textPriceSubtitle.visible = true
+						binding.textPriceSubtitle.isVisible = true
 					}
 					
 					override fun onAnimationStart(animation: Animator) = Unit

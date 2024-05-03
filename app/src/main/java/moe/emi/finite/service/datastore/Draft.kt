@@ -6,7 +6,7 @@ import androidx.datastore.dataStore
 import kotlinx.coroutines.flow.Flow
 import moe.emi.finite.FiniteApp
 import moe.emi.finite.dump.jsonSerializer
-import moe.emi.finite.service.data.Subscription
+import moe.emi.finite.service.model.Subscription
 
 val Context.storedDraft: DataStore<Subscription?> by dataStore("draft.json", jsonSerializer(null))
 

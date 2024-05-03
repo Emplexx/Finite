@@ -3,7 +3,6 @@ package moe.emi.finite.ui.home
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -15,11 +14,9 @@ import moe.emi.finite.service.repo.RatesRepo
 import moe.emi.finite.service.repo.SubscriptionsRepo
 import moe.emi.finite.ui.home.model.SubscriptionListUiModel
 import moe.emi.finite.ui.home.model.TotalView
-import javax.inject.Inject
 
-@HiltViewModel
-class SubscriptionListViewModel @Inject constructor(
-	val savedState: SavedStateHandle
+class SubscriptionListViewModel(
+	private val savedState: SavedStateHandle
 ) : ViewModel() {
 	
 	// TODO Save this in data store
@@ -43,6 +40,7 @@ class SubscriptionListViewModel @Inject constructor(
 					// if the final returned list is empty and there are selected filters,
 					// there is a chance that one of those selected filters was removed from
 					// any item, so essentially it's broken and we clear filters manually
+					// FIXME this workaround won't work with exclusive filtering
 					if (it.isEmpty() && appSettings.selectedPaymentMethods.isNotEmpty()) {
 						appSettings.copy(selectedPaymentMethods = emptySet()).set()
 					}

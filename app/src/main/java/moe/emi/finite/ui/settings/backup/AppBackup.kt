@@ -3,11 +3,11 @@ package moe.emi.finite.ui.settings.backup
 import androidx.annotation.IntRange
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import moe.emi.finite.service.data.Currency
-import moe.emi.finite.service.data.FullDate
-import moe.emi.finite.service.data.Reminder
-import moe.emi.finite.service.data.Subscription
-import moe.emi.finite.service.data.Timespan
+import moe.emi.finite.service.model.Currency
+import moe.emi.finite.service.model.FullDate
+import moe.emi.finite.service.model.Reminder
+import moe.emi.finite.service.model.Subscription
+import moe.emi.finite.service.model.Timespan
 
 @Serializable
 data class AppBackup(

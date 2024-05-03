@@ -21,7 +21,7 @@ import moe.emi.finite.service.api.Rate
 import moe.emi.finite.service.api.Unknown
 import moe.emi.finite.service.api.decode
 import moe.emi.finite.service.api.fuelGet
-import moe.emi.finite.service.data.Currency
+import moe.emi.finite.service.model.Currency
 import kotlin.time.Duration.Companion.days
 
 class ExchangeRatesApi : ApiProvider.Impl {

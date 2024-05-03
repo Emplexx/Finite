@@ -2,9 +2,9 @@ package moe.emi.finite.service.db
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import moe.emi.finite.service.data.Currency
-import moe.emi.finite.service.data.Subscription
-import moe.emi.finite.service.data.Timespan
+import moe.emi.finite.service.model.Currency
+import moe.emi.finite.service.model.Subscription
+import moe.emi.finite.service.model.Timespan
 import java.io.Serializable
 
 @Entity(tableName = "subscriptions")
