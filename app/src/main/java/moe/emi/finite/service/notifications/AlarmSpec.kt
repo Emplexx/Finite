@@ -1,8 +1,8 @@
 package moe.emi.finite.service.notifications
 
-import moe.emi.finite.service.data.BillingPeriod
-import moe.emi.finite.service.data.FullDate
-import moe.emi.finite.service.data.Reminder
+import moe.emi.finite.service.model.BillingPeriod
+import moe.emi.finite.service.model.FullDate
+import moe.emi.finite.service.model.Reminder
 
 data class AlarmSpec(
 	val reminder: Reminder,

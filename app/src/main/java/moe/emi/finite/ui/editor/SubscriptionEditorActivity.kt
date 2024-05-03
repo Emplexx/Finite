@@ -22,11 +22,10 @@ import moe.emi.finite.dump.HasSnackbarAnchor
 import moe.emi.finite.dump.alpha
 import moe.emi.finite.dump.snackbar
 import moe.emi.finite.dump.visible
-import moe.emi.finite.service.data.BillingPeriod
-import moe.emi.finite.service.data.Currency
-import moe.emi.finite.service.data.FullDate
-import moe.emi.finite.service.datastore.clearDraft
 import moe.emi.finite.service.datastore.setDraft
+import moe.emi.finite.service.model.BillingPeriod
+import moe.emi.finite.service.model.Currency
+import moe.emi.finite.service.model.FullDate
 import moe.emi.finite.ui.currency.CurrencyPickerSheet
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -77,8 +76,7 @@ class SubscriptionEditorActivity : AppCompatActivity(), HasSnackbarAnchor {
 			when (item.itemId) {
 				R.id.action_clear_draft -> {
 					lifecycleScope.launch {
-						viewModel.replaceDraft()
-						clearDraft()
+						viewModel.clearDraft()
 						binding.toolbar.menu.clear()
 						initViews()
 					}

@@ -9,11 +9,11 @@ import androidx.core.content.getSystemService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
-import moe.emi.finite.service.data.Reminder
-import moe.emi.finite.service.data.Subscription
-import moe.emi.finite.service.data.Subscription.Companion.findNextPaymentInclusive
-import moe.emi.finite.service.data.Subscription.Companion.minus
-import moe.emi.finite.service.repo.NotificationRepo
+import moe.emi.finite.service.model.Reminder
+import moe.emi.finite.service.model.Subscription
+import moe.emi.finite.service.model.Subscription.Companion.findNextPaymentInclusive
+import moe.emi.finite.service.model.Subscription.Companion.minus
+import moe.emi.finite.service.repo.ReminderRepo
 import java.time.Period
 import java.time.ZoneId
 
@@ -37,9 +37,10 @@ class AlarmScheduler(
 	
 	// cancels all notifications *that exist in the db* and reschedules them
 	suspend fun invalidateAllAlarms() {
+		Log.e("", "AlarmScheduler Invalidate")
 		withContext(Dispatchers.IO) {
 			
-			NotificationRepo.dao.getAll().first()
+			ReminderRepo.dao.getAll().first()
 				.forEach { cancel(it.id) }
 
 //			SubscriptionsRepo.getAllSubscriptions().first()
@@ -65,7 +66,7 @@ class AlarmScheduler(
 //				.forEach { schedule(it) }
 			
 			// TODO fix this mess
-			NotificationRepo.dao.getSubcriptionsWithReminders()
+			ReminderRepo.dao.getSubcriptionsWithReminders()
 				.filterKeys { it.active }
 				
 				.flatMap { (subscription, reminders) ->
@@ -93,7 +94,7 @@ class AlarmScheduler(
 //				.forEach { schedule(SubscriptionNotification(it)) }
 			
 			// TODO fix this mess
-			NotificationRepo.dao.getTest(*ids)
+			ReminderRepo.dao.getTest(*ids)
 				.also {
 					Log.d("TAG", "fucking hell $it")
 				}
@@ -109,7 +110,7 @@ class AlarmScheduler(
 	}
 	
 	suspend fun scheduleAlarmsForSubscription(id: Int) {
-		NotificationRepo.getBySubscriptionId(id).first()
+		ReminderRepo.getBySubscriptionId(id).first()
 			.map { it.id }
 			.let { scheduleAlarms(*it.toIntArray()) }
 	}
@@ -119,7 +120,7 @@ class AlarmScheduler(
 	}
 	
 	suspend fun removeAlarmsForSubscription(id: Int) {
-		NotificationRepo.getBySubscriptionId(id).first()
+		ReminderRepo.getBySubscriptionId(id).first()
 			.map { it.id }
 			.let { removeAlarms(*it.toIntArray()) }
 	}
@@ -131,9 +132,10 @@ class AlarmScheduler(
 		
 		val intent = Intent(context, AlarmReceiver::class.java).apply {
 			putExtra("ID", alarm.reminder.id)
+			Intent.FLAG_RECEIVER_NO_ABORT
 		}
 		
-		val alarmTime2 = alarm.subStartedOn.toLocalDate()
+		val alarmTimeMillis = alarm.subStartedOn.toLocalDate()
 			
 			// Find next payment date since the subscription was started
 			.findNextPaymentInclusive(alarm.subBillingPeriod)
@@ -162,21 +164,25 @@ class AlarmScheduler(
 			.atZone(ZoneId.systemDefault())
 			.toEpochSecond() * 1000L
 		
-		Log.d("TAG", "alarmTime   $alarmTime2")
+		Log.d("TAG", "alarmTime   $alarmTimeMillis")
 		Log.d("TAG", "currentTime ${System.currentTimeMillis()}")
 		
 		if (alarmTime <= System.currentTimeMillis()) return
 		
 		if (alarmManager.canScheduleExactAlarms()) {
+			
+			val pendingIntent = PendingIntent.getBroadcast(
+				context,
+				alarm.reminder.id,
+				intent,
+				PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+			)
+//			alarmManager.set(AlarmManager.RTC_WAKEUP, alarmTime2, pendingIntent)
+			
 			alarmManager.setExactAndAllowWhileIdle(
 				AlarmManager.RTC_WAKEUP,
-				alarmTime2,
-				PendingIntent.getBroadcast(
-					context,
-					alarm.reminder.id,
-					intent,
-					PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-				)
+				alarmTimeMillis,
+				pendingIntent
 			)
 		}
 	}

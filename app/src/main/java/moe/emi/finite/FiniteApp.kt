@@ -10,22 +10,22 @@ import com.google.android.material.color.DynamicColors
 import com.google.android.material.color.DynamicColorsOptions
 import com.google.android.material.color.HarmonizedColors
 import com.google.android.material.color.HarmonizedColorsOptions
-import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import moe.emi.finite.di.Container
 import moe.emi.finite.service.db.FiniteDB
 import moe.emi.finite.service.notifications.AlarmScheduler
-import javax.inject.Inject
 
-@HiltAndroidApp
 class FiniteApp : Application() {
 	
-	@Inject
-	lateinit var alarmScheduler: AlarmScheduler
+	val alarmScheduler by lazy { AlarmScheduler(this) }
+	
+	lateinit var container: Container
+		private set
 	
 	companion object {
 		
@@ -41,7 +41,13 @@ class FiniteApp : Application() {
 	
 	override fun onCreate() {
 		super.onCreate()
+		
 		instance = this
+		
+		container = object : Container {
+			override val app = instance
+			override val alarmScheduler by lazy { AlarmScheduler(app) }
+		}
 		
 //		GlobalScope.launch {
 //			when (appSettings.first().appTheme) {

@@ -12,9 +12,8 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.MissingFieldException
 import moe.emi.finite.R
-import javax.inject.Inject
 
-class BackupViewModel @Inject constructor(
+class BackupViewModel(
 	val context: Application
 ) : AndroidViewModel(context) {
 

@@ -17,7 +17,7 @@ import moe.emi.finite.dump.collectOn
 import moe.emi.finite.dump.deco.tableViewDecor
 import moe.emi.finite.dump.requestDisplayDimensions
 import moe.emi.finite.dump.setLiftOnScrollListener
-import moe.emi.finite.service.data.Currency
+import moe.emi.finite.service.model.Currency
 import moe.emi.finite.service.repo.RatesRepo
 
 class CurrencyPickerSheet(

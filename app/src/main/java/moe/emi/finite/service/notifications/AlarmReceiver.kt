@@ -8,7 +8,6 @@ import android.text.format.DateUtils
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.getSystemService
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -16,28 +15,26 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import moe.emi.finite.FiniteApp
 import moe.emi.finite.R
-import moe.emi.finite.service.data.Reminder
-import moe.emi.finite.service.data.Subscription.Companion.findNextPaymentInclusive
+import moe.emi.finite.di.app
 import moe.emi.finite.service.datastore.appSettings
+import moe.emi.finite.service.model.Reminder
+import moe.emi.finite.service.model.Subscription.Companion.findNextPaymentInclusive
 import moe.emi.finite.service.repo.RatesRepo
 import moe.emi.finite.service.repo.SubscriptionsRepo
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
-import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
-@AndroidEntryPoint
 class AlarmReceiver : BroadcastReceiver() {
 	
-	@Inject
 	lateinit var alarmScheduler: AlarmScheduler
 	
 	override fun onReceive(context: Context?, intent: Intent?) {
 		val id = intent?.getIntExtra("ID", -1)?.takeIf { it > -1 } ?: return
-		context ?: return
+		alarmScheduler = context?.app?.container?.alarmScheduler ?: return
 		
 		goAsync {
 			

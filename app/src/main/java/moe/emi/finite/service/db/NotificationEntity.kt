@@ -4,7 +4,7 @@ import androidx.annotation.IntRange
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import moe.emi.finite.service.data.Reminder
+import moe.emi.finite.service.model.Reminder
 import moe.emi.finite.ui.details.NotificationPeriod
 
 @Entity(tableName = "notifications")

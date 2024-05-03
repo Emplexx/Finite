@@ -2,6 +2,7 @@ package moe.emi.finite.ui.home
 
 import android.content.Context
 import android.graphics.Color
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -18,7 +19,6 @@ import moe.emi.finite.databinding.LayoutSortRowBinding
 import moe.emi.finite.databinding.ViewChipFilterBinding
 import moe.emi.finite.dump.FastOutExtraSlowInInterpolator
 import moe.emi.finite.dump.textRes
-import moe.emi.finite.dump.visible
 import moe.emi.finite.service.datastore.appSettings
 import moe.emi.finite.service.datastore.editSettings
 import moe.emi.finite.service.repo.SubscriptionsRepo
@@ -186,7 +186,7 @@ class DisplayOptionsSheet(
 			trailingIcon.rotation = if (asc) 0f else 180f
 			trailingIcon.isSelected = asc
 			
-			trailingIcon.visible = true
+			trailingIcon.isVisible = true
 		}
 	}
 	
@@ -196,7 +196,7 @@ class DisplayOptionsSheet(
 			root.setBackgroundColor(Color.TRANSPARENT)
 			textLabel.setTextColor(materialColor(TonalColor.onSurface))
 
-			trailingIcon.visible = false
+			trailingIcon.isVisible = false
 			
 		}
 	}

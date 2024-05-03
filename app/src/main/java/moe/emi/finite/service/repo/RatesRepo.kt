@@ -20,8 +20,6 @@ object RatesRepo {
 	private val local = FiniteApp.instance.ratesCache
 	private val ratesApi by lazy { NetworkModule.getRatesApi() }
 	
-	
-	
 	val fetchedRates = getLocalRates()
 		.stateIn(FiniteApp.scope, SharingStarted.Eagerly, null)
 	

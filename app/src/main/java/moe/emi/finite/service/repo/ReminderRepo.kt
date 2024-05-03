@@ -3,10 +3,10 @@ package moe.emi.finite.service.repo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import moe.emi.finite.FiniteApp
-import moe.emi.finite.service.data.Reminder
 import moe.emi.finite.service.db.NotificationEntity
+import moe.emi.finite.service.model.Reminder
 
-object NotificationRepo {
+object ReminderRepo {
 	
 	val dao by lazy { FiniteApp.db.notificationDao() }
 	

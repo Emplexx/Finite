@@ -1,4 +1,4 @@
-package moe.emi.finite.service.data
+package moe.emi.finite.service.model
 
 import kotlinx.serialization.Serializable
 import moe.emi.finite.service.api.FetchedRates

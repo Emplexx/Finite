@@ -6,43 +6,43 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
+import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
-import dagger.hilt.android.AndroidEntryPoint
 import dev.chrisbanes.insetter.applyInsetter
-import kotlinx.coroutines.launch
 import moe.emi.convenience.TonalColor
 import moe.emi.convenience.drawable
 import moe.emi.convenience.materialColor
 import moe.emi.finite.R
 import moe.emi.finite.databinding.LayoutSheetReminderEditorBinding
-import moe.emi.finite.dump.visible
-import moe.emi.finite.service.data.Reminder
-import moe.emi.finite.service.data.Timespan
+import moe.emi.finite.dump.collectOn
+import moe.emi.finite.service.model.Reminder
+import moe.emi.finite.service.model.Timespan
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
-@AndroidEntryPoint
-class ReminderEditorSheet() : BottomSheetDialogFragment() {
+class ReminderEditorSheet : BottomSheetDialogFragment() {
 	
-	private val viewModel by viewModels<ReminderEditorViewModel>()
+	private val viewModel by viewModels<ReminderEditorViewModel> { ReminderEditorViewModel }
 	private lateinit var binding: LayoutSheetReminderEditorBinding
 	
 	private val behavior: BottomSheetBehavior<*>
 		get() = (dialog as BottomSheetDialog).behavior
 	
 	companion object {
-		fun newInstance(entityId: Int, reminder: Reminder? = null) = ReminderEditorSheet().apply {
+		fun newInstance(
+			subscriptionId: Int,
+			reminder: Reminder? = null
+		) = ReminderEditorSheet().apply {
 			arguments = Bundle().apply {
-				putInt("ID", entityId)
-				reminder?.let { putSerializable("Reminder", it) }
+				putInt("ID", subscriptionId)
+				reminder?.let { putSerializable("reminder", it) }
 			}
 		}
 	}
@@ -68,70 +68,50 @@ class ReminderEditorSheet() : BottomSheetDialogFragment() {
 		behavior.state = BottomSheetBehavior.STATE_EXPANDED
 		behavior.skipCollapsed = true
 		
-		lifecycleScope.launch {
-			initLayout()
-			initListeners()
-		}
+		initLayout()
+		initListeners()
+		
+		collectFlow()
 	}
 	
 	private fun initLayout() {
 		
 		binding.headerDate.text.text = "Remind me"
 		
-		binding.footerDateError.root.visible = false
-		binding.footerDateError.text.alpha = 1f
-		binding.footerDateError.text.text = "Reminder period should be shorter than a single billing cycle"
-		binding.footerDateError.text.setTextColor(requireContext().materialColor(TonalColor.error))
-		
-		when (viewModel.reminder.period) {
-			null -> {
-				binding.radioSameDay.isChecked = true
-			}
-			else -> {
-				binding.radioPrior.isChecked = true
-				binding.fieldPeriodCount.setText(viewModel.reminder.period?.count.toString())
-				binding.fieldPeriod.text = viewModel.reminder.period?.timespan?.name
-			}
-		}
-		
 		binding.rowTime.apply {
-			layoutIcon.visible = true
+			layoutIcon.isVisible = true
 			icon.setImageDrawable(requireActivity().drawable(R.drawable.ic_palette_fill_24))
 			backgroundColor.setCardBackgroundColor(requireActivity().getColor(R.color.pink))
 			textLabel.text = "Time"
-			updateTime()
-			textValue.visible = true
+			textValue.isVisible = true
 		}
+		
+		binding.footerDateError.root.isVisible = false
+		binding.footerDateError.text.alpha = 1f
+		binding.footerDateError.text.text = "Reminder period should be shorter than a single billing cycle"
+		binding.footerDateError.text.setTextColor(requireContext().materialColor(TonalColor.error))
 	}
 	
-	private suspend fun initListeners() {
+	private fun initListeners() {
 		
 		binding.rowSameDay.setOnClickListener {
-			binding.radioSameDay.isChecked = true
+			viewModel.sameDay = true
 		}
 		binding.rowPrior.setOnClickListener {
-			binding.radioPrior.isChecked = true
+			viewModel.sameDay = false
 		}
-		
-		binding.radioSameDay.setOnCheckedChangeListener { _, isChecked ->
-			binding.radioPrior.isChecked = !isChecked
-			viewModel.reminder = viewModel.reminder.copy(period = null)
+
+		binding.radioSameDay.setOnClickListener {
+			viewModel.sameDay = true
 		}
-		binding.radioPrior.setOnCheckedChangeListener { _, isChecked ->
-			binding.radioSameDay.isChecked = !isChecked
-			viewModel.reminder = viewModel.reminder.copy(period = viewModel.period)
+		binding.radioPrior.setOnClickListener {
+			viewModel.sameDay = false
 		}
 		
 		binding.fieldPeriodCount.doAfterTextChanged { editable ->
 			editable?.toString()?.toIntOrNull()
 				.let { it ?: 1 }
-				.let {
-					viewModel.period = viewModel.period.copy(count = it)
-					if (viewModel.reminder.period != null)
-						viewModel.reminder = viewModel.reminder.copy(period = viewModel.period)
-				}
-			binding.footerDateError.root.visible = !viewModel.isPeriodValid
-			binding.buttonSave.isEnabled = viewModel.isPeriodValid
+				.let { viewModel.period = viewModel.period.copy(count = it) }
 		}
 		
 		binding.cardPeriod.setOnClickListener {
@@ -151,12 +131,6 @@ class ReminderEditorSheet() : BottomSheetDialogFragment() {
 						else -> null
 					}?.let {
 						viewModel.period = viewModel.period.copy(timespan = it)
-						if (viewModel.reminder.period != null)
-							viewModel.reminder = viewModel.reminder.copy(period = viewModel.period)
-						binding.fieldPeriod.text = it.name
-						
-						binding.footerDateError.root.visible = !viewModel.isPeriodValid
-						binding.buttonSave.isEnabled = viewModel.isPeriodValid
 					}
 					true
 				}
@@ -180,7 +154,6 @@ class ReminderEditorSheet() : BottomSheetDialogFragment() {
 					hours = picker.hour,
 					minutes = picker.minute
 				)
-				updateTime()
 			}
 		}
 		
@@ -191,8 +164,29 @@ class ReminderEditorSheet() : BottomSheetDialogFragment() {
 		
 	}
 	
-	private fun updateTime() {
-		val c = LocalTime.of(viewModel.reminder.hours, viewModel.reminder.minutes)
-		binding.rowTime.textValue.text = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).format(c)
+	private fun collectFlow() {
+		viewModel.sameDayFlow.collectOn(viewLifecycleOwner) {
+			binding.radioSameDay.isChecked = it
+			binding.radioPrior.isChecked = !it
+		}
+		viewModel.reminderFlow.collectOn(viewLifecycleOwner) {
+			val c = LocalTime.of(it.hours, it.minutes)
+			binding.rowTime.textValue.text = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).format(c)
+		}
+		viewModel.periodFlow.collectOn(viewLifecycleOwner) { period ->
+			binding.fieldPeriod.text = period.timespan.name
+			
+			binding.fieldPeriodCount.let {
+				val current = it.text?.toString() ?: ""
+				val new = period.count.toString()
+				
+				val erasedToBlank = current.isBlank() && new == "1"
+				if (!erasedToBlank && current != new) binding.fieldPeriodCount.setText(new)
+			}
+		}
+		viewModel.isPeriodValid.collectOn(viewLifecycleOwner) { isValid ->
+			binding.footerDateError.root.isVisible = !isValid
+			binding.buttonSave.isEnabled = isValid
+		}
 	}
 }

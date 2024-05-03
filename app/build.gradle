@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    id 'com.google.dagger.hilt.android'
+//    id 'com.google.dagger.hilt.android'
     id 'androidx.navigation.safeargs.kotlin'
     id 'org.jetbrains.kotlin.plugin.serialization' version '1.9.0'
     id 'com.google.devtools.ksp'
@@ -97,8 +97,8 @@ dependencies {
     ksp "androidx.room:room-compiler:$room_version"
 
     // Hilt
-    implementation "com.google.dagger:hilt-android:$hilt_version"
-    ksp "com.google.dagger:hilt-compiler:$hilt_version"
+//    implementation "com.google.dagger:hilt-android:$hilt_version"
+//    ksp "com.google.dagger:hilt-compiler:$hilt_version"
 
     // Data store
     implementation "androidx.datastore:datastore-preferences:1.0.0"
@@ -118,4 +118,7 @@ dependencies {
     implementation "dev.chrisbanes.insetter:insetter:0.6.1"
     implementation "codes.side:andcolorpicker:0.6.2"
 
+
+    implementation "com.mikepenz:itemanimators:1.1.0"
+    implementation("io.github.vshnv:adapt:0.0.6")
 }

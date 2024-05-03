@@ -28,14 +28,15 @@ import moe.emi.finite.dump.collectOn
 import moe.emi.finite.dump.iDp
 import moe.emi.finite.dump.snackbar
 import moe.emi.finite.service.api.Rate
-import moe.emi.finite.service.data.BillingPeriod
-import moe.emi.finite.service.data.Currency
-import moe.emi.finite.service.data.Subscription
+import moe.emi.finite.service.model.BillingPeriod
+import moe.emi.finite.service.model.Currency
+import moe.emi.finite.service.model.Subscription
 import moe.emi.finite.ui.colors.makeItemColors
 import moe.emi.finite.ui.editor.SubscriptionEditorActivity
 import moe.emi.finite.ui.home.adapter.AutoLayoutDecoration
 import moe.emi.finite.ui.home.adapter.HomeHeaderAdapterItem
 import moe.emi.finite.ui.home.adapter.SubscriptionAdapterItem
+import moe.emi.finite.ui.home.adapter.anim.SmoothItemAnimator
 import moe.emi.finite.ui.home.adapter.java.ExpandableHeaderItem
 import moe.emi.finite.ui.home.adapter.java.ExpandableSection
 import moe.emi.finite.ui.home.model.ConvertedAmount
@@ -119,6 +120,7 @@ class SubscriptionListFragment : Fragment() {
 				padding(/*top = true, */bottom = true)
 			}
 		}
+		binding.recyclerView.itemAnimator = SmoothItemAnimator()
 		
 		initViews()
 		

@@ -2,7 +2,8 @@ package moe.emi.finite.ui.settings.backup
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import moe.emi.finite.service.data.Timespan
+import moe.emi.finite.service.model.Timespan
+import moe.emi.finite.ui.details.NotificationPeriod
 
 @Serializable
 data class Period(
@@ -12,4 +13,7 @@ data class Period(
 	val unit: Timespan
 ) {
 //	init { require(length > 0) }
+
+	fun toNotificationPeriod() = NotificationPeriod(length, unit)
+	
 }

@@ -1,4 +1,4 @@
-package moe.emi.finite.service.data
+package moe.emi.finite.service.model
 
 import android.content.Context
 import moe.emi.finite.R

@@ -8,8 +8,8 @@ import moe.emi.convenience.TonalColor
 import moe.emi.convenience.materialColor
 import moe.emi.finite.R
 import moe.emi.finite.databinding.LayoutSheetFrequencyBinding
-import moe.emi.finite.service.data.BillingPeriod
-import moe.emi.finite.service.data.Timespan
+import moe.emi.finite.service.model.BillingPeriod
+import moe.emi.finite.service.model.Timespan
 
 class FrequencyPickerSheet(
 	context: Context,

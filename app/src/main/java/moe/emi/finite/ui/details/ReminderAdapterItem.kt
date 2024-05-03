@@ -5,7 +5,7 @@ import com.xwray.groupie.Item
 import com.xwray.groupie.viewbinding.BindableItem
 import moe.emi.finite.R
 import moe.emi.finite.databinding.ItemReminderBinding
-import moe.emi.finite.service.data.Reminder
+import moe.emi.finite.service.model.Reminder
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle

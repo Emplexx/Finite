@@ -9,10 +9,10 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import moe.emi.finite.BuildConfig
 import moe.emi.finite.FiniteApp
-import moe.emi.finite.service.data.Reminder
-import moe.emi.finite.service.data.Subscription
 import moe.emi.finite.service.db.NotificationEntity
 import moe.emi.finite.service.db.SubscriptionEntity
+import moe.emi.finite.service.model.Reminder
+import moe.emi.finite.service.model.Subscription
 
 val jsonBackup = Json {
 	ignoreUnknownKeys = true
@@ -40,6 +40,7 @@ suspend fun createAppBackup(): AppBackup {
 }
 
 suspend fun restoreAppBackup(backup: AppBackup) = runCatching {
+	
 	val subscriptionDao = FiniteApp.db.subscriptionDao()
 	val reminderDao = FiniteApp.db.notificationDao()
 	

@@ -3,7 +3,6 @@ package moe.emi.finite.ui.details
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -11,16 +10,18 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import moe.emi.finite.FiniteApp
+import moe.emi.finite.di.VMFactory
+import moe.emi.finite.di.container
+import moe.emi.finite.di.singleViewModel
+import moe.emi.finite.di.ssh
 import moe.emi.finite.service.datastore.appSettings
 import moe.emi.finite.service.notifications.AlarmScheduler
-import moe.emi.finite.service.repo.NotificationRepo
 import moe.emi.finite.service.repo.RatesRepo
+import moe.emi.finite.service.repo.ReminderRepo
 import moe.emi.finite.service.repo.SubscriptionsRepo
 import moe.emi.finite.ui.details.model.SubscriptionDetailUiModel
-import javax.inject.Inject
 
-@HiltViewModel
-class SubscriptionDetailsViewModel @Inject constructor(
+class SubscriptionDetailsViewModel(
 	savedState: SavedStateHandle,
 	private val alarmScheduler: AlarmScheduler
 ) : ViewModel() {
@@ -42,8 +43,8 @@ class SubscriptionDetailsViewModel @Inject constructor(
 			SubscriptionDetailUiModel(subscription, settings.preferredCurrency, convertedAmount)
 		}
 		.stateIn(viewModelScope, SharingStarted.Eagerly, null)
-	val reminders = NotificationRepo.getBySubscriptionId(entityId)
-
+	
+	val reminders = ReminderRepo.getBySubscriptionId(entityId)
 	
 	val events = MutableStateFlow<Event?>(null)
 	
@@ -67,14 +68,14 @@ class SubscriptionDetailsViewModel @Inject constructor(
 		val result = SubscriptionsRepo.deleteSubscription(entityId)
 			.onSuccess {
 				alarmScheduler.removeAlarmsForSubscription(entityId)
-				NotificationRepo.dao.deleteBySubscriptionId(entityId)
+				ReminderRepo.dao.deleteBySubscriptionId(entityId)
 			}
 		
 		events.update { Event(if (result.isSuccess) Event.Deleted else Event.Error) }
 	}
 	
 	fun deleteReminder(id: Int) = viewModelScope.launch {
-		NotificationRepo.delete(id)
+		ReminderRepo.delete(id)
 			.onSuccess { alarmScheduler.removeAlarms(id) }
 	}
 
@@ -86,5 +87,9 @@ class SubscriptionDetailsViewModel @Inject constructor(
 //			}
 //		}
 //	}
+	
+	companion object : VMFactory by singleViewModel({
+		SubscriptionDetailsViewModel(ssh, container.alarmScheduler)
+	})
 	
 }
