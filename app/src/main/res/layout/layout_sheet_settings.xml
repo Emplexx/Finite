@@ -111,6 +111,26 @@
 				/>
 
 			<com.google.android.material.card.MaterialCardView
+				android:id="@+id/sectionUpgrade"
+
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				app:cardPreventCornerOverlap="false"
+				app:strokeColor="@android:color/transparent"
+				app:shapeAppearance="?attr/shapeAppearanceCornerSmall"
+				app:cardBackgroundColor="?attr/colorSheetSurface"
+
+				android:layout_marginBottom="16dp"
+
+				android:visibility="gone"
+				>
+				<include
+					android:id="@+id/rowUpgrade"
+					layout="@layout/preference_action"
+					/>
+			</com.google.android.material.card.MaterialCardView>
+
+			<com.google.android.material.card.MaterialCardView
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 
@@ -159,6 +179,15 @@
 					>
 					<include
 						android:id="@+id/rowColors"
+						layout="@layout/preference_leading_icon_trailing_text"
+						/>
+					<com.google.android.material.divider.MaterialDivider
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						app:dividerInsetStart="56dp"
+						/>
+					<include
+						android:id="@+id/rowRates"
 						layout="@layout/preference_leading_icon_trailing_text"
 						/>
 					<com.google.android.material.divider.MaterialDivider

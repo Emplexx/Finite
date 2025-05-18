@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -21,6 +22,10 @@ import androidx.transition.Slide
 import androidx.transition.TransitionManager
 import com.google.android.material.chip.Chip
 import com.google.android.material.motion.MotionUtils
+import convenience.resources.Token
+import convenience.resources.colorAttr
+import convenience.resources.durationAttr
+import convenience.resources.easingAttr
 import dev.chrisbanes.insetter.applyInsetter
 import io.github.vshnv.adapt.dsl.ViewSource.SimpleViewSource
 import io.github.vshnv.adapt.dsl.adapt
@@ -30,32 +35,25 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import moe.emi.convenience.Duration
-import moe.emi.convenience.Interpolator
-import moe.emi.convenience.TonalColor
-import moe.emi.convenience.materialColor
-import moe.emi.convenience.materialDuration
-import moe.emi.convenience.materialInterpolator
+import moe.emi.finite.components.list.ui.DisplayOptionsSheet
+import moe.emi.finite.components.settings.store.AppTheme
+import moe.emi.finite.components.settings.store.appSettings
+import moe.emi.finite.components.settings.ui.SettingsSheetFragment
+import moe.emi.finite.components.upgrade.UpgradeSheet
 import moe.emi.finite.databinding.ActivityMainBinding
 import moe.emi.finite.dump.FastOutExtraSlowInInterpolator
-import moe.emi.finite.dump.HasSnackbarAnchor
-import moe.emi.finite.dump.Length
+import moe.emi.finite.dump.android.HasSnackbarAnchor
+import moe.emi.finite.dump.android.Length
 import moe.emi.finite.dump.collectOn
 import moe.emi.finite.dump.fDp
-import moe.emi.finite.dump.snackbar
-import moe.emi.finite.dump.visible
-import moe.emi.finite.service.datastore.AppTheme
-import moe.emi.finite.service.datastore.appSettings
+import moe.emi.finite.dump.android.snackbar
 import moe.emi.finite.ui.editor.SubscriptionEditorActivity
-import moe.emi.finite.ui.home.DisplayOptionsSheet
-import moe.emi.finite.ui.settings.SettingsSheetFragment
-import moe.emi.finite.ui.settings.backup.Status
 import java.util.Locale
 import com.google.android.material.R as GR
 
 class MainActivity : AppCompatActivity(), HasSnackbarAnchor {
 	
-	private val viewModel by viewModels<MainViewModel>()
+	private val viewModel by viewModels<MainViewModel> { MainViewModel }
 	private lateinit var binding: ActivityMainBinding
 	
 	val launcherEditor = registerForActivityResult(ActivityResultContracts.StartActivityForResult())
@@ -73,10 +71,8 @@ class MainActivity : AppCompatActivity(), HasSnackbarAnchor {
 				.bind {
 					binding.text = data.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }
 					
-					binding.chipBackgroundColor = materialColor(
-						com.google.android.material.R.attr.colorSurfaceBright
-					).let { ColorStateList.valueOf(it) }
-					materialColor(TonalColor.onSurface).let {
+					binding.chipBackgroundColor = colorAttr(Token.color.surfaceBright).let { ColorStateList.valueOf(it) }
+					colorAttr(Token.color.onSurface).let {
 						binding.setTextColor(it)
 						binding.closeIconTint = ColorStateList.valueOf(it)
 					}
@@ -150,19 +146,24 @@ class MainActivity : AppCompatActivity(), HasSnackbarAnchor {
 		
 		navController
 			.addOnDestinationChangedListener { controller, destination, bundle ->
+				
+				Log.d("MainActivity", "destination $destination")
+				
 				if (destination.id != R.id.FirstFragment) {
 					binding.bottomAppBar.performHide(true)
 					binding.fab.hide()
 					
+					val bottom = window.decorView.rootWindowInsets
+						?.getInsets(WindowInsetsCompat.Type.navigationBars())
+						?.bottom
+						?: 0
+					
 					binding.card.animate()
-						.setDuration(materialDuration(Duration.medium4))
-						.setInterpolator(materialInterpolator(Interpolator.emphasized))
+						.setDuration(durationAttr(Token.duration.medium4))
+						.setInterpolator(easingAttr(Token.easing.emphasized))
 						.translationY(
 							binding.card.height +
-									window.decorView.rootWindowInsets
-										.getInsets(WindowInsetsCompat.Type.navigationBars())
-										.bottom
-										.toFloat()
+									bottom.toFloat()
 						)
 						.start()
 				}
@@ -172,18 +173,34 @@ class MainActivity : AppCompatActivity(), HasSnackbarAnchor {
 					binding.fab.show()
 					
 					binding.card.animate()
-						.setDuration(materialDuration(Duration.long2))
-						.setInterpolator(materialInterpolator(Interpolator.emphasized))
+						.setDuration(durationAttr(Token.duration.long2))
+						.setInterpolator(easingAttr(Token.easing.emphasized))
 						.translationY(0f)
 						.start()
 				}
 			}
 		
-		
-		
-		binding.fab.setOnClickListener { view ->
-			launcherEditor.launch(Intent(this, SubscriptionEditorActivity::class.java))
+		fun showUpgradeSheet() {
+			UpgradeSheet.openWithCreateContext().show(supportFragmentManager, null)
 		}
+		
+		binding.fab.setOnClickListener {
+			lifecycleScope.launch {
+				if (viewModel.isPro.first() || viewModel.subscriptionCount.first() < 5 || BuildConfig.DEBUG) {
+					launcherEditor.launch(Intent(this@MainActivity, SubscriptionEditorActivity::class.java))
+				}
+				else showUpgradeSheet()
+			}
+		}
+		
+		binding.fab.setOnLongClickListener {
+			if (BuildConfig.DEBUG) {
+				showUpgradeSheet()
+				true
+			}
+			else false
+		}
+		
 		binding.bottomAppBar.setOnMenuItemClickListener {
 			when (it.itemId) {
 				R.id.action_view_options -> {
@@ -191,16 +208,12 @@ class MainActivity : AppCompatActivity(), HasSnackbarAnchor {
 					true
 				}
 				R.id.action_settings -> {
-//					startActivity(Intent(this, SettingsActivity::class.java))
-//					SettingsSheet(this).show()
 					SettingsSheetFragment().show(supportFragmentManager, null)
 					true
 				}
 				else -> false
 			}
 		}
-		
-		
 		
 		viewModel.tryUpdateRates()
 		
@@ -251,19 +264,23 @@ class MainActivity : AppCompatActivity(), HasSnackbarAnchor {
 		
 		if (visible) {
 			binding.bottomAppBar.performShow(true)
-			binding.cardContainer.visible = true
+			binding.cardContainer.isVisible = true
 		}
 		else {
 			binding.bottomAppBar.performHide(true)
 			TransitionManager.beginDelayedTransition(binding.root, slide)
-			binding.cardContainer.visible = false
+			binding.cardContainer.isVisible = false
 		}
 	}
 	
 	
 	var isShifted = false
 	val normalOffset by lazy { binding.bottomAppBar.cradleVerticalOffset }
+	
 	fun setFabShifted(shifted: Boolean) {
+		
+		if (isShifted == shifted) return
+		
 		isShifted = shifted
 		
 		val animator = if (isShifted) ValueAnimator.ofFloat(0f, 100.fDp)
@@ -290,22 +307,6 @@ class MainActivity : AppCompatActivity(), HasSnackbarAnchor {
 			start()
 		}
 	}
-	
-//	override fun onCreateOptionsMenu(menu: Menu): Boolean {
-//		// Inflate the menu; this adds items to the action bar if it is present.
-//		menuInflater.inflate(R.menu.menu_main, menu)
-//		return true
-//	}
-//
-//	override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//		// Handle action bar item clicks here. The action bar will
-//		// automatically handle clicks on the Home/Up button, so long
-//		// as you specify a parent activity in AndroidManifest.xml.
-//		return when (item.itemId) {
-//			R.id.action_settings -> true
-//			else -> super.onOptionsItemSelected(item)
-//		}
-//	}
 	
 	override val snackbarAnchor: View
 		get() = binding.fab

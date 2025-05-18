@@ -6,7 +6,7 @@
 
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	tools:context=".ui.home.SubscriptionListFragment"
+	tools:context=".components.list.ui.SubscriptionListFragment"
 
 	android:background="?android:colorBackground"
 
@@ -53,6 +53,7 @@
 				android:elevation="0dp"
 				android:outlineSpotShadowColor="@color/black"
 				android:outlineAmbientShadowColor="@color/black"
+
 
 				app:layout_collapseMode="pin"
 				/>

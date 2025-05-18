@@ -9,29 +9,39 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import moe.emi.finite.FiniteApp
+import moe.emi.finite.components.details.deleteReminder
+import moe.emi.finite.components.details.deleteSubscription
+import moe.emi.finite.components.details.setSubscriptionActive
+import moe.emi.finite.components.settings.store.SettingsStore
+import moe.emi.finite.components.settings.store.colorOptions
+import moe.emi.finite.core.alarms.ReminderScheduler
+import moe.emi.finite.core.db.NotificationDao
+import moe.emi.finite.core.db.SubscriptionDao
+import moe.emi.finite.core.db.getBySubscriptionId
+import moe.emi.finite.core.db.getSubscription
+import moe.emi.finite.core.rates.RatesRepo
 import moe.emi.finite.di.VMFactory
 import moe.emi.finite.di.container
 import moe.emi.finite.di.singleViewModel
 import moe.emi.finite.di.ssh
-import moe.emi.finite.service.datastore.appSettings
-import moe.emi.finite.service.notifications.AlarmScheduler
-import moe.emi.finite.service.repo.RatesRepo
-import moe.emi.finite.service.repo.ReminderRepo
-import moe.emi.finite.service.repo.SubscriptionsRepo
-import moe.emi.finite.ui.details.model.SubscriptionDetailUiModel
+import moe.emi.finite.dump.Event
+import moe.emi.finite.dump.with
 
 class SubscriptionDetailsViewModel(
 	savedState: SavedStateHandle,
-	private val alarmScheduler: AlarmScheduler
+	private val ratesRepo: RatesRepo,
+	private val reminderScheduler: ReminderScheduler,
+	private val settingsStore: SettingsStore,
+	private val subscriptionDao: SubscriptionDao,
+	private val reminderDao: NotificationDao,
 ) : ViewModel() {
 	
 	val entityId: Int = requireNotNull(savedState["ID"])
 	
-	val subscription = SubscriptionsRepo
+	val subscription = subscriptionDao
 		.getSubscription(entityId)
-		.combine(FiniteApp.instance.appSettings) { a, b -> a to b }
-		.combine(RatesRepo.fetchedRates) {
+		.combine(settingsStore.data, ::Pair)
+		.combine(ratesRepo.fetchedRates) {
 			(subscription, settings), rates ->
 			subscription ?: return@combine null
 			
@@ -40,56 +50,51 @@ class SubscriptionDetailsViewModel(
 				rates?.convert(subscription.price, subscription.currency, settings.preferredCurrency)
 			}
 			
-			SubscriptionDetailUiModel(subscription, settings.preferredCurrency, convertedAmount)
+			SubscriptionDetailUiModel(subscription, settings.preferredCurrency, convertedAmount, settings.colorOptions)
 		}
 		.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 	
-	val reminders = ReminderRepo.getBySubscriptionId(entityId)
+	val reminders = reminderDao.getBySubscriptionId(entityId)
 	
 	val events = MutableStateFlow<Event?>(null)
 	
 	
-	fun pauseSubscription() = viewModelScope.launch {
+	fun togglePauseSubscription() = viewModelScope.launch {
 		
-		val subscription = subscription.value?.model ?: return@launch
-		
-		SubscriptionsRepo.pauseSubscription(subscription.id, subscription.active)
-		
-		if (subscription.active)
-			alarmScheduler.removeAlarmsForSubscription(entityId)
-		else
-			alarmScheduler.scheduleAlarmsForSubscription(entityId)
-		
-		events.update { Event(key = if (subscription.active) "Paused" else "Resumed") }
+		val isCurrentlyActive = subscription.value?.model?.isActive ?: return@launch
+	
+		with(subscriptionDao, reminderScheduler) {
+			setSubscriptionActive(entityId, !isCurrentlyActive)
+		}
+			.onRight {
+				events.update { Event(key = if (isCurrentlyActive) "Paused" else "Resumed") }
+			}
+			.onLeft {
+				events.update { Event(Event.Error) }
+			}
 	}
 	
 	fun deleteSubscription() = viewModelScope.launch {
-		
-		val result = SubscriptionsRepo.deleteSubscription(entityId)
-			.onSuccess {
-				alarmScheduler.removeAlarmsForSubscription(entityId)
-				ReminderRepo.dao.deleteBySubscriptionId(entityId)
-			}
-		
-		events.update { Event(if (result.isSuccess) Event.Deleted else Event.Error) }
+		with(subscriptionDao, reminderDao, reminderScheduler) {
+			deleteSubscription(id = entityId)
+		}
+			.fold({ Event.Error }, { Event.Deleted })
+			.let { events.value = Event(it) }
 	}
 	
-	fun deleteReminder(id: Int) = viewModelScope.launch {
-		ReminderRepo.delete(id)
-			.onSuccess { alarmScheduler.removeAlarms(id) }
+	fun onDeleteReminder(id: Int) = viewModelScope.launch {
+		with(reminderDao, reminderScheduler) { deleteReminder(id) }
 	}
-
-//	companion object {
-//		val Factory: ViewModelProvider.Factory = viewModelFactory {
-//			initializer {
-//				val ssh = createSavedStateHandle()
-//				val myRepository = this[APPLICATION_KEY]
-//			}
-//		}
-//	}
 	
 	companion object : VMFactory by singleViewModel({
-		SubscriptionDetailsViewModel(ssh, container.alarmScheduler)
+		SubscriptionDetailsViewModel(
+			ssh,
+			container.ratesRepo,
+			container.reminderScheduler,
+			container.settingsStore,
+			container.db.subscriptionDao(),
+			container.db.notificationDao(),
+		)
 	})
 	
 }

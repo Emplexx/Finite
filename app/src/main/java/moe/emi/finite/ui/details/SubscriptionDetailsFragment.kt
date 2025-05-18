@@ -8,50 +8,61 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
+import android.view.RoundedCorner
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
 import androidx.core.content.getSystemService
 import androidx.core.view.forEach
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.transition.ChangeBounds
 import androidx.transition.Slide
+import androidx.transition.TransitionManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.motion.MotionUtils
+import com.google.android.material.shape.ShapeAppearanceModel
 import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialSharedAxis
 import com.xwray.groupie.GroupieAdapter
 import com.xwray.groupie.Section
+import convenience.resources.Token
+import convenience.resources.colorAttr
+import convenience.resources.easingAttr
 import dev.chrisbanes.insetter.applyInsetter
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.serialization.Serializable
-import moe.emi.convenience.materialColor
-import moe.emi.finite.IOSerializable
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import moe.emi.finite.MainActivity
 import moe.emi.finite.MainViewModel
 import moe.emi.finite.R
+import moe.emi.finite.components.colors.ItemColors
+import moe.emi.finite.components.colors.PaletteTone
+import moe.emi.finite.components.colors.makeItemColors
+import moe.emi.finite.components.details.calculateTimesCharged
+import moe.emi.finite.components.details.ui.ReminderEditorSheet
+import moe.emi.finite.components.details.ui.adapter.AddReminderAdapterItem
+import moe.emi.finite.components.details.ui.adapter.ReminderAdapterItem
+import moe.emi.finite.core.findNextPaymentInclusive
+import moe.emi.finite.core.plus
+import moe.emi.finite.core.ui.animator.SmoothItemAnimator
+import moe.emi.finite.core.ui.format.formatPrice
 import moe.emi.finite.databinding.FragmentSubscriptionDetailsBinding
+import moe.emi.finite.dump.Event
+import moe.emi.finite.dump.android.snackbar
 import moe.emi.finite.dump.collectOn
+import moe.emi.finite.dump.fDp
 import moe.emi.finite.dump.isStatusBarLightTheme
 import moe.emi.finite.dump.setStatusBarThemeMatchSystem
-import moe.emi.finite.dump.snackbar
-import moe.emi.finite.dump.visible
-import moe.emi.finite.service.model.BillingPeriod
-import moe.emi.finite.service.model.Subscription.Companion.findNextPaymentInclusive
-import moe.emi.finite.service.model.Subscription.Companion.plus
-import moe.emi.finite.service.model.Timespan
-import moe.emi.finite.ui.colors.ItemColors
-import moe.emi.finite.ui.colors.PaletteTone
-import moe.emi.finite.ui.colors.makeItemColors
 import moe.emi.finite.ui.editor.SubscriptionEditorActivity
-import java.math.RoundingMode
-import java.text.DecimalFormat
-import java.time.Period
 import com.google.android.material.R as GR
 
-class SubscriptionDetailsFragment : Fragment() {
+class  SubscriptionDetailsFragment : Fragment() {
 	
 	private val mainViewModel by activityViewModels<MainViewModel>()
 	private val viewModel by viewModels<SubscriptionDetailsViewModel> { SubscriptionDetailsViewModel }
@@ -60,36 +71,72 @@ class SubscriptionDetailsFragment : Fragment() {
 	private val activity: MainActivity get() = requireActivity() as MainActivity
 	
 	private lateinit var colors: ItemColors
-	private val appBarListener by lazy { object : AppBarChangeColorListener(binding.toolbar) {
-		
-		override fun getCollapsedColor(): Int {
-			return requireActivity().materialColor(GR.attr.colorControlNormal)
+	private val appBarListener by lazy {
+		object : AppBarChangeColorListener(binding.toolbar) {
+			
+			override fun getCollapsedColor(): Int {
+				return requireActivity().colorAttr(GR.attr.colorControlNormal)
+			}
+			
+			override fun getExpandedColor(): Int {
+				return colors.onContainerVariant
+			}
+			
+			override fun onExpandCallback() {
+				requireActivity().isStatusBarLightTheme =
+					colors.tone.getMatchingStatusBarColor(requireContext())
+			}
+			
+			override fun onCollapseCallback() {
+				requireActivity().setStatusBarThemeMatchSystem()
+			}
 		}
-		
-		override fun getExpandedColor(): Int {
-			return colors.onContainerVariant
-		}
-		
-		override fun onExpandCallback() {
-			requireActivity().isStatusBarLightTheme =
-				colors.tone.getMatchingStatusBarColor(requireContext())
-		}
-		
-		override fun onCollapseCallback() {
-			requireActivity().setStatusBarThemeMatchSystem()
-		}
-	} }
+	}
 	
-	lateinit var adapterReminders: GroupieAdapter
-	lateinit var adapterUpcoming: GroupieAdapter
-	val sectionReminders by lazy { Section() }
-	val sectionUpcoming by lazy { Section() }
+	private lateinit var adapterReminders: GroupieAdapter
+	private lateinit var adapterUpcoming: GroupieAdapter
+	private val sectionReminders by lazy { Section() }
+	private val itemAddReminder by lazy { AddReminderAdapterItem { tryCreateReminder() } }
+	private val sectionUpcoming by lazy { Section() }
+	
+	val itemAnimator = SmoothItemAnimator()
 	
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		sharedElementEnterTransition = MaterialContainerTransform().apply {
 			drawingViewId = R.id.nav_host_fragment_content_main
 			scrimColor = Color.TRANSPARENT
+			
+			shapeMaskProgressThresholds = MaterialContainerTransform.ProgressThresholds(0f, 1f)
+			
+			endShapeAppearanceModel = ShapeAppearanceModel.builder()
+				.setAllCornerSizes(run {
+					requireActivity().window.decorView.rootWindowInsets
+						?.getRoundedCorner(RoundedCorner.POSITION_TOP_LEFT)
+						?.radius
+						?: 0
+				}.toFloat())
+				.build()
+		}
+		sharedElementReturnTransition = MaterialContainerTransform().apply {
+			drawingViewId = R.id.nav_host_fragment_content_main
+			scrimColor = Color.TRANSPARENT
+
+			shapeMaskProgressThresholds = MaterialContainerTransform.ProgressThresholds(0f, 1f)
+			
+			startShapeAppearanceModel = ShapeAppearanceModel.builder()
+				.setAllCornerSizes(run {
+					requireActivity().window.decorView.rootWindowInsets
+						?.getRoundedCorner(RoundedCorner.POSITION_TOP_LEFT)
+						?.radius
+						?: 0
+				}.toFloat())
+				.build()
+			
+			endShapeAppearanceModel = ShapeAppearanceModel.builder()
+				.setAllCornerSizes(8.fDp)
+				.build()
+			
 		}
 		returnTransition = MaterialSharedAxis(MaterialSharedAxis.Y, false)
 	}
@@ -99,6 +146,7 @@ class SubscriptionDetailsFragment : Fragment() {
 		savedInstanceState: Bundle?
 	): View {
 		binding = FragmentSubscriptionDetailsBinding.inflate(inflater, container, false)
+		
 		return binding.root
 	}
 	
@@ -113,66 +161,43 @@ class SubscriptionDetailsFragment : Fragment() {
 			}
 		}
 		
+		binding.toolbar.setNavigationOnClickListener {
+			requireActivity().onBackPressedDispatcher.onBackPressed()
+		}
+		
 		adapterReminders = GroupieAdapter()
 		adapterReminders.add(sectionReminders)
 		binding.recyclerViewReminders.adapter = adapterReminders
+		binding.recyclerViewReminders.itemAnimator = itemAnimator
+		
 		adapterUpcoming = GroupieAdapter()
 		adapterUpcoming.add(sectionUpcoming)
 		binding.recyclerViewUpcoming.adapter = adapterUpcoming
 		
-		binding.toolbar.setNavigationOnClickListener {
-			requireActivity().onBackPressedDispatcher.onBackPressed()
-		}
 		binding.toolbar.setOnMenuItemClickListener {
 			when (it.itemId) {
-				R.id.action_pause -> {
-					viewModel.pauseSubscription()
-					true
+				
+				R.id.action_pause -> viewModel.togglePauseSubscription()
+				
+				R.id.action_edit -> viewModel.subscription.value?.let {
+					startActivity(
+						Intent(requireActivity(), SubscriptionEditorActivity::class.java)
+							.putExtra("Subscription", it.model)
+					)
 				}
-				R.id.action_notification -> {
-					
-					if (requireContext().getSystemService<AlarmManager>()!!.canScheduleExactAlarms()) {
-						createNotification()
-					} else {
-						
-						MaterialAlertDialogBuilder(requireActivity())
-							.setTitle("Permission required")
-							.setMessage("Finite requires a permission to schedule notifications, which you can grant in settings")
-							.setPositiveButton("Take me there") { _, _ ->
-								
-								Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
-									Uri.parse("package:" + requireContext().packageName))
-									.let(requireActivity()::startActivity)
-							}
-							.setNegativeButton("Cancel", null)
-							.show()
+				
+				R.id.action_delete -> MaterialAlertDialogBuilder(requireContext())
+					.setTitle("Delete subscription?")
+					.setNegativeButton("Cancel", null)
+					.setPositiveButton("Delete") { _, _ ->
+						viewModel.deleteSubscription()
 					}
-					
-					true
-				}
-				R.id.action_edit -> {
-					viewModel.subscription.value?.let {
-						startActivity(
-							Intent(requireActivity(), SubscriptionEditorActivity::class.java)
-								.putExtra("Subscription", it.model)
-						)
-					}
-					true
-				}
-				R.id.action_delete -> {
-					MaterialAlertDialogBuilder(requireContext())
-						.setTitle("Delete subscription?")
-						.setNegativeButton("Cancel", null)
-						.setPositiveButton("Delete") { _, _ ->
-							viewModel.deleteSubscription()
-						}
-						.show()
-					
-					true
-				}
-				else -> false
+					.show()
 			}
+			
+			true
 		}
+		
 		binding.appBarLayout.addOnOffsetChangedListener(appBarListener)
 		
 		collect()
@@ -194,15 +219,18 @@ class SubscriptionDetailsFragment : Fragment() {
 	}
 	
 	private fun collect() {
+		
 		viewModel.subscription.filterNotNull().collectOn(viewLifecycleOwner) { uiModel ->
 			
-			val (model, defCurrency, convertedAmount) = uiModel
+			val (model, defCurrency, convertedAmount, colorOptions) = uiModel
 			
-			setColors(requireContext().makeItemColors(model.color))
+			// Header
+			
+			setColors(requireContext().makeItemColors(model.color, colorOptions))
 			
 			val iconRes =
-				if (model.active) R.drawable.ic_pause_circle_24 else R.drawable.ic_play_circle_24
-			val stringRes = if (model.active) "Pause subscription" else "Resume subscription"
+				if (model.isActive) R.drawable.ic_pause_circle_24 else R.drawable.ic_play_circle_24
+			val stringRes = if (model.isActive) "Pause subscription" else "Resume subscription"
 			
 			binding.toolbar.menu.findItem(R.id.action_pause)?.let {
 				it.setIcon(iconRes)
@@ -211,25 +239,20 @@ class SubscriptionDetailsFragment : Fragment() {
 			
 			binding.textName.text = model.name
 			binding.textCurrencySign.text = model.currency.symbol ?: model.currency.iso4217Alpha
-			binding.textAmount.text = DecimalFormat("0.00")
-				.apply { roundingMode = RoundingMode.CEILING }
-				.format(model.price)
+			binding.textAmount.text = formatPrice(model.price)
 			
 			binding.textDescription.text = model.description
-			binding.textConvertedAmount.visible = convertedAmount != null
+			binding.textConvertedAmount.isVisible = convertedAmount != null
 			
 			if (convertedAmount != null) binding.textConvertedAmount.text = buildString {
 				append("≈ ${defCurrency.symbol ?: defCurrency.iso4217Alpha} ")
-				DecimalFormat("0.00")
-					.apply { roundingMode = RoundingMode.CEILING }
-					.format(convertedAmount)
-					.let(::append)
+				
+				append(formatPrice(convertedAmount))
 			}
 			
-			binding.textNotes.visible = model.notes.isNotBlank()
-			binding.textNotes.text = model.notes
+			// Details
 			
-			run upcoming@ {
+			run upcoming@{
 				model.startedOn ?: return@upcoming
 				
 				val nextPayment = model.startedOn
@@ -244,7 +267,45 @@ class SubscriptionDetailsFragment : Fragment() {
 					UpcomingPaymentAdapterItem(it, model.period)
 				}.let(sectionUpcoming::update)
 			}
+			
+			binding.sectionBillingPeriod.isVisible = model.startedOn != null
+			binding.textBillingPeriod.text = "Every ${model.period.length} ${model.period.unit}"
+			binding.textBillingStarted.text = "Started on ${model.startedOn?.toLocalDate()}"
+			
+			binding.sectionNotes.isVisible = model.notes.isNotBlank()
+			binding.textNotes.text = model.notes
+			
+			model.startedOn?.toLocalDate()
+				?.let { calculateTimesCharged(it, model.period) }
+				?.let { model.price * it }
+				?.let { formatPrice(it) }
+				.let {
+					binding.sectionPaidTotal.isVisible = it != null
+					binding.textPaidTotal.text = it
+				}
 		}
+		
+		viewModel.reminders
+			.map { it.size }
+			.distinctUntilChanged()
+			.drop(1)
+//			.zipWithLast()
+			.onEach { //(prev, next) ->
+				
+//				if (prev == null) return@onEach
+//				val dur = if (prev > next) itemAnimator.moveDuration else 200
+				
+				TransitionManager.beginDelayedTransition(
+					binding.root,
+					ChangeBounds().apply {
+						interpolator = easingAttr(Token.easing.emphasizedDecelerated)
+						excludeChildren(binding.recyclerViewReminders, true)
+						
+						duration = itemAnimator.moveDuration
+					}
+				)
+			}
+			.collectOn(viewLifecycleOwner) {}
 		
 		viewModel.reminders.collectOn(viewLifecycleOwner) { reminders ->
 			
@@ -257,10 +318,11 @@ class SubscriptionDetailsFragment : Fragment() {
 								.show(parentFragmentManager, null)
 						},
 						onRemove = {
-							viewModel.deleteReminder(reminder.id)
+							viewModel.onDeleteReminder(reminder.id)
 						}
 					)
 				}
+				.plus(itemAddReminder)
 				.let(sectionReminders::update)
 		}
 		
@@ -276,8 +338,11 @@ class SubscriptionDetailsFragment : Fragment() {
 						
 						sharedElementEnterTransition = null
 						returnTransition = Slide().apply {
-							interpolator = MotionUtils.resolveThemeInterpolator(requireContext(),
-								GR.attr.motionEasingStandardAccelerateInterpolator, LinearInterpolator())
+							interpolator = MotionUtils.resolveThemeInterpolator(
+								requireContext(),
+								GR.attr.motionEasingStandardAccelerateInterpolator,
+								LinearInterpolator()
+							)
 							duration = 250
 						}
 						
@@ -289,7 +354,7 @@ class SubscriptionDetailsFragment : Fragment() {
 			}
 	}
 	
-	fun setColors(it: ItemColors) {
+	private fun setColors(it: ItemColors) {
 		if (this.colors != it) {
 			setMatchingStatusBarColor(it.tone)
 			binding.toolbar.setNavigationIconTint(it.onContainerVariant)
@@ -317,79 +382,35 @@ class SubscriptionDetailsFragment : Fragment() {
 	fun setMatchingStatusBarColor(tone: PaletteTone) {
 		if (appBarListener.lastAnimatedState == AppBarStateChangeListener.State.COLLAPSED) {
 			requireActivity().setStatusBarThemeMatchSystem()
-		} else {
-			requireActivity().isStatusBarLightTheme = tone.getMatchingStatusBarColor(requireContext())
+		}
+		else {
+			requireActivity().isStatusBarLightTheme =
+				tone.getMatchingStatusBarColor(requireContext())
 		}
 	}
 	
-	fun createNotification() {
-
-		ReminderEditorSheet.newInstance(viewModel.entityId)
-			.show(parentFragmentManager, null)
+	private fun tryCreateReminder() {
 		
-//		lifecycleScope.launch {
-//
-//			val (hour, minute) = Calendar.getInstance().let {
-//				it.add(Calendar.MINUTE, 1)
-//				it.get(Calendar.HOUR_OF_DAY) to it.get(Calendar.MINUTE)
-//			}
-//
-//			Log.d("TAG", "$hour : $minute")
-//
-//			NotificationRepo.dao.insertAll(
-//				NotificationEntity(
-//					Reminder(
-//						0,
-//						viewModel.subscription.value?.id!!,
-//						null,
-//						hour, minute
-//					)
-//				)
-//
-//			).let {
-//
-//
-//				Log.d("TAG", "$it")
-//
-//				alarmScheduler.scheduleAlarms(it.first().toInt())
-//			}
-//
-//		}
-	
-	
-	}
-	
-}
-
-
-// TODO merge this with BillingPeriod because they're the same thing
-@Serializable
-@Deprecated("Use [Period] instead")
-data class NotificationPeriod(
-	val count: Int,
-	val timespan: Timespan
-) : IOSerializable {
-	
-	companion object {
-		fun BillingPeriod.toNotificationPeriod() =
-			NotificationPeriod(count, timespan)
-	}
-	
-	private val approximateLength: Int
-		get() = this.timespan.approximateMultiplier * this.count
-	
-	operator fun compareTo(other: BillingPeriod): Int {
-		return this.approximateLength - other.toNotificationPeriod().approximateLength
-	}
-	
-	fun toPeriod() = moe.emi.finite.ui.settings.backup.Period(count, timespan)
-	
-	fun toJavaPeriod() =
-		when (timespan) {
-			Timespan.Day -> Period.ofDays(count)
-			Timespan.Week -> Period.ofWeeks(count)
-			Timespan.Month -> Period.ofMonths(count)
-			Timespan.Year -> Period.ofYears(count)
+		// TODO show notifications permission ask
+		if (requireContext().getSystemService<AlarmManager>()!!.canScheduleExactAlarms()) {
+			ReminderEditorSheet.newInstance(viewModel.entityId).show(parentFragmentManager, null)
 		}
+		else {
+			MaterialAlertDialogBuilder(requireActivity())
+				.setTitle("Permission required")
+				.setMessage("Finite requires a permission to schedule notifications, which you can grant in settings")
+				.setPositiveButton("Take me there") { _, _ ->
+					
+					Intent(
+						Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
+						Uri.parse("package:" + requireContext().packageName)
+					)
+						.let(requireActivity()::startActivity)
+				}
+				.setNegativeButton("Cancel", null)
+				.show()
+		}
+	}
 	
 }
+

@@ -58,6 +58,8 @@
 	<string name="dialog_restore_created_on">Created on %1$s</string>
 	<string name="dialog_restore_replace_subscriptions">Replace my subscriptions</string>
 
+	<string name="setting_rates_title">Rates</string>
+
 	<string name="snackbar_invalid_file">The selected file is an invalid backup file</string>
 
 	<string name="snackbar_backup_failure">Couldn\'t create backup: %1$s</string>
@@ -102,5 +104,10 @@
 		libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
 		vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
 	</string>
+
+
+	<string name="reminders_remind_me">Remind me</string>
+	<string name="reminders_time">Time</string>
+	<string name="reminders_error_period_too_long">Reminder period should be shorter than a single billing cycle</string>
 
 </resources>

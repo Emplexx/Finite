@@ -6,7 +6,8 @@
 	<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
 	<uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
-	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"  />
+	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+	<uses-permission android:name="com.android.vending.BILLING" />
 
 	<application
 		android:name=".FiniteApp"
@@ -22,13 +23,16 @@
 		android:usesCleartextTraffic="true"
 		tools:targetApi="34">
 		<activity
-			android:name=".ui.settings.AboutActivity"
+			android:name=".components.settings.ui.rates_wip.RatesApiActivity"
 			android:exported="false" />
 		<activity
-			android:name=".ui.settings.backup.BackupActivity"
+			android:name=".components.settings.ui.AboutActivity"
 			android:exported="false" />
 		<activity
-			android:name=".ui.settings.ColorsActivity"
+			android:name=".components.settings.ui.backup.BackupActivity"
+			android:exported="false" />
+		<activity
+			android:name=".components.settings.ui.ColorsActivity"
 			android:exported="false" />
 		<activity
 			android:name=".ui.editor.SubscriptionEditorActivity"
@@ -44,9 +48,9 @@
 			</intent-filter>
 		</activity>
 
-		<receiver android:name=".service.notifications.AlarmReceiver" />
+		<receiver android:name=".core.alarms.ReminderAlarmReceiver" />
 		<receiver
-			android:name=".service.notifications.BootReceiver"
+			android:name=".core.alarms.BootReceiver"
 			android:enabled="true"
 			android:exported="true">
 			<intent-filter>

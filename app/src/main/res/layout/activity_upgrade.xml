@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/main"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	>
+
+	<LinearLayout
+		android:id="@+id/receiptView"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		android:rotation="180"
+		android:layout_gravity="bottom"
+		tools:visibility="gone"
+		>
+
+		<View
+			android:id="@+id/receiptHeight"
+			android:layout_width="match_parent"
+			android:layout_height="112dp"
+			android:background="?colorSurfaceVariant"
+			/>
+
+		<moe.emi.finite.dump.android.ReceiptEdgeView
+			android:layout_width="match_parent"
+			android:layout_height="40dp"
+			app:color="?colorSurfaceVariant"
+			/>
+
+	</LinearLayout>
+
+	<LinearLayout
+		android:id="@+id/mainLayout"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		tools:visibility="visible"
+
+		>
+
+		<TextView
+			android:id="@+id/text"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			/>
+
+		<TextView
+			android:id="@+id/textTitle"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginHorizontal="16dp"
+			android:layout_marginBottom="8dp"
+			style="?textAppearanceTitleMedium"
+
+			android:text="Limit reached"
+			/>
+
+		<TextView
+			android:id="@+id/textDescrption"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginHorizontal="16dp"
+			android:layout_marginBottom="20dp"
+			style="?textAppearanceBodyMedium"
+
+			android:text="You can add up to 5 subscriptions in the free version of Finite. Please remove existing subscriptions, or consider upgrading:"
+			/>
+
+		<com.google.android.material.card.MaterialCardView
+			android:layout_width="match_parent"
+			android:layout_height="48dp"
+
+			android:layout_marginHorizontal="16dp"
+			style="@style/Widget.Material3.CardView.Filled"
+			app:cardBackgroundColor="?colorSurfaceContainerLowest"
+			android:layout_marginBottom="8dp"
+			>
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="Unlimited subscriptions"
+				android:textAppearance="?textAppearanceTitleMedium"
+				android:layout_gravity="center"
+				android:layout_marginHorizontal="16dp"
+				/>
+
+		</com.google.android.material.card.MaterialCardView>
+
+		<com.google.android.material.card.MaterialCardView
+			android:layout_width="match_parent"
+			android:layout_height="48dp"
+
+			android:layout_marginHorizontal="16dp"
+			style="@style/Widget.Material3.CardView.Filled"
+			app:cardBackgroundColor="?colorSurfaceContainerLowest"
+			>
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:text="Support development"
+				android:textAppearance="?textAppearanceTitleMedium"
+				android:layout_gravity="center"
+				android:layout_marginHorizontal="16dp"
+				/>
+
+		</com.google.android.material.card.MaterialCardView>
+
+		<Space
+			android:layout_width="match_parent"
+			android:layout_height="28dp"
+			/>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal"
+			android:layout_marginHorizontal="16dp"
+			android:gravity="bottom"
+			>
+
+			<TextView
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:text="One time payment of"
+				android:textAppearance="?textAppearanceBodyMedium"
+				android:lastBaselineToBottomHeight="16sp"
+				/>
+
+			<TextView
+				android:id="@+id/textPrice"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:textAppearance="?textAppearanceTitleLarge"
+				tools:text="200 UAH"
+				android:lastBaselineToBottomHeight="16sp"
+				/>
+
+		</LinearLayout>
+
+		<!--<TextView
+			android:id="@+id/textError"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginHorizontal="16dp"
+			android:layout_marginTop="4dp"
+			android:text="Something went wrong..."
+			android:textAppearance="?textAppearanceBodyMedium"
+			android:textStyle="bold"
+			android:textColor="?colorError"
+			/>-->
+
+		<Space
+			android:layout_width="match_parent"
+			android:layout_height="64dp"
+			/>
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/buttonUpgrade"
+			android:layout_width="match_parent"
+			android:layout_height="56dp"
+			android:layout_gravity="center"
+
+			android:insetTop="0dp"
+			android:insetBottom="0dp"
+
+			android:layout_marginBottom="24dp"
+			android:layout_marginHorizontal="16dp"
+
+			app:shapeAppearance="?shapeAppearanceCornerMedium"
+			style="@style/Widget.Material3.Button"
+
+			tools:text="Purchase"
+			/>
+
+
+	</LinearLayout>
+
+
+	<LinearLayout
+		android:id="@+id/thanksLayout"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+
+		android:transitionGroup="true"
+
+		android:gravity="center"
+
+		android:visibility="gone"
+		tools:visibility="gone"
+		>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:layout_gravity="bottom"
+
+			android:paddingVertical="32dp"
+
+			android:gravity="center"
+			>
+
+			<ImageView
+				android:layout_width="48dp"
+				android:layout_height="48dp"
+				android:src="@drawable/ic_favorite_24"
+				app:tint="@color/pink"
+				android:layout_marginBottom="8dp"
+				/>
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginHorizontal="24dp"
+				android:text="Thank you!"
+				android:textAlignment="center"
+				android:textAppearance="?textAppearanceTitleLarge"
+				/>
+
+			<TextView
+				android:id="@+id/textPurchasePending"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginHorizontal="24dp"
+				android:layout_marginTop="4dp"
+				android:text="Your purchase is being processed"
+				android:textAlignment="center"
+				android:textAppearance="?textAppearanceBodyMedium"
+				android:textColor="?colorOnSurface"
+				android:alpha="0.54"
+				/>
+
+		</LinearLayout>
+
+		<FrameLayout
+			android:id="@+id/thanksButtonContainer"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:background="?colorSurfaceVariant"
+			>
+			<com.google.android.material.button.MaterialButton
+				android:id="@+id/buttonContinue"
+				android:layout_width="match_parent"
+				android:layout_height="56dp"
+
+				android:insetTop="0dp"
+				android:insetBottom="0dp"
+
+				android:layout_marginTop="16dp"
+				android:layout_marginHorizontal="16dp"
+				android:layout_marginBottom="24dp"
+
+				app:shapeAppearance="?shapeAppearanceCornerMedium"
+				style="@style/Widget.Material3.Button"
+
+				android:text="Continue"
+				/>
+
+		</FrameLayout>
+
+	</LinearLayout>
+
+	<nl.dionsegijn.konfetti.xml.KonfettiView
+		android:id="@+id/konfettiView"
+		android:layout_width="match_parent"
+		android:layout_height="0dp"
+		/>
+
+
+
+</FrameLayout>

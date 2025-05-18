@@ -90,6 +90,7 @@
 
 					tools:ignore="HardcodedText"
 					android:hint="0.00"
+					android:maxLength="12"
 
 					android:inputType="numberDecimal"
 					android:autofillHints=""

@@ -9,7 +9,7 @@
 	android:minHeight="56dp"
 	android:paddingVertical="8dp"
 
-	android:background="?attr/colorSurface"
+	android:background="?attr/colorSheetSurface"
 	android:foreground="?attr/selectableItemBackground"
 	>
 

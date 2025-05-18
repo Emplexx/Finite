@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:context=".components.settings.ui.ColorsActivity"
+
+	android:background="?android:colorBackground"
+
+	android:clipToPadding="false"
+	android:clipChildren="false"
+	>
+
+	<androidx.core.widget.NestedScrollView
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+
+
+		android:clipToPadding="false"
+		android:clipChildren="false"
+		>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:clipToPadding="false"
+			android:clipChildren="false"
+
+			android:layout_marginHorizontal="16dp"
+			>
+
+			<FrameLayout
+				android:layout_width="match_parent"
+				android:layout_height="140dp"
+				android:clipToPadding="false"
+				android:clipChildren="false"
+				android:layout_marginBottom="32dp"
+				>
+
+				<ImageView
+					android:id="@+id/finiteCircle"
+					android:layout_width="280dp"
+					android:layout_height="280dp"
+
+					android:layout_gravity="center"
+
+					android:src="@drawable/finite_circle"
+					/>
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="vertical"
+
+					android:layout_gravity="center"
+					>
+
+					<TextView
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+
+						android:paddingHorizontal="16dp"
+
+						android:fontFamily="@font/font_dm_opsz40"
+						android:textFontWeight="900"
+						android:textSize="40sp"
+						android:textColor="?attr/colorOnSurface"
+
+						android:textAlignment="center"
+
+						android:text="@string/app_name_stylised"
+						/>
+
+					<TextView
+						android:id="@+id/textVersion"
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+
+						android:textAppearance="?attr/textAppearanceBodySmall"
+						android:textColor="?attr/colorOnSurface"
+						android:alpha="0.54"
+
+						android:textAlignment="center"
+
+						android:text="1.0"
+						/>
+
+
+
+				</LinearLayout>
+
+
+			</FrameLayout>
+
+			<com.google.android.material.card.MaterialCardView
+				android:id="@+id/sectionUpgrade"
+
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				app:cardPreventCornerOverlap="false"
+				app:strokeColor="@android:color/transparent"
+				app:shapeAppearance="?attr/shapeAppearanceCornerSmall"
+
+				android:layout_marginBottom="16dp"
+				>
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="vertical"
+					>
+					<include
+						android:id="@+id/rowUpgrade"
+						layout="@layout/preference_action"
+						/>
+				</LinearLayout>
+			</com.google.android.material.card.MaterialCardView>
+
+			<com.google.android.material.card.MaterialCardView
+				android:id="@+id/sectionThanks"
+
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				app:cardPreventCornerOverlap="false"
+				app:strokeColor="@android:color/transparent"
+				app:shapeAppearance="?attr/shapeAppearanceCornerSmall"
+
+				android:layout_marginBottom="16dp"
+				>
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="vertical"
+					>
+					<include
+						android:id="@+id/rowThanks"
+						layout="@layout/preference_action"
+						/>
+				</LinearLayout>
+			</com.google.android.material.card.MaterialCardView>
+
+			<com.google.android.material.card.MaterialCardView
+				android:id="@+id/cardCloud"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				app:cardPreventCornerOverlap="false"
+				app:strokeColor="@android:color/transparent"
+				app:shapeAppearance="?attr/shapeAppearanceCornerSmall"
+				android:layout_marginBottom="16dp"
+				>
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="vertical"
+					>
+
+					<include
+						android:id="@+id/rowPlayStore"
+						layout="@layout/preference_leading_icon_trailing_text"
+						/>
+					<com.google.android.material.divider.MaterialDivider
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						app:dividerInsetStart="16dp"
+						/>
+
+					<include
+						android:id="@+id/rowLicenses"
+						layout="@layout/preference_leading_icon_trailing_text"
+						/>
+
+
+				</LinearLayout>
+			</com.google.android.material.card.MaterialCardView>
+
+			<include
+				android:id="@+id/headerDeveloper"
+				layout="@layout/preference_header"
+				/>
+
+			<com.google.android.material.card.MaterialCardView
+				android:layout_width="match_parent"
+				android:layout_height="64dp"
+				app:cardPreventCornerOverlap="false"
+				app:strokeColor="@android:color/transparent"
+				app:shapeAppearance="?attr/shapeAppearanceCornerSmall"
+				android:layout_marginBottom="16dp"
+				>
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="match_parent"
+					android:orientation="horizontal"
+
+					android:gravity="center"
+					>
+
+<!--					TODO Avatar -->
+					<com.google.android.material.imageview.ShapeableImageView
+						android:layout_width="32dp"
+						android:layout_height="32dp"
+						android:layout_marginStart="16dp"
+						android:layout_marginEnd="16dp"
+						android:layout_gravity="center"
+						android:background="@color/blue"
+						app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Full"
+						/>
+
+					<TextView
+						android:layout_width="0dp"
+						android:layout_height="wrap_content"
+						android:layout_weight="1"
+
+						android:layout_marginEnd="16dp"
+						android:textAppearance="?attr/textAppearanceTitleLarge"
+						android:textColor="?attr/colorOnSurface"
+
+						android:text="Emi"
+						/>
+
+					<com.google.android.material.button.MaterialButton
+						android:id="@+id/buttonWebsite"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+
+						android:layout_marginEnd="8dp"
+
+						android:minWidth="0dp"
+
+						style="@style/Widget.Material3.Button.TextButton"
+
+						android:text="Website"
+						/>
+					<com.google.android.material.button.MaterialButton
+						android:id="@+id/buttonBluesky"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+
+						android:layout_marginEnd="16dp"
+						android:minWidth="0dp"
+
+						style="@style/Widget.Material3.Button.TextButton"
+
+						android:text="Bluesky"
+						/>
+
+				</LinearLayout>
+
+			</com.google.android.material.card.MaterialCardView>
+
+		</LinearLayout>
+
+	</androidx.core.widget.NestedScrollView>
+
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_gravity="bottom|center"
+
+		android:textAlignment="center"
+
+		android:paddingHorizontal="16dp"
+		android:layout_marginBottom="44dp"
+
+		android:textAppearance="?attr/textAppearanceBodySmall"
+		android:textColor="?attr/colorOnSurface"
+		android:alpha="0.54"
+
+		android:text="This app does not collect any data"
+		/>
+
+	<com.google.android.material.appbar.AppBarLayout
+		android:id="@+id/appBarLayout"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+
+		android:fitsSystemWindows="true"
+
+		app:liftOnScroll="true"
+		app:liftOnScrollTargetViewId="@id/scrollView"
+		android:background="@android:color/transparent"
+		>
+
+		<com.google.android.material.appbar.MaterialToolbar
+			android:id="@+id/toolbar"
+			android:layout_width="match_parent"
+			android:layout_height="?attr/actionBarSize"
+			android:elevation="0dp"
+
+			app:navigationIcon="@drawable/ic_back_24"
+			app:title="About"
+			/>
+
+	</com.google.android.material.appbar.AppBarLayout>
+
+	<nl.dionsegijn.konfetti.xml.KonfettiView
+		android:id="@+id/konfettiView"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

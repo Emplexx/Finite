@@ -7,7 +7,7 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 
-	android:background="?android:colorBackground"
+	android:background="?colorSurface"
 
 	android:fitsSystemWindows="true"
 
@@ -173,7 +173,7 @@
 
 
 
-			<moe.emi.finite.dump.ReceiptEdgeView
+			<moe.emi.finite.dump.android.ReceiptEdgeView
 				android:id="@+id/receiptView"
 				android:layout_width="match_parent"
 				android:layout_height="40dp"
@@ -182,16 +182,39 @@
 				/>
 
 
-			<androidx.recyclerview.widget.RecyclerView
-				android:id="@+id/recyclerViewReminders"
+			<TextView
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:orientation="vertical"
 
-				app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-				android:paddingHorizontal="16dp"
+				android:paddingTop="16dp"
+				android:layout_marginStart="16dp"
 
+				android:textAppearance="?attr/textAppearanceLabelMedium"
+				android:lastBaselineToBottomHeight="16sp"
+
+				android:text="Reminders"
 				/>
+
+			<com.google.android.material.card.MaterialCardView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginHorizontal="16dp"
+				app:cardPreventCornerOverlap="false"
+				style="@style/Widget.Material3.CardView.Filled"
+				app:cardBackgroundColor="?colorSurfaceContainer"
+
+				>
+				<androidx.recyclerview.widget.RecyclerView
+					android:id="@+id/recyclerViewReminders"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="vertical"
+
+					android:nestedScrollingEnabled="false"
+					app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+					/>
+			</com.google.android.material.card.MaterialCardView>
+
 
 			<TextView
 				android:layout_width="match_parent"
@@ -217,18 +240,151 @@
 
 				/>
 
-
-
-			<TextView
-				android:id="@+id/textNotes"
+			<LinearLayout
+				android:id="@+id/sectionBillingPeriod"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				>
 
-				android:paddingTop="16dp"
-				android:layout_marginStart="16dp"
+				<com.google.android.material.divider.MaterialDivider
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					/>
 
-				android:textAppearance="?attr/textAppearanceBodyMedium"
-				/>
+				<TextView
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+
+					android:paddingTop="16dp"
+					android:layout_marginStart="16dp"
+
+					android:textAppearance="?attr/textAppearanceLabelMedium"
+
+					android:text="Billing period"
+					/>
+
+				<TextView
+					android:id="@+id/textBillingPeriod"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+
+					android:paddingTop="16dp"
+					android:layout_marginStart="16dp"
+
+					android:textAppearance="?attr/textAppearanceBodyLarge"
+
+					tools:text="Yearly on May 16th"
+					/>
+
+				<TextView
+					android:id="@+id/textBillingStarted"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+
+					android:layout_marginStart="16dp"
+					android:layout_marginBottom="16dp"
+
+					android:textAppearance="?attr/textAppearanceBodySmall"
+
+					tools:text="Started on 2022-01-01"
+					/>
+
+			</LinearLayout>
+
+
+
+
+			<LinearLayout
+				android:id="@+id/sectionNotes"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				>
+				<com.google.android.material.divider.MaterialDivider
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					/>
+
+				<TextView
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+
+					android:paddingTop="16dp"
+					android:layout_marginStart="16dp"
+
+					android:textAppearance="?attr/textAppearanceLabelMedium"
+
+					android:text="Notes"
+					/>
+
+				<TextView
+					android:id="@+id/textNotes"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+
+					android:paddingTop="16dp"
+					android:layout_marginStart="16dp"
+					android:layout_marginBottom="16dp"
+
+					android:textAppearance="?attr/textAppearanceBodyMedium"
+
+					tools:text="sdlfjhklasgdjhlaksdgjhaklsdj"
+					/>
+
+			</LinearLayout>
+
+
+			<LinearLayout
+				android:id="@+id/sectionPaidTotal"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				>
+				<com.google.android.material.divider.MaterialDivider
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					/>
+
+				<TextView
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+
+					android:paddingTop="16dp"
+					android:layout_marginStart="16dp"
+
+					android:textAppearance="?attr/textAppearanceLabelMedium"
+
+					android:text="Paid in total"
+					/>
+
+				<TextView
+					android:id="@+id/textPaidTotal"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+
+					android:paddingTop="16dp"
+					android:layout_marginStart="16dp"
+
+					android:textAppearance="?attr/textAppearanceTitleLarge"
+
+					tools:text="$90"
+					/>
+
+				<TextView
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+
+					android:layout_marginStart="16dp"
+
+					android:textAppearance="?attr/textAppearanceBodySmall"
+
+					tools:text="This amount is approximate and does not take pauses into account"
+					/>
+
+			</LinearLayout>
+
+
 
 		</LinearLayout>
 	</androidx.core.widget.NestedScrollView>

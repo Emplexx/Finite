@@ -6,7 +6,7 @@
 
 	<fragment
 		android:id="@+id/FirstFragment"
-		android:name="moe.emi.finite.ui.home.SubscriptionListFragment"
+		android:name="moe.emi.finite.components.list.ui.SubscriptionListFragment"
 		tools:layout="@layout/fragment_subscriptions_list">
 
 	</fragment>

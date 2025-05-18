@@ -1,22 +1,15 @@
 package moe.emi.finite.ui.editor
 
-import android.app.Dialog
 import android.content.Context
-import android.content.DialogInterface
-import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
-import androidx.core.graphics.toColor
 import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doAfterTextChanged
-import androidx.fragment.app.DialogFragment
 import codes.side.andcolorpicker.converter.setFromColorInt
 import codes.side.andcolorpicker.converter.toColorInt
 import codes.side.andcolorpicker.group.PickerGroup
 import codes.side.andcolorpicker.group.registerPickers
-import codes.side.andcolorpicker.hsl.HSLColorPickerSeekBar
-import codes.side.andcolorpicker.model.Color
 import codes.side.andcolorpicker.model.IntegerHSLColor
 import codes.side.andcolorpicker.view.picker.ColorSeekBar
 import codes.side.andcolorpicker.view.picker.ColorSeekBar.DefaultOnColorPickListener
@@ -25,7 +18,8 @@ import moe.emi.finite.databinding.LayoutDialogColorPickerBinding
 
 fun Context.showColorPickerDialog(
 	color: Int,
-	dialogListener: (Int) -> Unit): AlertDialog {
+	onSelect: (Int) -> Unit
+): AlertDialog {
 	
 	val binding = LayoutDialogColorPickerBinding.inflate(LayoutInflater.from(this))
 	
@@ -94,7 +88,7 @@ fun Context.showColorPickerDialog(
 		.setView(binding.root)
 		.setPositiveButton("OK") { dialog, _ ->
 			dialog.dismiss()
-			dialogListener(pickedColor)
+			onSelect(pickedColor)
 		}
 		.create()
 		.also { it.show() }
