@@ -51,6 +51,8 @@ import moe.emi.finite.components.details.ui.adapter.ReminderAdapterItem
 import moe.emi.finite.core.findNextPaymentInclusive
 import moe.emi.finite.core.plus
 import moe.emi.finite.core.ui.animator.SmoothItemAnimator
+import moe.emi.finite.core.ui.decoration.RoundMode
+import moe.emi.finite.core.ui.decoration.RoundOutlineProvider
 import moe.emi.finite.core.ui.format.formatPrice
 import moe.emi.finite.databinding.FragmentSubscriptionDetailsBinding
 import moe.emi.finite.dump.Event
@@ -59,7 +61,8 @@ import moe.emi.finite.dump.collectOn
 import moe.emi.finite.dump.fDp
 import moe.emi.finite.dump.isStatusBarLightTheme
 import moe.emi.finite.dump.setStatusBarThemeMatchSystem
-import moe.emi.finite.ui.editor.SubscriptionEditorActivity
+import moe.emi.finite.components.editor.ui.SubscriptionEditorActivity
+import moe.emi.finite.components.editor.ui.SubscriptionEditorViewModel.Companion.KEY_SUBSCRIPTION
 import com.google.android.material.R as GR
 
 class  SubscriptionDetailsFragment : Fragment() {
@@ -101,6 +104,12 @@ class  SubscriptionDetailsFragment : Fragment() {
 	
 	val itemAnimator = SmoothItemAnimator()
 	
+	private fun getDeviceCornerSize() =
+		requireActivity().window.decorView.rootWindowInsets
+			?.getRoundedCorner(RoundedCorner.POSITION_TOP_LEFT)
+			?.radius
+			?: 0
+	
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		sharedElementEnterTransition = MaterialContainerTransform().apply {
@@ -110,12 +119,7 @@ class  SubscriptionDetailsFragment : Fragment() {
 			shapeMaskProgressThresholds = MaterialContainerTransform.ProgressThresholds(0f, 1f)
 			
 			endShapeAppearanceModel = ShapeAppearanceModel.builder()
-				.setAllCornerSizes(run {
-					requireActivity().window.decorView.rootWindowInsets
-						?.getRoundedCorner(RoundedCorner.POSITION_TOP_LEFT)
-						?.radius
-						?: 0
-				}.toFloat())
+				.setAllCornerSizes(getDeviceCornerSize().toFloat())
 				.build()
 		}
 		sharedElementReturnTransition = MaterialContainerTransform().apply {
@@ -125,12 +129,7 @@ class  SubscriptionDetailsFragment : Fragment() {
 			shapeMaskProgressThresholds = MaterialContainerTransform.ProgressThresholds(0f, 1f)
 			
 			startShapeAppearanceModel = ShapeAppearanceModel.builder()
-				.setAllCornerSizes(run {
-					requireActivity().window.decorView.rootWindowInsets
-						?.getRoundedCorner(RoundedCorner.POSITION_TOP_LEFT)
-						?.radius
-						?: 0
-				}.toFloat())
+				.setAllCornerSizes(getDeviceCornerSize().toFloat())
 				.build()
 			
 			endShapeAppearanceModel = ShapeAppearanceModel.builder()
@@ -182,7 +181,7 @@ class  SubscriptionDetailsFragment : Fragment() {
 				R.id.action_edit -> viewModel.subscription.value?.let {
 					startActivity(
 						Intent(requireActivity(), SubscriptionEditorActivity::class.java)
-							.putExtra("Subscription", it.model)
+							.putExtra(KEY_SUBSCRIPTION, it.model)
 					)
 				}
 				
@@ -329,14 +328,15 @@ class  SubscriptionDetailsFragment : Fragment() {
 		viewModel.events
 			.filterNotNull()
 			.filterNot { it.consumed }
-			.collectOn(viewLifecycleOwner) {
-				when (it.key) {
+			.collectOn(viewLifecycleOwner) { event ->
+				when (event.key) {
 					Event.Error -> binding.root.snackbar("Something went wrong")
 					"Paused" -> binding.root.snackbar("Subscription paused")
 					"Resumed" -> binding.root.snackbar("Subscription resumed")
 					Event.Deleted -> {
 						
 						sharedElementEnterTransition = null
+						sharedElementReturnTransition = null
 						returnTransition = Slide().apply {
 							interpolator = MotionUtils.resolveThemeInterpolator(
 								requireContext(),
@@ -346,11 +346,16 @@ class  SubscriptionDetailsFragment : Fragment() {
 							duration = 250
 						}
 						
+						getDeviceCornerSize().takeUnless { it == 0 }?.let { radius ->
+							binding.root.outlineProvider = RoundOutlineProvider(radius.toFloat(), RoundMode.All)
+							binding.root.clipToOutline = true
+						}
+						
 						activity.onBackPressedDispatcher.onBackPressed()
 						mainViewModel.messages.postValue(Event(Event.Deleted))
 					}
 				}
-				it.consume()
+				event.consume()
 			}
 	}
 	

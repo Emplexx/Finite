@@ -47,7 +47,7 @@ import moe.emi.finite.dump.android.Length
 import moe.emi.finite.dump.collectOn
 import moe.emi.finite.dump.fDp
 import moe.emi.finite.dump.android.snackbar
-import moe.emi.finite.ui.editor.SubscriptionEditorActivity
+import moe.emi.finite.components.editor.ui.SubscriptionEditorActivity
 import java.util.Locale
 import com.google.android.material.R as GR
 

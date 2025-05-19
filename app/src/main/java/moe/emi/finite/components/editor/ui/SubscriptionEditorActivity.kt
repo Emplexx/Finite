@@ -1,37 +1,40 @@
-package moe.emi.finite.ui.editor
+package moe.emi.finite.components.editor.ui
 
-import android.content.Intent
 import android.content.res.ColorStateList
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.getSystemService
 import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isEmpty
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
+import androidx.dynamicanimation.animation.SpringAnimation
+import androidx.dynamicanimation.animation.SpringForce
 import codes.side.andcolorpicker.converter.toColorInt
 import codes.side.andcolorpicker.model.IntegerHSLColor
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import convenience.resources.colorAttr
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.runBlocking
 import moe.emi.finite.R
 import moe.emi.finite.components.currency.CurrencyPickerSheet
-import moe.emi.finite.components.editor.ui.FrequencyPickerSheet
 import moe.emi.finite.core.model.Currency
 import moe.emi.finite.core.model.Period
+import moe.emi.finite.core.model.SimpleDate
 import moe.emi.finite.core.ui.format.formatStringId
 import moe.emi.finite.databinding.ActivitySubscriptionEditorBinding
 import moe.emi.finite.dump.alpha
 import moe.emi.finite.dump.android.HasSnackbarAnchor
 import moe.emi.finite.dump.android.snackbar
 import moe.emi.finite.dump.collectOn
-import moe.emi.finite.core.model.SimpleDate
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.time.LocalDate
@@ -44,24 +47,21 @@ class SubscriptionEditorActivity : AppCompatActivity(), HasSnackbarAnchor {
 	private val viewModel by viewModels<SubscriptionEditorViewModel> { SubscriptionEditorViewModel }
 	private lateinit var binding: ActivitySubscriptionEditorBinding
 	
-	private val callback = object : OnBackPressedCallback(true) {
+	private val callbackUnsavedChanges = object : OnBackPressedCallback(false) {
 		override fun handleOnBackPressed() {
-			if (viewModel.subscription.id == 0) {
-				runBlocking {
-//					setDraft(viewModel.subscription)
-					viewModel.saveDraft()
-					Toast.makeText(this@SubscriptionEditorActivity, "Draft saved", Toast.LENGTH_SHORT).show()
-					finish()
-					// TODO message "draft saved"
+			
+			if (SDK_INT >= VERSION_CODES.TIRAMISU) {
+				// On 13 and above, OnBackPressedCallback overrides back button closing
+				// the keyboard if it is set to enabled while the keyboard is open.
+				val keyboardVisible = window.decorView.rootWindowInsets.isVisible(WindowInsetsCompat.Type.ime())
+				if (keyboardVisible) {
+					val imm = getSystemService<InputMethodManager>()!!
+					val view = currentFocus ?: View(this@SubscriptionEditorActivity)
+					imm.hideSoftInputFromWindow(view.windowToken, 0)
 				}
-			} else {
-				if (viewModel.hasUnsavedChanges) {
-					showUnsavedChangesDialog()
-				} else {
-					this.isEnabled = false
-					onBackPressedDispatcher.onBackPressed()
-				}
+				else showUnsavedChangesDialog()
 			}
+			else showUnsavedChangesDialog()
 		}
 	}
 	
@@ -72,10 +72,15 @@ class SubscriptionEditorActivity : AppCompatActivity(), HasSnackbarAnchor {
 		binding = ActivitySubscriptionEditorBinding.inflate(layoutInflater)
 		setContentView(binding.root)
 		
-		onBackPressedDispatcher.addCallback(callback)
+		onBackPressedDispatcher.addCallback(callbackUnsavedChanges)
 		
 		initViews()
 		collectFlow()
+	}
+	
+	override fun onDestroy() {
+		super.onDestroy()
+		if (isFinishing) viewModel.onScreenClosed(applicationContext)
 	}
 	
 	private fun initViews() {
@@ -83,7 +88,7 @@ class SubscriptionEditorActivity : AppCompatActivity(), HasSnackbarAnchor {
 			onBackPressedDispatcher.onBackPressed()
 		}
 		binding.toolbar.setOnMenuItemClickListener { item ->
-			if (item.itemId == R.id.action_clear_draft) viewModel.discardDraft()
+			if (item.itemId == R.id.action_clear_draft) viewModel.onDiscardDraft()
 			true
 		}
 		
@@ -102,14 +107,12 @@ class SubscriptionEditorActivity : AppCompatActivity(), HasSnackbarAnchor {
 			).show()
 		}
 		binding.cardColor.setOnClickListener {
-			
 			showColorPickerDialog(
 				viewModel.subscription.color ?: IntegerHSLColor.createRandomColor().toColorInt(),
 				onSelect = { color ->
 					viewModel.subscription = viewModel.subscription.copy(color = color)
 				}
 			)
-			
 		}
 		
 		binding.fieldName.doAfterTextChanged {
@@ -123,9 +126,7 @@ class SubscriptionEditorActivity : AppCompatActivity(), HasSnackbarAnchor {
 			showDatePicker(
 				viewModel.subscription.startedOn,
 				onSelect = { date ->
-					viewModel.subscription = viewModel.subscription.copy(
-						startedOn = date
-					)
+					viewModel.subscription = viewModel.subscription.copy(startedOn = date)
 				}
 			)
 		}
@@ -147,15 +148,19 @@ class SubscriptionEditorActivity : AppCompatActivity(), HasSnackbarAnchor {
 		}
 		
 		binding.fab.setOnClickListener {
-			viewModel.saveSubscription()
-			binding.toolbar.menu.clear()
-			binding.root.snackbar("Changes saved")
+			if (viewModel.canSave) {
+				viewModel.onSaveSubscription()
+				// TODO only show this if it was actually successfully saved
+				binding.root.snackbar("Changes saved")
+			}
+			else shakeHint()
 		}
 		
 		binding.cardColor.strokeColor = colorAttr(R.attr.colorThemeInverse).alpha(0.12f)
 	}
 	
 	private fun collectFlow() {
+		
 		viewModel.showDraftIcon.collectOn(this) {
 			val noMenu = binding.toolbar.menu.isEmpty()
 			if (it && noMenu) binding.toolbar.inflateMenu(R.menu.menu_editor)
@@ -163,9 +168,9 @@ class SubscriptionEditorActivity : AppCompatActivity(), HasSnackbarAnchor {
 		}
 		
 		viewModel.canSaveFlow.collectOn(this) {
-			if (it) binding.fab.show() else binding.fab.hide()
 			binding.textRequiredFieldsHint.isVisible = !it
 		}
+		
 		viewModel.subscriptionFlow.filterNotNull().collectOn(this) { subscription ->
 			
 			if (subscription.price > 0.0) run {
@@ -200,6 +205,10 @@ class SubscriptionEditorActivity : AppCompatActivity(), HasSnackbarAnchor {
 			subscription.color?.let {
 				binding.cardColor.backgroundTintList = ColorStateList.valueOf(it)
 			}
+		}
+		
+		viewModel.hasUnsavedChangesFlow.collectOn(this) { (hasUnsavedChanges, isDraft) ->
+			callbackUnsavedChanges.isEnabled = hasUnsavedChanges && !isDraft
 		}
 	}
 	
@@ -251,14 +260,6 @@ class SubscriptionEditorActivity : AppCompatActivity(), HasSnackbarAnchor {
 			.show()
 	}
 	
-	
-	private fun finish(withMessage: Boolean) {
-		if (withMessage) setResult(5, Intent().apply {
-			putExtra("Message", "Draft saved")
-		})
-		this.finish()
-	}
-	
 	private fun EditText.updateText(newText: CharSequence) {
 		val oldText: CharSequence = this.text?.toString() ?: ""
 		val oldSelection = this.selectionStart
@@ -268,6 +269,30 @@ class SubscriptionEditorActivity : AppCompatActivity(), HasSnackbarAnchor {
 				setSelection(min(oldSelection, this.editableText?.length ?: 0))
 			}
 		}
+	}
+	
+	private fun shakeHint() {
+		
+		SpringAnimation(binding.textRequiredFieldsHint, SpringAnimation.TRANSLATION_X)
+			.apply {
+				spring = SpringForce().apply {
+					finalPosition = 30f
+					stiffness = SpringForce.STIFFNESS_HIGH
+					dampingRatio = SpringForce.DAMPING_RATIO_NO_BOUNCY
+				}
+			}
+			.addEndListener { _, _, _, _ ->
+				SpringAnimation(binding.textRequiredFieldsHint, SpringAnimation.TRANSLATION_X)
+					.apply {
+						spring = SpringForce().apply {
+							finalPosition = 0f
+							this.stiffness = 3000f
+							this.dampingRatio = 0.2f
+						}
+					}
+					.start()
+			}
+			.start()
 	}
 	
 	override val snackbarAnchor: View

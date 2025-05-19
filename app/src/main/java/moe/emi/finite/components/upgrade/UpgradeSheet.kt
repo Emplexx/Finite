@@ -29,7 +29,7 @@ import moe.emi.finite.databinding.ActivityUpgradeBinding
 import moe.emi.finite.dump.collectOn
 import moe.emi.finite.dump.iDp
 import moe.emi.finite.dump.zipWithLast
-import moe.emi.finite.ui.editor.SubscriptionEditorActivity
+import moe.emi.finite.components.editor.ui.SubscriptionEditorActivity
 import nl.dionsegijn.konfetti.core.Angle
 import nl.dionsegijn.konfetti.core.Party
 import nl.dionsegijn.konfetti.core.Position

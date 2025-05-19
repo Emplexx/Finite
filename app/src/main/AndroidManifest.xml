@@ -35,7 +35,7 @@
 			android:name=".components.settings.ui.ColorsActivity"
 			android:exported="false" />
 		<activity
-			android:name=".ui.editor.SubscriptionEditorActivity"
+			android:name=".components.editor.ui.SubscriptionEditorActivity"
 			android:exported="false" />
 		<activity
 			android:name=".MainActivity"

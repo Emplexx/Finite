@@ -1,4 +1,4 @@
-package moe.emi.finite.ui.editor
+package moe.emi.finite.components.editor.ui
 
 import android.content.Context
 import android.util.Log

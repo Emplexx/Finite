@@ -25,8 +25,6 @@ interface Container {
 	val settingsStore: SettingsStore
 	
 	val ratesRepo: RatesRepo
-//	val reminderRepo: ReminderRepo
-//	val subscriptionsRepo: SubscriptionsRepo
 	
 	val billingConnection: Flow<BillingConnection>
 	val upgradeState: Flow<UpgradeState>

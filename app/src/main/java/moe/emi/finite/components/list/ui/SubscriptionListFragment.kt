@@ -39,16 +39,17 @@ import moe.emi.finite.components.list.ui.adapter.java.ExpandableHeaderItem
 import moe.emi.finite.components.list.ui.adapter.java.ExpandableSection
 import moe.emi.finite.components.settings.store.ColorOptions
 import moe.emi.finite.components.upgrade.UpgradeSheet
-import moe.emi.finite.core.ui.format.formatPrice
 import moe.emi.finite.core.model.Currency
+import moe.emi.finite.core.model.Subscription
 import moe.emi.finite.core.ui.animator.SmoothItemAnimator
+import moe.emi.finite.core.ui.format.formatPrice
 import moe.emi.finite.databinding.FragmentSubscriptionsListBinding
 import moe.emi.finite.dump.FastOutExtraSlowInInterpolator
 import moe.emi.finite.dump.android.snackbar
 import moe.emi.finite.dump.collectOn
 import moe.emi.finite.dump.iDp
-import moe.emi.finite.core.model.Subscription
-import moe.emi.finite.ui.editor.SubscriptionEditorActivity
+import moe.emi.finite.components.editor.ui.SubscriptionEditorActivity
+import moe.emi.finite.components.editor.ui.SubscriptionEditorViewModel.Companion.KEY_SUBSCRIPTION
 
 class SubscriptionListFragment : Fragment() {
 	
@@ -222,7 +223,7 @@ class SubscriptionListFragment : Fragment() {
 			},
 			onLongClick = {
 				startActivity(Intent(requireActivity(), SubscriptionEditorActivity::class.java)
-					.putExtra("Subscription", model))
+					.putExtra(KEY_SUBSCRIPTION, model))
 			}
 		)
 	}
