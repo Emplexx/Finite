@@ -13,15 +13,17 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import moe.emi.finite.FiniteApp
 import moe.emi.finite.R
 import moe.emi.finite.components.list.domain.Sort
 import moe.emi.finite.components.list.getAllPaymentMethods
-import moe.emi.finite.components.settings.store.appSettings
-import moe.emi.finite.components.settings.store.editSettings
+import moe.emi.finite.components.settings.store.AppSettings
+import moe.emi.finite.components.settings.store.SettingsStore
+import moe.emi.finite.components.settings.store.editor
+import moe.emi.finite.core.db.SubscriptionDao
 import moe.emi.finite.databinding.LayoutSheetDisplayBinding
 import moe.emi.finite.databinding.LayoutSortRowBinding
 import moe.emi.finite.databinding.ViewChipFilterBinding
+import moe.emi.finite.di.memberInjection
 import moe.emi.finite.dump.FastOutExtraSlowInInterpolator
 import moe.emi.finite.dump.textRes
 
@@ -32,7 +34,17 @@ class DisplayOptionsSheet(
 	private lateinit var binding: LayoutSheetDisplayBinding
 	private var selectedRow: LayoutSortRowBinding? = null
 	
-	val subscriptionDao = (context.applicationContext as FiniteApp).container.db.subscriptionDao()
+	lateinit var subscriptionDao: SubscriptionDao
+	lateinit var settingsStore: SettingsStore
+	
+	init {
+		context.memberInjection {
+			subscriptionDao = it.db.subscriptionDao()
+			settingsStore = it.settingsStore
+		}
+	}
+	
+	val editSettings = settingsStore.editor(this)
 	
 	override fun onStart() {
 		super.onStart()
@@ -50,14 +62,14 @@ class DisplayOptionsSheet(
 		behavior.skipCollapsed = true
 		
 		lifecycleScope.launch {
-			initDisplay()
-			initSort()
-			initFilter()
+			val s = settingsStore.data.first()
+			initDisplay(s)
+			initSort(s)
+			initFilter(s)
 		}
 	}
 	
-	private suspend fun initDisplay() {
-		val s = context.appSettings.first()
+	private suspend fun initDisplay(s: AppSettings) {
 		binding.rowShowTimeLeft.switchView.isChecked = s.showTimeLeft
 		binding.rowRoughlySign.switchView.isChecked = s.showRoughlySign
 		
@@ -72,13 +84,13 @@ class DisplayOptionsSheet(
 		}
 	}
 	
-	private suspend fun initSort() {
+	private suspend fun initSort(settings: AppSettings) {
 		binding.headerSort.text.textRes = R.string.option_header_sort
 		binding.rowName.textLabel.textRes = R.string.option_sort_name
 		binding.rowPrice.textLabel.textRes = R.string.option_sort_price
 		binding.rowDate.textLabel.textRes = R.string.option_sort_date
 		
-		selectedRow = when (context.appSettings.first().sort) {
+		selectedRow = when (settings.sort) {
 			Sort.Alphabetical -> binding.rowName
 			Sort.Price -> binding.rowPrice
 			Sort.Date -> binding.rowDate
@@ -116,11 +128,11 @@ class DisplayOptionsSheet(
 		}
 	}
 	
-	private suspend fun initFilter() {
+	private suspend fun initFilter(settings: AppSettings) {
 		binding.headerFilter.text.text = context.getString(R.string.option_header_filter)
 
 		val payments = getAllPaymentMethods(subscriptionDao).first()
-		val selectedPayments = context.appSettings.first().selectedPaymentMethods.map { it.lowercase() }
+		val selectedPayments = settings.selectedPaymentMethods.map { it.lowercase() }
 		
 		payments.forEach { string ->
 			val chip = ViewChipFilterBinding.inflate(layoutInflater).root
@@ -152,7 +164,7 @@ class DisplayOptionsSheet(
 			
 			jobReturnArrow = launch {
 				delay(1000)
-				val asc = context.appSettings.first().sortIsAscending
+				val asc = settingsStore.data.first().sortIsAscending
 				val rem = trailingIcon.rotation.toInt() % 180
 				if (rem != 0) {
 					
@@ -180,7 +192,7 @@ class DisplayOptionsSheet(
 //				}
 			}
 			
-			val asc = context.appSettings.first().sortIsAscending
+			val asc = settingsStore.data.first().sortIsAscending
 			trailingIcon.rotation = if (asc) 0f else 180f
 			trailingIcon.isSelected = asc
 			

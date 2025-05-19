@@ -21,7 +21,7 @@ import moe.emi.finite.dump.Event
 
 class MainViewModel(
 	private val ratesRepo: RatesRepo,
-	private val settingsStore: SettingsStore,
+	val settingsStore: SettingsStore,
 	upgradeState: Flow<UpgradeState>,
 	subscriptionDao: SubscriptionDao,
 ) : ViewModel() {

@@ -13,9 +13,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import moe.emi.finite.FiniteApp
 import moe.emi.finite.R
-import moe.emi.finite.components.settings.store.appSettings
+import moe.emi.finite.components.settings.store.SettingsStore
 import moe.emi.finite.components.upgrade.cache.UpgradeState
 import moe.emi.finite.core.db.FiniteDB
 import moe.emi.finite.core.db.getSubscription
@@ -25,6 +24,7 @@ import moe.emi.finite.core.model.Currency
 import moe.emi.finite.core.model.Reminder
 import moe.emi.finite.core.model.Subscription
 import moe.emi.finite.core.rates.RatesRepo
+import moe.emi.finite.di.memberInjection
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -37,19 +37,20 @@ class ReminderAlarmReceiver : BroadcastReceiver() {
 	private lateinit var reminderScheduler: ReminderScheduler
 	private lateinit var db: FiniteDB
 	private lateinit var ratesRepo: RatesRepo
-	
 	private lateinit var upgradeState: Flow<UpgradeState>
+	private lateinit var settingsStore: SettingsStore
 	
 	override fun onReceive(context: Context?, intent: Intent?) {
 		
 		val reminderId = intent?.getIntExtra("ID", -1)?.takeIf { it > -1 } ?: return
 		
-		val app = context?.applicationContext as? FiniteApp ?: return
-		
-		reminderScheduler = app.container.reminderScheduler
-		db = app.container.db
-		ratesRepo = app.container.ratesRepo
-		upgradeState = app.container.upgradeState
+		(context ?: return).memberInjection {
+			reminderScheduler = it.reminderScheduler
+			db = it.db
+			ratesRepo = it.ratesRepo
+			upgradeState = it.upgradeState
+			settingsStore = it.settingsStore
+		}
 		
 		goAsync { context.doTask(reminderId) }
 	}
@@ -61,7 +62,7 @@ class ReminderAlarmReceiver : BroadcastReceiver() {
 		val reminder = db.notificationDao().getById(reminderId).first().firstOrNull()?.toReminder() ?: return
 		val model = db.subscriptionDao().getSubscription(reminder.subscriptionId).first() ?: return
 		
-		val settings = appSettings.first()
+		val settings = settingsStore.data.first()
 		val due = ratesRepo.fetchedRates.value
 			?.convert(model.price, model.currency, settings.preferredCurrency)
 			?.let { convertedPrice -> settings.preferredCurrency to convertedPrice }

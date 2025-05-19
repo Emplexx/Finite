@@ -16,18 +16,19 @@ import dev.chrisbanes.insetter.applyInsetter
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import moe.emi.finite.BuildConfig
-import moe.emi.finite.FiniteApp
 import moe.emi.finite.R
 import moe.emi.finite.components.currency.CurrencyPickerSheet
 import moe.emi.finite.components.settings.store.AppSettings
 import moe.emi.finite.components.settings.store.AppTheme
-import moe.emi.finite.components.settings.store.appSettings
-import moe.emi.finite.components.settings.store.editSettings
+import moe.emi.finite.components.settings.store.SettingsStore
+import moe.emi.finite.components.settings.store.editor
 import moe.emi.finite.components.settings.ui.backup.BackupActivity
 import moe.emi.finite.components.settings.ui.rates_wip.RatesApiActivity
 import moe.emi.finite.components.upgrade.UpgradeSheet
 import moe.emi.finite.components.upgrade.cache.UpgradeState
+import moe.emi.finite.core.rates.RatesRepo
 import moe.emi.finite.databinding.LayoutSheetSettingsBinding
+import moe.emi.finite.di.memberInjection
 
 class SettingsSheet(
 	context: Context
@@ -35,14 +36,24 @@ class SettingsSheet(
 	
 	private lateinit var binding: LayoutSheetSettingsBinding
 	private lateinit var upgradeState: Flow<UpgradeState>
+	private lateinit var settingsStore: SettingsStore
+	private lateinit var ratesRepo: RatesRepo
+	
+	init {
+		context.memberInjection {
+			upgradeState = it.upgradeState
+			settingsStore = it.settingsStore
+			ratesRepo = it.ratesRepo
+		}
+	}
+	
+	val editSettings = settingsStore.editor(this)
 	
 	override fun onStart() {
 		super.onStart()
 		
 		binding = LayoutSheetSettingsBinding.inflate(layoutInflater)
 		setContentView(binding.root)
-		
-		upgradeState = (context.applicationContext as FiniteApp).container.upgradeState
 		
 		binding.scrollView.applyInsetter {
 			type(navigationBars = true) {
@@ -61,7 +72,7 @@ class SettingsSheet(
 					binding.sectionUpgrade.isVisible = !it.isPro
 				}
 			}
-			context.appSettings.collect {
+			settingsStore.data.collect {
 				updateData(it)
 			}
 		}
@@ -161,9 +172,7 @@ class SettingsSheet(
 			MaterialAlertDialogBuilder(context)
 				.setItems(arrayOf("Clear rates")) { _, id ->
 					when (id) {
-						0 -> lifecycleScope.launch {
-							(context.applicationContext as FiniteApp).container.ratesRepo.clearRates()
-						}
+						0 -> lifecycleScope.launch { ratesRepo.clearRates() }
 					}
 				}
 				.show()

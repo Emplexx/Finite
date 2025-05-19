@@ -13,9 +13,7 @@ import com.google.android.material.color.DynamicColorsOptions
 import com.google.android.material.color.HarmonizedColors
 import com.google.android.material.color.HarmonizedColorsOptions
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -40,24 +38,16 @@ class FiniteApp : Application() {
 		private set
 	
 	companion object {
-		
-		lateinit var instance: FiniteApp
-			private set
-		
-		val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
-		
 		private val Context.dataStore by preferencesDataStore("preferences")
 	}
 	
 	override fun onCreate() {
 		super.onCreate()
 		
-		instance = this
-		
 		container = object : Container {
 			
-			override val app = instance
-			override val scope = FiniteApp.scope
+			override val app = this@FiniteApp
+			override val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 			
 			override val db = Room
 				.databaseBuilder(app, FiniteDB::class.java, "finite")
@@ -77,19 +67,17 @@ class FiniteApp : Application() {
 			override val upgradeState: Flow<UpgradeState> = createUpgradeState(app.dataStore, billingConnection, db.subscriptionDao())
 		}
 		
-		scope.launch { processPurchasesForever(container.billingConnection, dataStore) }
+		container.scope.launch { processPurchasesForever(container.billingConnection, dataStore) }
 		
 		setupNotifications()
 		setupMaterialYou()
 	}
 	
-	@OptIn(DelicateCoroutinesApi::class)
-	fun setupNotifications() {
-		val manager = getSystemService<NotificationManager>()!!
-		manager.createNotificationChannel(
+	private fun setupNotifications() {
+		getSystemService<NotificationManager>()?.createNotificationChannel(
 			NotificationChannel(REMINDER_CHANNEL_ID, "Reminders", NotificationManager.IMPORTANCE_HIGH)
 		)
-		GlobalScope.launch {
+		container.scope.launch {
 			container.reminderScheduler.invalidateAllReminders()
 		}
 	}

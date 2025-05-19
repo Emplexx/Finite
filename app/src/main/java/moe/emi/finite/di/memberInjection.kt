@@ -4,7 +4,7 @@ import android.content.Context
 import moe.emi.finite.FiniteApp
 
 fun Context.memberInjection(
-	action: Container.() -> Unit
+	inject: (Container) -> Unit
 ) {
-	(applicationContext as FiniteApp).container.action()
+	inject((applicationContext as FiniteApp).container)
 }

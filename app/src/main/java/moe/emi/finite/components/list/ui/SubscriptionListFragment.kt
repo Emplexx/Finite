@@ -24,10 +24,11 @@ import dev.chrisbanes.insetter.applyInsetter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import moe.emi.finite.BuildConfig
-import moe.emi.finite.FiniteApp
 import moe.emi.finite.MainActivity
 import moe.emi.finite.R
 import moe.emi.finite.components.colors.makeItemColors
+import moe.emi.finite.components.editor.ui.SubscriptionEditorActivity
+import moe.emi.finite.components.editor.ui.SubscriptionEditorViewModel.Companion.KEY_SUBSCRIPTION
 import moe.emi.finite.components.list.domain.SubscriptionItemUiModel
 import moe.emi.finite.components.list.domain.SubscriptionListUiModel
 import moe.emi.finite.components.list.domain.TotalView
@@ -48,8 +49,6 @@ import moe.emi.finite.dump.FastOutExtraSlowInInterpolator
 import moe.emi.finite.dump.android.snackbar
 import moe.emi.finite.dump.collectOn
 import moe.emi.finite.dump.iDp
-import moe.emi.finite.components.editor.ui.SubscriptionEditorActivity
-import moe.emi.finite.components.editor.ui.SubscriptionEditorViewModel.Companion.KEY_SUBSCRIPTION
 
 class SubscriptionListFragment : Fragment() {
 	
@@ -156,10 +155,9 @@ class SubscriptionListFragment : Fragment() {
 	
 	private fun collectFlow() {
 		
-		if (BuildConfig.DEBUG) (requireContext().applicationContext as FiniteApp).container.upgradeState
-			.collectOn(viewLifecycleOwner) { state ->
-				binding.header.headerTitle.text = if (state.isPro) "finite pro" else "finite"
-			}
+		if (BuildConfig.DEBUG) viewModel.upgradeState.collectOn(viewLifecycleOwner) { state ->
+			binding.header.headerTitle.text = if (state.isPro) "finite pro" else "finite"
+		}
 		
 		viewModel.upgradeState.collectOn(viewLifecycleOwner) {
 			if (it.isIllegalPro) {

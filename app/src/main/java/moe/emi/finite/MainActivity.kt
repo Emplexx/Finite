@@ -35,19 +35,18 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import moe.emi.finite.components.editor.ui.SubscriptionEditorActivity
 import moe.emi.finite.components.list.ui.DisplayOptionsSheet
 import moe.emi.finite.components.settings.store.AppTheme
-import moe.emi.finite.components.settings.store.appSettings
 import moe.emi.finite.components.settings.ui.SettingsSheetFragment
 import moe.emi.finite.components.upgrade.UpgradeSheet
 import moe.emi.finite.databinding.ActivityMainBinding
 import moe.emi.finite.dump.FastOutExtraSlowInInterpolator
 import moe.emi.finite.dump.android.HasSnackbarAnchor
 import moe.emi.finite.dump.android.Length
+import moe.emi.finite.dump.android.snackbar
 import moe.emi.finite.dump.collectOn
 import moe.emi.finite.dump.fDp
-import moe.emi.finite.dump.android.snackbar
-import moe.emi.finite.components.editor.ui.SubscriptionEditorActivity
 import java.util.Locale
 import com.google.android.material.R as GR
 
@@ -101,7 +100,7 @@ class MainActivity : AppCompatActivity(), HasSnackbarAnchor {
 		super.onCreate(savedInstanceState)
 		
 		runBlocking {
-			when (appSettings.first().appTheme) {
+			when (viewModel.settingsStore.data.first().appTheme) {
 				AppTheme.Light ->
 					AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 				AppTheme.Dark ->

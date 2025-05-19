@@ -25,6 +25,7 @@ import moe.emi.finite.core.model.Currency
 import moe.emi.finite.core.preferences.Pref
 import moe.emi.finite.core.preferences.get
 import moe.emi.finite.core.preferences.set
+import moe.emi.finite.core.rates.model.Rate
 import moe.emi.finite.core.ui.animator.SmoothItemAnimator
 import moe.emi.finite.core.ui.decoration.RoundDecoration
 import moe.emi.finite.core.ui.decoration.divider
@@ -53,11 +54,11 @@ class CurrencyPickerSheet(
 	private val currencyHistory by lazy { preferences[Pref.currencyHistory] }
 	
 	init {
-		context.memberInjection {
-			availableRates = ratesRepo.fetchedRates.map { it?.rates?.map { it.currency }?.sorted() ?: emptyList() }
-			preferences = dataStore
-			defaultCurrency = settingsStore.data.map { it.preferredCurrency }
-			appScope = scope
+		context.memberInjection { it1 ->
+			availableRates = it1.ratesRepo.fetchedRates.map { it?.rates?.map(Rate::currency)?.sorted() ?: emptyList() }
+			preferences = it1.dataStore
+			defaultCurrency = it1.settingsStore.data.map { it.preferredCurrency }
+			appScope = it1.scope
 		}
 	}
 	

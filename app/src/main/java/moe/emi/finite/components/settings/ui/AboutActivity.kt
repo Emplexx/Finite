@@ -11,11 +11,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import dev.chrisbanes.insetter.applyInsetter
+import kotlinx.coroutines.flow.Flow
 import moe.emi.finite.BuildConfig
-import moe.emi.finite.FiniteApp
 import moe.emi.finite.R
 import moe.emi.finite.components.upgrade.UpgradeSheet
+import moe.emi.finite.components.upgrade.cache.UpgradeState
 import moe.emi.finite.databinding.ActivityAboutSlayBinding
+import moe.emi.finite.di.memberInjection
 import moe.emi.finite.dump.collectOn
 import nl.dionsegijn.konfetti.core.Angle
 import nl.dionsegijn.konfetti.core.Party
@@ -30,7 +32,15 @@ import java.util.concurrent.TimeUnit
 
 class AboutActivity : AppCompatActivity() {
 	
-	lateinit var binding: ActivityAboutSlayBinding
+	private lateinit var binding: ActivityAboutSlayBinding
+	
+	private lateinit var upgradeState: Flow<UpgradeState>
+	
+	init {
+		memberInjection {
+			upgradeState = it.upgradeState
+		}
+	}
 	
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -91,7 +101,7 @@ class AboutActivity : AppCompatActivity() {
 			openUrl("https://bsky.app/profile/emplexx.emi.moe")
 		}
 		
-		FiniteApp.instance.container.upgradeState.collectOn(this) {
+		upgradeState.collectOn(this) {
 			
 			if (!BuildConfig.DEBUG) {
 				binding.sectionUpgrade.isVisible = !it.isPro

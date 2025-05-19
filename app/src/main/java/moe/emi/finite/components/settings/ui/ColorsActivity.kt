@@ -11,20 +11,25 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import moe.emi.finite.R
 import moe.emi.finite.components.settings.store.AppSettings
-import moe.emi.finite.components.settings.store.appSettings
-import moe.emi.finite.components.settings.store.editSettings
+import moe.emi.finite.components.settings.store.SettingsStore
+import moe.emi.finite.components.settings.store.editor
 import moe.emi.finite.databinding.ActivitySettingsBinding
+import moe.emi.finite.di.memberInjection
 import moe.emi.finite.dump.isDarkTheme
 import kotlin.math.roundToInt
-import kotlin.properties.Delegates.observable
 
 class ColorsActivity : AppCompatActivity() {
 	
 	private lateinit var binding: ActivitySettingsBinding
+	private lateinit var settingsStore: SettingsStore
 	
-	private var settings: AppSettings by observable(AppSettings()) { _, old, new ->
-		if (old != new) editSettings { new }
+	init {
+		memberInjection {
+			settingsStore = it.settingsStore
+		}
 	}
+	
+	private val editSettings = settingsStore.editor(this)
 	
 	override fun onCreate(savedInstanceState: Bundle?) {
 		WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -40,10 +45,9 @@ class ColorsActivity : AppCompatActivity() {
 				initLayout()
 				initListeners()
 				
-				loadOnce(appSettings.first())
+				loadOnce(settingsStore.data.first())
 				
-				appSettings.collect {
-					settings = it
+				settingsStore.data.collect {
 					loadData(it)
 				}
 			}
@@ -63,11 +67,11 @@ class ColorsActivity : AppCompatActivity() {
 	private fun initListeners() {
 		
 		binding.rowHarmonize.switchView.setOnCheckedChangeListener { _, isChecked ->
-			settings = settings.copy(harmonizeColors = isChecked)
+			editSettings { it.copy(harmonizeColors = isChecked) }
 		}
 		
 		binding.rowNormalize.switchView.setOnCheckedChangeListener { _, isChecked ->
-			settings = settings.copy(normalizeColors = isChecked)
+			editSettings { it.copy(normalizeColors = isChecked) }
 		}
 		
 		binding.sliderBrightness.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
@@ -77,7 +81,8 @@ class ColorsActivity : AppCompatActivity() {
 				val v =
 					if (isDarkTheme) slider.value
 					else 10f - slider.value
-				settings = settings.copy(normalizeFactor = v.roundToInt())
+				
+				editSettings { it.copy(normalizeFactor = v.roundToInt()) }
 			}
 			
 		})
